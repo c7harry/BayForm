@@ -144,16 +144,15 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
           <h2 className="text-2xl font-bold text-blue-600 mb-4">Additional Information</h2>
-          {resumeData.additionalSections.map(section => (
-            <div key={section.id} className="mb-4">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{section.title}</h3>
-              <ul className="list-disc list-inside text-gray-700 inline-block text-left">
-                {section.items.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="flex flex-col items-center">
+            {resumeData.additionalSections.map(section => (
+              <div key={section.id} className="mb-1">
+                <span className="font-semibold text-gray-900">
+                  {section.title}: <span className="font-normal text-gray-700">{section.items.join(', ')}</span>
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -276,17 +275,16 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Additional Sections (Languages, Certifications, etc.) */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8">
-          {resumeData.additionalSections.map(section => (
-            <div key={section.id} className="mb-4">
-              <h2 className="text-xl font-bold text-blue-600 mb-2">{section.title}</h2>
-              <ul className="list-disc list-inside text-gray-700">
-                {section.items.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="mt-8 text-center">
+          <h2 className="text-xl font-bold text-blue-600 mb-4">Additional Information</h2>
+          <div className="flex flex-col items-center">
+            {resumeData.additionalSections.map(section => (
+              <div key={section.id} className="mb-1">
+                <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
+                <span className="text-gray-700">{section.items.join(', ')}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -409,17 +407,16 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Additional Sections (Languages, Certifications, etc.) */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8">
-          {resumeData.additionalSections.map(section => (
-            <div key={section.id} className="mb-4">
-              <h2 className="text-xl font-bold text-blue-600 mb-2">{section.title}</h2>
-              <ul className="list-disc list-inside text-gray-700">
-                {section.items.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="mt-8 text-center">
+          <h2 className="text-xl font-bold text-blue-600 mb-4">Additional Information</h2>
+          <div className="flex flex-col items-center">
+            {resumeData.additionalSections.map(section => (
+              <div key={section.id} className="mb-1">
+                <span className="font-semibold text-gray-900">{section.title}:</span>{' '}
+                <span className="text-gray-700">{section.items.join(', ')}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

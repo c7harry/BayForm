@@ -2,14 +2,46 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ResumeData } from '@/types/resume';
 
+// Helper to temporarily apply a class to the resume DOM for scaling
+const applyTempClass = (element: HTMLElement, className: string) => {
+  element.classList.add(className);
+};
+const removeTempClass = (element: HTMLElement, className: string) => {
+  element.classList.remove(className);
+};
+
 export const generatePDF = async (resumeData: ResumeData, elementId: string): Promise<void> => {
   const element = document.getElementById(elementId);
   if (!element) {
     throw new Error('Resume element not found');
   }
 
+  // CSS class for smaller font/margins
+  const reduceClass = 'pdf-reduce-font';
+  let usedReduceClass = false;
+
+  // Ensure the class exists in the DOM
+  if (!document.getElementById('pdf-reduce-font-style')) {
+    const style = document.createElement('style');
+    style.id = 'pdf-reduce-font-style';
+    style.innerHTML = `
+      .${reduceClass} {
+        font-size: 85% !important;
+      }
+      .${reduceClass} * {
+        font-size: 85% !important;
+        margin-top: 0.5em !important;
+        margin-bottom: 0.5em !important;
+        padding-top: 0.2em !important;
+        padding-bottom: 0.2em !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   try {
-    const canvas = await html2canvas(element, {
+    // First render attempt
+    let canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
@@ -17,20 +49,46 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
       width: element.scrollWidth
     });
 
-    const imgData = canvas.toDataURL('image/png');
+    let imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    let imgWidth = canvas.width;
+    let imgHeight = canvas.height;
+    let ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+    // If ratio is too small, try reducing font size/margins and re-render
+    if (ratio < 0.7) {
+      applyTempClass(element, reduceClass);
+      usedReduceClass = true;
+      canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        height: element.scrollHeight,
+        width: element.scrollWidth
+      });
+      imgData = canvas.toDataURL('image/png');
+      imgWidth = canvas.width;
+      imgHeight = canvas.height;
+      ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    }
+
+    // Show warning if still very small
+    if (ratio < 0.7) {
+      alert('Warning: Your resume is very long and will be shrunk to fit a single page. Consider reducing content for better readability.');
+    }
+
     const imgX = (pdfWidth - imgWidth * ratio) / 2;
     const imgY = 0;
-
     pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
     pdf.save(`${resumeData.personalInfo.fullName}_Resume.pdf`);
+
+    // Clean up
+    if (usedReduceClass) removeTempClass(element, reduceClass);
   } catch (error) {
+    // Clean up in case of error
+    if (usedReduceClass) removeTempClass(element, reduceClass);
     console.error('Error generating PDF:', error);
     throw new Error('Failed to generate PDF');
   }
