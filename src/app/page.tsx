@@ -97,10 +97,9 @@ export default function Home() {
           {/* Preview Controls */}
           <div className="bg-white rounded-lg shadow-sm mb-6 p-4 no-print">
             <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <button
+              <div className="flex items-center space-x-4">                <button
                   onClick={() => setCurrentView('list')}
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-orange-500 hover:text-orange-600 font-medium"
                 >
                   ← Back to Resumes
                 </button>
@@ -109,11 +108,10 @@ export default function Home() {
                 </h1>
               </div>
               <div className="flex items-center space-x-4">
-                {/* Template Selector */}
-                <select
+                {/* Template Selector */}                <select
                   value={selectedTemplate}
                   onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="modern">Modern</option>
                   <option value="classic">Classic</option>
@@ -123,14 +121,14 @@ export default function Home() {
                 <button
                   onClick={handleGeneratePDF}
                   disabled={isGeneratingPDF}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50"
                 >
                   {isGeneratingPDF ? 'Generating...' : 'Download PDF'}
                 </button>
                 
                 <button
                   onClick={() => handleEditResume(selectedResume)}
-                  className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="bg-slate-800 text-white px-4 py-2 rounded-md hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500"
                 >
                   Edit
                 </button>
@@ -148,16 +146,14 @@ export default function Home() {
 
     // Default: Resume List
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 py-8">        {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">ResumeForge</h1>
-            <p className="text-gray-600 mt-2">Create professional resumes</p>
+          <div className="flex items-center space-x-4">
+            <img src="/images/header.png" alt="BayForm" className="h-14" />
           </div>
           <button
             onClick={() => setCurrentView('create')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+            className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
           >
             Create New Resume
           </button>
@@ -168,10 +164,9 @@ export default function Home() {
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📄</div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">No resumes yet</h3>
-            <p className="text-gray-600 mb-6">Create your first resume to get started</p>
-            <button
+            <p className="text-gray-600 mb-6">Create your first resume to get started</p>            <button
               onClick={() => setCurrentView('create')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+              className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
             >
               Create Your First Resume
             </button>
@@ -191,16 +186,15 @@ export default function Home() {
                     <p>Template: {resume.template}</p>
                     <p>Updated: {new Date(resume.updatedAt).toLocaleDateString()}</p>
                   </div>
-                  <div className="flex space-x-2">
-                    <button
+                  <div className="flex space-x-2">                    <button
                       onClick={() => handlePreviewResume(resume)}
-                      className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="flex-1 bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
                     >
                       Preview
                     </button>
                     <button
                       onClick={() => handleEditResume(resume)}
-                      className="flex-1 bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                      className="flex-1 bg-slate-800 text-white px-3 py-2 rounded-md hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 text-sm"
                     >
                       Edit
                     </button>

@@ -16,9 +16,8 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
   });
 
   return (
-    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">
-      {/* Header */}
-      <div className="border-b-4 border-blue-600 pb-6 mb-6">
+    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
+      <div className="border-b-4 border-orange-500 pb-6 mb-6">
         <h1 className="text-4xl font-bold text-gray-900 mb-2 text-center">
           {resumeData.personalInfo.fullName}
         </h1>
@@ -28,7 +27,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           <span>{resumeData.personalInfo.location}</span>
           {resumeData.personalInfo.linkedIn && (
             <span className="flex items-center gap-1">
-              <FaLinkedin className="text-blue-700" />
+              <FaLinkedin className="text-slate-800" />
               <span>{resumeData.personalInfo.linkedIn}</span>
             </span>
           )}
@@ -42,9 +41,8 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       </div>
 
       {/* Skills (Top Section) */}
-      {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Skills</h2>
+      {Object.keys(skillsByCategory).length > 0 && (        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-orange-500 mb-4">Skills</h2>
           <div className="flex flex-col items-center">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <div key={category} className="mb-1">
@@ -58,16 +56,14 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}
 
       {/* Experience */}
-      {resumeData.experience.length > 0 && (
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Experience</h2>
+      {resumeData.experience.length > 0 && (        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-orange-500 mb-4">Experience</h2>
           <div className="space-y-6">
             {resumeData.experience.map((exp) => (
               <div key={exp.id} className="text-left inline-block w-full max-w-2xl mx-auto">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
+                <div className="flex justify-between items-start mb-2">                  <div>
                     <h3 className="text-xl font-semibold text-gray-900">{exp.position}</h3>
-                    <p className="text-lg text-blue-600 font-medium">{exp.company}</p>
+                    <p className="text-lg text-orange-500 font-medium">{exp.company}</p>
                   </div>
                   <div className="text-right text-gray-600">
                     <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
@@ -89,16 +85,14 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}
 
       {/* Education */}
-      {resumeData.education.length > 0 && (
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Education</h2>
+      {resumeData.education.length > 0 && (        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-orange-500 mb-4">Education</h2>
           <div className="space-y-4">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-left inline-block w-full max-w-2xl mx-auto">
-                <div className="flex justify-between items-start">
-                  <div>
+                <div className="flex justify-between items-start">                  <div>
                     <h3 className="text-lg font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
-                    <p className="text-blue-600 font-medium">{edu.institution}</p>
+                    <p className="text-orange-500 font-medium">{edu.institution}</p>
                     {edu.honors && <p className="text-gray-600">{edu.honors}</p>}
                   </div>
                   <div className="text-right text-gray-600">
@@ -113,23 +107,21 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}
 
       {/* Projects */}
-      {resumeData.projects.length > 0 && (
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Projects</h2>
+      {resumeData.projects.length > 0 && (        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-orange-500 mb-4">Projects</h2>
           <div className="space-y-4">
-            {resumeData.projects.map((project) => (
-              <div key={project.id} className="text-left inline-block w-full max-w-2xl mx-auto">
+            {resumeData.projects.map((project) => (              <div key={project.id} className="text-left inline-block w-full max-w-2xl mx-auto">
                 <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
                 <p className="text-gray-700 mb-2">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {project.technologies.map((tech, index) => (
-                    <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+                    <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
                       {tech}
                     </span>
                   ))}
                 </div>
                 {(project.url || project.github) && (
-                  <div className="text-blue-600 text-sm">
+                  <div className="text-orange-500 text-sm">
                     {project.url && <span className="mr-4">Live: {project.url}</span>}
                     {project.github && <span>GitHub: {project.github}</span>}
                   </div>
@@ -143,7 +135,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {/* Additional Information */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Additional Information</h2>
+          <h2 className="text-2xl font-bold text-orange-500 mb-4">Additional Information</h2>
           <div className="flex flex-col items-center">
             {resumeData.additionalSections.map(section => (
               <div key={section.id} className="mb-1">
@@ -247,8 +239,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Projects */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+        <div className="mb-6">          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
             Projects
           </h2>
           {resumeData.projects.map((project) => (
@@ -257,13 +248,13 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               <p className="text-gray-700 mb-2">{project.description}</p>
               <div className="flex flex-wrap gap-2 mb-2">
                 {project.technologies.map((tech, index) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+                  <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
                     {tech}
                   </span>
                 ))}
               </div>
               {(project.url || project.github) && (
-                <div className="text-blue-600 text-sm">
+                <div className="text-orange-500 text-sm">
                   {project.url && <span className="mr-4">Live: {project.url}</span>}
                   {project.github && <span>GitHub: {project.github}</span>}
                 </div>
@@ -271,12 +262,10 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             </div>
           ))}
         </div>
-      )}
-
-      {/* Additional Sections (Languages, Certifications, etc.) */}
+      )}      {/* Additional Sections (Languages, Certifications, etc.) */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-blue-600 mb-4">Additional Information</h2>
+          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
           <div className="flex flex-col items-center">
             {resumeData.additionalSections.map(section => (
               <div key={section.id} className="mb-1">
@@ -381,21 +370,20 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Projects */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6">Projects</h2>
+        <div className="mb-8">          <h2 className="text-2xl font-light text-gray-900 mb-6">Projects</h2>
           {resumeData.projects.map((project) => (
             <div key={project.id} className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
               <p className="text-gray-700 mb-2">{project.description}</p>
               <div className="flex flex-wrap gap-2 mb-2">
                 {project.technologies.map((tech, index) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+                  <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
                     {tech}
                   </span>
                 ))}
               </div>
               {(project.url || project.github) && (
-                <div className="text-blue-600 text-sm">
+                <div className="text-orange-500 text-sm">
                   {project.url && <span className="mr-4">Live: {project.url}</span>}
                   {project.github && <span>GitHub: {project.github}</span>}
                 </div>
@@ -407,8 +395,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Additional Sections (Languages, Certifications, etc.) */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-blue-600 mb-4">Additional Information</h2>
+        <div className="mt-8 text-center">          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
           <div className="flex flex-col items-center">
             {resumeData.additionalSections.map(section => (
               <div key={section.id} className="mb-1">

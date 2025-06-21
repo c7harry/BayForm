@@ -284,11 +284,15 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   };
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">        {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Resume Builder</h1>
-          <p className="text-gray-600 mb-6">Create your professional resume by filling out the sections below.</p>
+          <div className="flex items-center space-x-4 mb-4">
+            <img src="/images/header.png" alt="BayForm" className="h-10" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">BayForm Resume Builder</h1>
+              <p className="text-gray-600">Create your professional resume by filling out the sections below.</p>
+            </div>
+          </div>
           
           {/* Resume Name */}
           <div className="max-w-md">
@@ -312,10 +316,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             <button
               type="button"
               onClick={() => toggleSection('personal')}
-              className="w-full px-6 py-4 bg-blue-50 border-b border-gray-200 flex items-center justify-between hover:bg-blue-100 transition-colors"
+              className="w-full px-6 py-4 bg-orange-50 border-b border-gray-200 flex items-center justify-between hover:bg-orange-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaUser className="text-blue-600" />
+                <FaUser className="text-orange-500" />
                 <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
                 <span className="text-sm text-gray-500">Required fields</span>
               </div>
@@ -415,10 +419,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             <button
               type="button"
               onClick={() => toggleSection('skills')}
-              className="w-full px-6 py-4 bg-green-50 border-b border-gray-200 flex items-center justify-between hover:bg-green-100 transition-colors"
+              className="w-full px-6 py-4 bg-slate-50 border-b border-gray-200 flex items-center justify-between hover:bg-slate-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaCode className="text-green-600" />
+                <FaCode className="text-slate-800" />
                 <h3 className="text-lg font-semibold text-gray-900">Skills</h3>
                 <span className="text-sm text-gray-500">Organize by category</span>
               </div>
@@ -432,7 +436,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   <button
                     type="button"
                     onClick={addSkillCategory}
-                    className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-colors"
                   >
                     <FaPlus className="mr-2 text-sm" />
                     Add Category
@@ -496,10 +500,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             <button
               type="button"
               onClick={() => toggleSection('experience')}
-              className="w-full px-6 py-4 bg-purple-50 border-b border-gray-200 flex items-center justify-between hover:bg-purple-100 transition-colors"
+              className="w-full px-6 py-4 bg-orange-50 border-b border-gray-200 flex items-center justify-between hover:bg-orange-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaBriefcase className="text-purple-600" />
+                <FaBriefcase className="text-orange-500" />
                 <h3 className="text-lg font-semibold text-gray-900">Work Experience</h3>
                 <span className="text-sm text-gray-500">
                   {resumeData.experience.length} {resumeData.experience.length === 1 ? 'position' : 'positions'}
@@ -515,7 +519,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   <button
                     type="button"
                     onClick={addExperience}
-                    className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors"
                   >
                     <FaPlus className="mr-2 text-sm" />
                     Add Experience
@@ -646,10 +650,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             <button
               type="button"
               onClick={() => toggleSection('education')}
-              className="w-full px-6 py-4 bg-indigo-50 border-b border-gray-200 flex items-center justify-between hover:bg-indigo-100 transition-colors"
+              className="w-full px-6 py-4 bg-slate-50 border-b border-gray-200 flex items-center justify-between hover:bg-slate-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaGraduationCap className="text-indigo-600" />
+                <FaGraduationCap className="text-slate-800" />
                 <h3 className="text-lg font-semibold text-gray-900">Education</h3>
                 <span className="text-sm text-gray-500">
                   {resumeData.education.length} {resumeData.education.length === 1 ? 'entry' : 'entries'}
@@ -665,7 +669,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   <button
                     type="button"
                     onClick={addEducation}
-                    className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-colors"
                   >
                     <FaPlus className="mr-2 text-sm" />
                     Add Education
@@ -775,7 +779,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
               className="w-full px-6 py-4 bg-orange-50 border-b border-gray-200 flex items-center justify-between hover:bg-orange-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaProjectDiagram className="text-orange-600" />
+                <FaProjectDiagram className="text-orange-500" />
                 <h3 className="text-lg font-semibold text-gray-900">Projects</h3>
                 <span className="text-sm text-gray-500">
                   {resumeData.projects.length} {resumeData.projects.length === 1 ? 'project' : 'projects'}
@@ -791,7 +795,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   <button
                     type="button"
                     onClick={addProject}
-                    className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors"
                   >
                     <FaPlus className="mr-2 text-sm" />
                     Add Project
@@ -887,10 +891,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             <button
               type="button"
               onClick={() => toggleSection('additional')}
-              className="w-full px-6 py-4 bg-teal-50 border-b border-gray-200 flex items-center justify-between hover:bg-teal-100 transition-colors"
+              className="w-full px-6 py-4 bg-slate-50 border-b border-gray-200 flex items-center justify-between hover:bg-slate-100 transition-colors"
             >
               <div className="flex items-center space-x-3">
-                <FaInfoCircle className="text-teal-600" />
+                <FaInfoCircle className="text-slate-800" />
                 <h3 className="text-lg font-semibold text-gray-900">Additional Information</h3>
                 <span className="text-sm text-gray-500">Languages, Certifications, etc.</span>
               </div>
@@ -904,7 +908,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   <button
                     type="button"
                     onClick={addAdditionalSection}
-                    className="inline-flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-colors"
                   >
                     <FaPlus className="mr-2 text-sm" />
                     Add Section
@@ -976,12 +980,11 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors font-medium"
               >
                 Cancel
-              </button>
-              <button
+              </button>              <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors font-medium"
+                className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors font-medium"
               >
-                Save Resume              </button>
+                Save Resume</button>
             </div>
           </div>
         </form>
