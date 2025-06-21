@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'BayForm - Resume Builder',
+  title: 'BayForm',
   description: 'Create professional simple resumes for job applications',
 }
 

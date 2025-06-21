@@ -89,127 +89,316 @@ export default function Home() {
           onCancel={() => setCurrentView('list')}
         />
       );
-    }
-
-    if (currentView === 'preview' && selectedResume) {
+    }    if (currentView === 'preview' && selectedResume) {
       return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
           {/* Preview Controls */}
-          <div className="bg-white rounded-lg shadow-sm mb-6 p-4 no-print">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">                <button
-                  onClick={() => setCurrentView('list')}
-                  className="text-orange-500 hover:text-orange-600 font-medium"
-                >
-                  ← Back to Resumes
-                </button>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {selectedResume.name}
-                </h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                {/* Template Selector */}                <select
-                  value={selectedTemplate}
-                  onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                >
-                  <option value="modern">Modern</option>
-                  <option value="classic">Classic</option>
-                  <option value="minimal">Minimal</option>
-                </select>
+          <div className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm no-print">
+            <div className="max-w-7xl mx-auto px-4 py-4">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div className="flex items-center space-x-6">
+                  <button
+                    onClick={() => setCurrentView('list')}
+                    className="flex items-center text-orange-500 hover:text-orange-600 font-semibold transition-colors group"
+                  >
+                    <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Resumes
+                  </button>
+                  <div className="h-6 w-px bg-slate-300"></div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-slate-900">
+                      {selectedResume.name}
+                    </h1>
+                    <p className="text-slate-600">{selectedResume.personalInfo.fullName}</p>
+                  </div>
+                </div>
                 
-                <button
-                  onClick={handleGeneratePDF}
-                  disabled={isGeneratingPDF}
-                  className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50"
-                >
-                  {isGeneratingPDF ? 'Generating...' : 'Download PDF'}
-                </button>
-                
-                <button
-                  onClick={() => handleEditResume(selectedResume)}
-                  className="bg-slate-800 text-white px-4 py-2 rounded-md hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                >
-                  Edit
-                </button>
+                <div className="flex items-center space-x-4">
+                  {/* Template Selector */}
+                  <div className="flex items-center space-x-2">
+                    <label className="text-sm font-medium text-slate-700">Template:</label>
+                    <select
+                      value={selectedTemplate}
+                      onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
+                      className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 bg-white text-slate-900 font-medium"
+                    >
+                      <option value="modern">Modern</option>
+                      <option value="classic">Classic</option>
+                      <option value="minimal">Minimal</option>
+                    </select>
+                  </div>
+                  
+                  <button
+                    onClick={handleGeneratePDF}
+                    disabled={isGeneratingPDF}
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-xl hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 flex items-center space-x-2"
+                  >
+                    {isGeneratingPDF ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Download PDF</span>
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => handleEditResume(selectedResume)}
+                    className="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-500/50 font-semibold transition-all duration-300 flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Edit</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Resume Preview */}
-          <div className="bg-white rounded-lg shadow-lg">
-            {renderTemplate(selectedResume, selectedTemplate)}
+          <div className="max-w-5xl mx-auto px-4 py-8">
+            <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+              <div className="p-2 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  <div className="flex-1 text-center">
+                    <span className="text-sm text-slate-600 font-medium">Resume Preview</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white">
+                {renderTemplate(selectedResume, selectedTemplate)}
+              </div>
+            </div>
           </div>
         </div>
       );
     }
 
-    // Default: Resume List
+  // Default: Resume List
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-4">
-            <img src="/images/header.png" alt="BayForm" className="h-14" />
-          </div>
-          <button
-            onClick={() => setCurrentView('create')}
-            className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
-          >
-            Create New Resume
-          </button>
-        </div>
-
-        {/* Resume Grid */}
-        {resumes.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">📄</div>
-            <h3 className="text-xl font-medium text-gray-900 mb-2">No resumes yet</h3>
-            <p className="text-gray-600 mb-6">Create your first resume to get started</p>            <button
-              onClick={() => setCurrentView('create')}
-              className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
-            >
-              Create Your First Resume
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resumes.map((resume) => (
-              <div key={resume.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {resume.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {resume.personalInfo.fullName}
-                  </p>
-                  <div className="text-sm text-gray-500 mb-4">
-                    <p>Template: {resume.template}</p>
-                    <p>Updated: {new Date(resume.updatedAt).toLocaleDateString()}</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent"></div>
+          <div className="relative max-w-7xl mx-auto px-4 py-16">
+            <div className="flex flex-col lg:flex-row items-center justify-between">
+              <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">
+                <div className="flex items-center justify-center lg:justify-start mb-6">
+                  <img src="/images/header.png" alt="BayForm" className="h-16" />
+                </div>
+                <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                  Build Your Perfect
+                  <span className="text-orange-400 block">Resume</span>
+                </h1>
+                <p className="text-xl text-slate-300 mb-8 max-w-2xl">
+                  Create professional resumes with our intuitive builder. Choose from beautiful templates and land your dream job.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <button
+                    onClick={() => setCurrentView('create')}
+                    className="bg-orange-500 text-white px-8 py-4 rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
+                  >
+                    Create New Resume
+                  </button>
+                  {resumes.length > 0 && (
+                    <button
+                      onClick={() => document.getElementById('resumes-section')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="bg-white/10 border border-white/20 text-white px-8 py-4 rounded-xl hover:bg-white/20 focus:outline-none focus:ring-4 focus:ring-white/25 font-semibold text-lg transition-all duration-300 backdrop-blur-sm"
+                    >
+                      View My Resumes
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Stats Section */}
+              <div className="flex-1 max-w-lg">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                    <div className="text-3xl font-bold text-orange-400 mb-2">{resumes.length}</div>
+                    <div className="text-slate-300 text-sm">Resume{resumes.length !== 1 ? 's' : ''} Created</div>
                   </div>
-                  <div className="flex space-x-2">                    <button
-                      onClick={() => handlePreviewResume(resume)}
-                      className="flex-1 bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-                    >
-                      Preview
-                    </button>
-                    <button
-                      onClick={() => handleEditResume(resume)}
-                      className="flex-1 bg-slate-800 text-white px-3 py-2 rounded-md hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 text-sm"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteResume(resume.id)}
-                      className="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
-                    >
-                      Delete
-                    </button>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                    <div className="text-3xl font-bold text-orange-400 mb-2">3</div>
+                    <div className="text-slate-300 text-sm">Professional Templates</div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20 col-span-2">
+                    <div className="text-2xl font-bold text-orange-400 mb-2">PDF Ready</div>
+                    <div className="text-slate-300 text-sm">Download instantly in high quality</div>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Features Section */}
+        <div className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">Why Choose Our Resume Builder?</h2>
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+                Our platform combines simplicity with professional design to help you create resumes that stand out.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Beautiful Templates</h3>
+                <p className="text-slate-600">Choose from modern, classic, and minimal designs that make your resume stand out.</p>
+              </div>
+              
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-slate-800 to-slate-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Easy to Use</h3>
+                <p className="text-slate-600">Intuitive form-based interface makes creating and editing resumes simple and fast.</p>
+              </div>
+              
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-green-500 to-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Instant Download</h3>
+                <p className="text-slate-600">Generate and download professional PDF resumes instantly, ready for job applications.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Resume Grid Section */}
+        <div id="resumes-section" className="py-16 bg-gradient-to-br from-slate-50 to-white">
+          <div className="max-w-7xl mx-auto px-4">
+            {resumes.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="bg-gradient-to-br from-orange-100 to-orange-50 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8">
+                  <svg className="w-16 h-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-bold text-slate-900 mb-4">Ready to Get Started?</h3>
+                <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+                  Create your first professional resume in minutes. Our intuitive builder will guide you through every step.
+                </p>
+                <button
+                  onClick={() => setCurrentView('create')}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-10 py-4 rounded-xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
+                >
+                  Create Your First Resume
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold text-slate-900 mb-4">Your Resumes</h2>
+                  <p className="text-xl text-slate-600">Manage, edit, and download your professional resumes</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {resumes.map((resume, index) => (
+                    <div 
+                      key={resume.id} 
+                      className="group bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-2xl hover:border-orange-200 transition-all duration-300 overflow-hidden"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <div className="p-8">
+                        <div className="flex items-start justify-between mb-6">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">
+                              {resume.name}
+                            </h3>
+                            <p className="text-slate-600 font-medium mb-1">
+                              {resume.personalInfo.fullName}
+                            </p>
+                            <p className="text-sm text-slate-500">
+                              {resume.personalInfo.email}
+                            </p>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            resume.template === 'modern' ? 'bg-blue-100 text-blue-800' :
+                            resume.template === 'classic' ? 'bg-green-100 text-green-800' :
+                            'bg-purple-100 text-purple-800'
+                          }`}>
+                            {resume.template}
+                          </div>
+                        </div>
+                        
+                        <div className="bg-slate-50 rounded-xl p-4 mb-6">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-slate-500">Experience</span>
+                              <div className="font-medium text-slate-900">{resume.experience?.length || 0} positions</div>
+                            </div>
+                            <div>
+                              <span className="text-slate-500">Updated</span>
+                              <div className="font-medium text-slate-900">{new Date(resume.updatedAt).toLocaleDateString()}</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handlePreviewResume(resume)}
+                            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 text-sm font-semibold transition-all duration-300 transform hover:scale-105"
+                          >
+                            Preview
+                          </button>
+                          <button
+                            onClick={() => handleEditResume(resume)}
+                            className="flex-1 bg-slate-800 text-white px-4 py-3 rounded-xl hover:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-500/50 text-sm font-semibold transition-all duration-300"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteResume(resume.id)}
+                            className="bg-red-500 text-white px-4 py-3 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-500/50 text-sm font-semibold transition-all duration-300 group"
+                            title="Delete Resume"
+                          >
+                            <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="mt-12 text-center">
+                  <button
+                    onClick={() => setCurrentView('create')}
+                    className="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-8 py-4 rounded-xl hover:from-slate-900 hover:to-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  >
+                    + Create Another Resume
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     );
   };
