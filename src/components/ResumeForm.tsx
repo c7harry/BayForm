@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { ResumeData, PersonalInfo, Experience, Education, Skill, Project, AdditionalSection } from '@/types/resume';
 import { generateResumeId } from '@/utils/storage';
 import { FaChevronDown, FaChevronUp, FaPlus, FaTimes, FaUser, FaBriefcase, FaGraduationCap, FaCode, FaProjectDiagram, FaInfoCircle } from 'react-icons/fa';
+
+const DEFAULT_SKILL_CATEGORIES = ['Software', 'Technologies & Frameworks', 'General'];
 
 interface ResumeFormProps {
   initialData?: ResumeData;
@@ -124,22 +127,20 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       education: prev.education.filter(edu => edu.id !== id)
     }));
   };
-
   // --- Skill Categories ---
-  const defaultCategories = ['Software', 'Technologies & Frameworks', 'General'];
-  const [skillCategories, setSkillCategories] = useState<string[]>([...defaultCategories]);
+  const [skillCategories, setSkillCategories] = useState<string[]>([...DEFAULT_SKILL_CATEGORIES]);
 
   // Ensure all categories in resumeData.skills are present in skillCategories
   React.useEffect(() => {
     const allCategories = [
-      ...defaultCategories,
+      ...DEFAULT_SKILL_CATEGORIES,
       ...resumeData.skills.map(skill => skill.category)
     ];
     const uniqueCategories = Array.from(new Set(allCategories));
     if (uniqueCategories.length !== skillCategories.length || uniqueCategories.some(cat => !skillCategories.includes(cat))) {
       setSkillCategories(uniqueCategories);
     }
-  }, [resumeData.skills]);
+  }, [resumeData.skills, skillCategories]);
 
   const addSkillCategory = () => {
     const newCategory = prompt('Enter new skill category name:');
@@ -285,9 +286,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center space-x-4 mb-4">
-            <img src="/images/header.png" alt="BayForm" className="h-14" />
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">          <div className="flex items-center space-x-4 mb-4">
+            <Image src="/images/header.png" alt="BayForm" width={56} height={56} className="h-14 w-auto" />
             <div>
               <p className="text-gray-600">Create your professional resume by filling out the sections below.</p>
             </div>
@@ -449,7 +449,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         <h4 className="font-semibold text-gray-900 capitalize">
                           {category.replace(/\b\w/g, c => c.toUpperCase())}
                         </h4>
-                        {!defaultCategories.includes(category) && (
+                        {!DEFAULT_SKILL_CATEGORIES.includes(category) && (
                           <button
                             type="button"
                             onClick={() => removeSkillCategory(category)}
@@ -637,7 +637,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   {resumeData.experience.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <FaBriefcase className="mx-auto text-4xl mb-4 text-gray-300" />
-                      <p>No work experience added yet. Click "Add Experience" to get started.</p>
+                      <p>No work experience added yet. Click &quot;Add Experience&quot; to get started.</p>
                     </div>
                   )}
                 </div>
@@ -762,7 +762,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   {resumeData.education.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <FaGraduationCap className="mx-auto text-4xl mb-4 text-gray-300" />
-                      <p>No education added yet. Click "Add Education" to get started.</p>
+                      <p>No education added yet. Click &quot;Add Education&quot; to get started.</p>
                     </div>
                   )}
                 </div>
@@ -877,7 +877,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   {resumeData.projects.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <FaProjectDiagram className="mx-auto text-4xl mb-4 text-gray-300" />
-                      <p>No projects added yet. Click "Add Project" to get started.</p>
+                      <p>No projects added yet. Click &quot;Add Project&quot; to get started.</p>
                     </div>
                   )}
                 </div>
@@ -963,7 +963,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                 {(!resumeData.additionalSections || resumeData.additionalSections.length === 0) && (
                   <div className="text-center py-8 text-gray-500">
                     <FaInfoCircle className="mx-auto text-4xl mb-4 text-gray-300" />
-                    <p>No additional sections added yet. Click "Add Section" to get started.</p>
+                    <p>No additional sections added yet. Click &quot;Add Section&quot; to get started.</p>
                   </div>
                 )}
               </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { ResumeData, TemplateType } from '@/types/resume';
 import { getResumes, saveResume, deleteResume } from '@/utils/storage';
 import { generatePDF, generateSimplePDF } from '@/utils/pdfGenerator';
@@ -17,23 +18,26 @@ export default function Home() {
   useEffect(() => {
     setResumes(getResumes());
   }, []);
-
   const handleSaveResume = (resume: ResumeData) => {
     saveResume(resume);
     setResumes(getResumes());
     setCurrentView('list');
     setSelectedResume(null);
+    // Scroll to top when returning to list
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
   const handleEditResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setCurrentView('edit');
+    // Scroll to top when switching to edit
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
   const handlePreviewResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setSelectedTemplate(resume.template);
     setCurrentView('preview');
+    // Scroll to top when switching to preview
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDeleteResume = (id: string) => {
@@ -96,9 +100,11 @@ export default function Home() {
           <div className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm no-print">
             <div className="max-w-7xl mx-auto px-4 py-4">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                <div className="flex items-center space-x-6">
-                  <button
-                    onClick={() => setCurrentView('list')}
+                <div className="flex items-center space-x-6">                  <button
+                    onClick={() => {
+                      setCurrentView('list');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="flex items-center text-orange-500 hover:text-orange-600 font-semibold transition-colors group"
                   >
                     <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,8 +182,7 @@ export default function Home() {
                     <span className="text-sm text-slate-600 font-medium">Resume Preview</span>
                   </div>
                 </div>
-              </div>
-              <div className="bg-white">
+              </div>              <div className="bg-white" id="resume-preview">
                 {renderTemplate(selectedResume, selectedTemplate)}
               </div>
             </div>
@@ -194,9 +199,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent"></div>
           <div className="relative max-w-7xl mx-auto px-4 py-16">
             <div className="flex flex-col lg:flex-row items-center justify-between">
-              <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">
-                <div className="flex items-center justify-center lg:justify-start mb-6">
-                  <img src="/images/header.png" alt="BayForm" className="h-16" />
+              <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">                <div className="flex items-center justify-center lg:justify-start mb-6">
+                  <Image src="/images/header.png" alt="BayForm" width={64} height={64} className="h-16 w-auto" />
                 </div>
                 <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
                   Build Your Perfect
@@ -205,9 +209,11 @@ export default function Home() {
                 <p className="text-xl text-slate-300 mb-8 max-w-2xl">
                   Create professional resumes with our intuitive builder. Choose from beautiful templates and land your dream job.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <button
-                    onClick={() => setCurrentView('create')}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">                  <button
+                    onClick={() => {
+                      setCurrentView('create');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="bg-orange-500 text-white px-8 py-4 rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
                   >
                     Create New Resume
@@ -301,9 +307,11 @@ export default function Home() {
                 <h3 className="text-3xl font-bold text-slate-900 mb-4">Ready to Get Started?</h3>
                 <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
                   Create your first professional resume in minutes. Our intuitive builder will guide you through every step.
-                </p>
-                <button
-                  onClick={() => setCurrentView('create')}
+                </p>                <button
+                  onClick={() => {
+                    setCurrentView('create');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-10 py-4 rounded-xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
                 >
                   Create Your First Resume
@@ -387,9 +395,11 @@ export default function Home() {
                 </div>
                 
                 {/* Quick Actions */}
-                <div className="mt-12 text-center">
-                  <button
-                    onClick={() => setCurrentView('create')}
+                <div className="mt-12 text-center">                  <button
+                    onClick={() => {
+                      setCurrentView('create');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-8 py-4 rounded-xl hover:from-slate-900 hover:to-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
                     + Create Another Resume
