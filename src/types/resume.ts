@@ -33,8 +33,7 @@ export interface Education {
 export interface Skill {
   id: string;
   name: string;
-  category: 'technical' | 'soft' | 'language';
-  proficiency: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  category: string; // e.g., 'Software', 'Technologies & Frameworks', 'General', or user-defined
 }
 
 export interface Project {
@@ -44,6 +43,12 @@ export interface Project {
   technologies: string[];
   url?: string;
   github?: string;
+}
+
+export interface AdditionalSection {
+  id: string;
+  title: string; // e.g., 'Languages', 'Certifications', or user-defined
+  items: string[];
 }
 
 export interface ResumeData {
@@ -57,6 +62,7 @@ export interface ResumeData {
   template: TemplateType;
   createdAt: string;
   updatedAt: string;
+  additionalSections?: AdditionalSection[]; // New: for languages, certifications, and user-defined
 }
 
 export type TemplateType = 'modern' | 'classic' | 'minimal' | 'creative';

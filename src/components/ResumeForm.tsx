@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ResumeData, PersonalInfo, Experience, Education, Skill, Project } from '@/types/resume';
+import { ResumeData, PersonalInfo, Experience, Education, Skill, Project, AdditionalSection } from '@/types/resume';
 import { generateResumeId } from '@/utils/storage';
 
 interface ResumeFormProps {
@@ -20,7 +20,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         location: '',
         linkedIn: '',
         website: '',
-        summary: ''
+        summary: '' // Add summary for type compatibility
       },
       experience: [],
       education: [],
@@ -28,10 +28,15 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       projects: [],
       template: 'modern',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      additionalSections: [
+        { id: generateResumeId(), title: 'Languages', items: [] },
+        { id: generateResumeId(), title: 'Certifications', items: [] }
+      ]
     }
   );
 
+  // Restore helper functions for personal info, experience, education
   const updatePersonalInfo = (field: keyof PersonalInfo, value: string) => {
     setResumeData(prev => ({
       ...prev,
@@ -41,7 +46,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       }
     }));
   };
-
   const addExperience = () => {
     const newExp: Experience = {
       id: generateResumeId(),
@@ -59,7 +63,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       experience: [...prev.experience, newExp]
     }));
   };
-
   const updateExperience = (id: string, field: keyof Experience, value: any) => {
     setResumeData(prev => ({
       ...prev,
@@ -68,14 +71,12 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       )
     }));
   };
-
   const removeExperience = (id: string) => {
     setResumeData(prev => ({
       ...prev,
       experience: prev.experience.filter(exp => exp.id !== id)
     }));
   };
-
   const addEducation = () => {
     const newEdu: Education = {
       id: generateResumeId(),
@@ -91,7 +92,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       education: [...prev.education, newEdu]
     }));
   };
-
   const updateEducation = (id: string, field: keyof Education, value: string) => {
     setResumeData(prev => ({
       ...prev,
@@ -100,7 +100,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       )
     }));
   };
-
   const removeEducation = (id: string) => {
     setResumeData(prev => ({
       ...prev,
@@ -108,34 +107,158 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
-  const addSkill = () => {
+  // --- Skill Categories ---
+  const defaultCategories = ['Software', 'Technologies & Frameworks', 'General'];
+  const [skillCategories, setSkillCategories] = useState<string[]>([...defaultCategories]);
+
+  // Ensure all categories in resumeData.skills are present in skillCategories
+  React.useEffect(() => {
+    const allCategories = [
+      ...defaultCategories,
+      ...resumeData.skills.map(skill => skill.category)
+    ];
+    const uniqueCategories = Array.from(new Set(allCategories));
+    if (uniqueCategories.length !== skillCategories.length || uniqueCategories.some(cat => !skillCategories.includes(cat))) {
+      setSkillCategories(uniqueCategories);
+    }
+  }, [resumeData.skills]);
+
+  const addSkillCategory = () => {
+    const newCategory = prompt('Enter new skill category name:');
+    if (newCategory && !skillCategories.includes(newCategory)) {
+      setSkillCategories([...skillCategories, newCategory]);
+    }
+  };
+  const removeSkillCategory = (cat: string) => {
+    setSkillCategories(skillCategories.filter(c => c !== cat));
+    setResumeData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill.category !== cat)
+    }));
+  };
+
+  const addSkill = (category: string) => {
     const newSkill: Skill = {
       id: generateResumeId(),
       name: '',
-      category: 'technical',
-      proficiency: 'intermediate'
+      category
     };
     setResumeData(prev => ({
       ...prev,
       skills: [...prev.skills, newSkill]
     }));
   };
-
-  const updateSkill = (id: string, field: keyof Skill, value: any) => {
+  const updateSkill = (id: string, value: string) => {
     setResumeData(prev => ({
       ...prev,
-      skills: prev.skills.map(skill =>
-        skill.id === id ? { ...skill, [field]: value } : skill
-      )
+      skills: prev.skills.map(skill => skill.id === id ? { ...skill, name: value } : skill)
     }));
   };
-
   const removeSkill = (id: string) => {
     setResumeData(prev => ({
       ...prev,
       skills: prev.skills.filter(skill => skill.id !== id)
     }));
   };
+
+  // --- Additional Sections ---
+  const addAdditionalSection = () => {
+    const title = prompt('Enter new section title:');
+    if (title) {
+      setResumeData(prev => ({
+        ...prev,
+        additionalSections: [
+          ...(prev.additionalSections || []),
+          { id: generateResumeId(), title, items: [] }
+        ]
+      }));
+    }
+  };
+  const updateAdditionalSectionItem = (sectionId: string, idx: number, value: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      additionalSections: (prev.additionalSections || []).map(section =>
+        section.id === sectionId
+          ? { ...section, items: section.items.map((item, i) => i === idx ? value : item) }
+          : section
+      )
+    }));
+  };
+  const addAdditionalSectionItem = (sectionId: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      additionalSections: (prev.additionalSections || []).map(section =>
+        section.id === sectionId
+          ? { ...section, items: [...section.items, ''] }
+          : section
+      )
+    }));
+  };
+  const removeAdditionalSectionItem = (sectionId: string, idx: number) => {
+    setResumeData(prev => ({
+      ...prev,
+      additionalSections: (prev.additionalSections || []).map(section =>
+        section.id === sectionId
+          ? { ...section, items: section.items.filter((_, i) => i !== idx) }
+          : section
+      )
+    }));
+  };
+  const removeAdditionalSection = (sectionId: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      additionalSections: (prev.additionalSections || []).filter(section => section.id !== sectionId)
+    }));
+  };
+
+  // --- Project Helpers ---
+  const addProject = () => {
+    const newProject: Project = {
+      id: generateResumeId(),
+      name: '',
+      description: '',
+      technologies: [],
+      url: '',
+      github: ''
+    };
+    setResumeData(prev => ({
+      ...prev,
+      projects: [...prev.projects, newProject]
+    }));
+  };
+  const removeProject = (id: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      projects: prev.projects.filter(proj => proj.id !== id)
+    }));
+  };
+  const updateProject = (id: string, field: keyof Project, value: any) => {
+    setResumeData(prev => ({
+      ...prev,
+      projects: prev.projects.map(proj =>
+        proj.id === id
+          ? field === 'technologies'
+            ? { ...proj, technologies: value.split(',').map((t: string) => t.trim()).filter(Boolean) }
+            : { ...proj, [field]: value }
+          : proj
+      )
+    }));
+  };
+
+  // Set default additional sections to Languages and Certifications
+  const [additionalSectionsInitialized, setAdditionalSectionsInitialized] = useState(false);
+  React.useEffect(() => {
+    if (!additionalSectionsInitialized && (!resumeData.additionalSections || resumeData.additionalSections.length === 0)) {
+      setResumeData(prev => ({
+        ...prev,
+        additionalSections: [
+          { id: generateResumeId(), title: 'Languages', items: [] },
+          { id: generateResumeId(), title: 'Certifications', items: [] }
+        ]
+      }));
+      setAdditionalSectionsInitialized(true);
+    }
+  }, [additionalSectionsInitialized, resumeData.additionalSections]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,6 +279,65 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
+      </div>
+
+      {/* Skills (Top Section) */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Skills</h3>
+          <button
+            type="button"
+            onClick={addSkillCategory}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add Category
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skillCategories.map(category => (
+            <div key={category} className="bg-white p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium text-gray-900">{category.replace(/\b\w/g, c => c.toUpperCase())}</span>
+                {!defaultCategories.includes(category) && (
+                  <button
+                    type="button"
+                    onClick={() => removeSkillCategory(category)}
+                    className="text-red-600 hover:text-red-700 text-sm"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <div className="space-y-2">
+                {resumeData.skills.filter(skill => skill.category === category).map(skill => (
+                  <div key={skill.id} className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={skill.name}
+                      onChange={e => updateSkill(skill.id, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Skill name"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSkill(skill.id)}
+                      className="text-red-600 hover:text-red-700 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addSkill(category)}
+                  className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
+                >
+                  Add Skill
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Personal Information */}
@@ -221,17 +403,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             />
           </div>
         </div>
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Professional Summary *</label>
-          <textarea
-            value={resumeData.personalInfo.summary}
-            onChange={(e) => updatePersonalInfo('summary', e.target.value)}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Brief summary of your professional background and key strengths..."
-            required
-          />
-        </div>
+        {/* Professional Summary field removed */}
       </div>
 
       {/* Experience */}
@@ -430,58 +602,136 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         ))}
       </div>
 
-      {/* Skills */}
+      {/* Projects */}
       <div className="bg-gray-50 p-6 rounded-lg">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Skills</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Projects</h3>
           <button
             type="button"
-            onClick={addSkill}
+            onClick={addProject}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Add Skill
+            Add Project
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resumeData.skills.map((skill) => (
-            <div key={skill.id} className="bg-white p-4 rounded-lg">
+        {resumeData.projects.map((proj, index) => (
+          <div key={proj.id} className="bg-white p-4 rounded-lg mb-4">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="font-medium text-gray-900">Project {index + 1}</h4>
+              <button
+                type="button"
+                onClick={() => removeProject(proj.id)}
+                className="text-red-600 hover:text-red-700"
+              >
+                Remove
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                <input
+                  type="text"
+                  value={proj.name}
+                  onChange={(e) => updateProject(proj.id, 'name', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Live URL</label>
+                <input
+                  type="url"
+                  value={proj.url || ''}
+                  onChange={(e) => updateProject(proj.id, 'url', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">GitHub Link</label>
+                <input
+                  type="url"
+                  value={proj.github || ''}
+                  onChange={(e) => updateProject(proj.id, 'github', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://github.com/username/repo"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea
+                  value={proj.description}
+                  onChange={(e) => updateProject(proj.id, 'description', e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Brief description of the project..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Technologies Used</label>
+                <input
+                  type="text"
+                  value={proj.technologies.join(', ')}
+                  onChange={(e) => updateProject(proj.id, 'technologies', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="React, Node.js, etc."
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Additional Sections (Languages, Certifications, etc.) */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Additional Sections</h3>
+          <button
+            type="button"
+            onClick={addAdditionalSection}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add Section
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(resumeData.additionalSections || []).map(section => (
+            <div key={section.id} className="bg-white p-4 rounded-lg">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium text-gray-900">Skill</span>
+                <span className="font-medium text-gray-900">{section.title}</span>
                 <button
                   type="button"
-                  onClick={() => removeSkill(skill.id)}
+                  onClick={() => removeAdditionalSection(section.id)}
                   className="text-red-600 hover:text-red-700 text-sm"
                 >
                   Remove
                 </button>
               </div>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={skill.name}
-                  onChange={(e) => updateSkill(skill.id, 'name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Skill name"
-                />
-                <select
-                  value={skill.category}
-                  onChange={(e) => updateSkill(skill.id, 'category', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <div className="space-y-2">
+                {section.items.map((item, idx) => (
+                  <div key={idx} className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={item}
+                      onChange={e => updateAdditionalSectionItem(section.id, idx, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Item"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeAdditionalSectionItem(section.id, idx)}
+                      className="text-red-600 hover:text-red-700 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addAdditionalSectionItem(section.id)}
+                  className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
                 >
-                  <option value="technical">Technical</option>
-                  <option value="soft">Soft Skills</option>
-                  <option value="language">Language</option>
-                </select>
-                <select
-                  value={skill.proficiency}
-                  onChange={(e) => updateSkill(skill.id, 'proficiency', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                  <option value="expert">Expert</option>
-                </select>
+                  Add Item
+                </button>
               </div>
             </div>
           ))}
