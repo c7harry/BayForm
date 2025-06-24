@@ -61,7 +61,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {/* Skills Section */}
       {Object.keys(skillsByCategory).length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1">SKILLS</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 text-center">SKILLS</h2>
           <div className="space-y-2">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <div key={category} className="text-left">
@@ -76,14 +76,14 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}{/* Experience Section */}
       {resumeData.experience.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1">EXPERIENCE</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 text-center">EXPERIENCE</h2>
           <div className="space-y-4">
             {resumeData.experience.map((exp) => (
               <div key={exp.id} className="text-left">
                 <div className="flex justify-between items-start mb-1">
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900">{exp.position}</h3>
-                    <p className="text-sm text-gray-700 font-medium">{exp.company}</p>
+                    <p className="text-base font-bold text-gray-900">{exp.company}</p>
+                    <h3 className="text-base italic text-gray-900 font-normal">{exp.position}</h3>
                   </div>
                   <div className="text-right text-sm text-gray-600">
                     <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
@@ -110,7 +110,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}      {/* Education Section */}
       {resumeData.education.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1">EDUCATION</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 text-center">EDUCATION</h2>
           <div className="space-y-3">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-left">
@@ -132,7 +132,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       )}      {/* Projects Section */}
       {resumeData.projects.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1">PROJECTS</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 text-center">PROJECTS</h2>
           <div className="space-y-3">
             {resumeData.projects.map((project) => (
               <div key={project.id} className="text-left">
@@ -162,16 +162,17 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {/* Additional Information Section */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mb-6">
-          {resumeData.additionalSections.map(section => (
-            <div key={section.id} className="mb-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 uppercase">{section.title}</h2>
-              <div className="text-sm text-gray-700">
-                {section.items.map((item, index) => (
-                  <div key={index} className="mb-1">{item}</div>
-                ))}
-              </div>
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 border-b border-gray-300 pb-1 uppercase text-center">Additional Information</h2>
+            <div className="text-sm text-gray-700">
+              {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
+                <div key={section.id} className="mb-1">
+                  <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
+                  <span className="text-gray-700">{section.items.join(', ')}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       )}
     </div>
@@ -200,7 +201,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Skills Section */}
       {resumeData.skills.length > 0 && (
         <div className="mb-6 text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
             Skills
           </h2>
           <div className="flex flex-col items-center">
@@ -220,17 +221,18 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Experience Section */}
       {resumeData.experience.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
             Professional Experience
           </h2>
           {resumeData.experience.map((exp) => (
             <div key={exp.id} className="mb-5">
               <div className="mb-2">
-                <h3 className="text-lg font-bold text-gray-900">{exp.position}</h3>
-                <p className="text-gray-700 font-semibold">{exp.company}, {exp.location}</p>
+                <p className="text-lg font-bold text-gray-900">{exp.company}</p>
+                <h3 className="text-lg italic text-gray-900 font-normal">{exp.position}</h3>
                 <p className="text-gray-600 italic">
                   {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
                 </p>
+                <p className="text-gray-600">{exp.location}</p>
               </div>
               <p className="text-gray-700 mb-2">{exp.description}</p>
               {exp.achievements.length > 0 && (
@@ -249,7 +251,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Education Section */}
       {resumeData.education.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
             Education
           </h2>
           {resumeData.education.map((edu) => (
@@ -268,7 +270,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Projects Section */}
       {resumeData.projects.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
             Projects
           </h2>
           {resumeData.projects.map((project) => (
@@ -295,9 +297,9 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Additional Sections */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
+          <h2 className="text-xl font-bold text-orange-500 mb-4 text-center">Additional Information</h2>
           <div className="flex flex-col items-center">
-            {resumeData.additionalSections.map(section => (
+            {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id} className="mb-1">
                 <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
                 <span className="text-gray-700">{section.items.join(', ')}</span>
@@ -334,7 +336,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Skills Section */}
       {resumeData.skills.length > 0 && (
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-light text-gray-900 mb-6">Skills</h2>
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">Skills</h2>
           <div className="flex flex-col items-center">
             {Array.from(new Set(resumeData.skills.map(skill => skill.category))).map(category => {
               const categorySkills = resumeData.skills.filter(skill => skill.category === category);
@@ -351,58 +353,65 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       )}
       {/* Experience Section */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6">Experience</h2>
-          {resumeData.experience.map((exp) => (
-            <div key={exp.id} className="mb-8">
-              <div className="grid grid-cols-3 gap-4 mb-3">
-                <div className="col-span-2">
-                  <h3 className="text-xl font-medium text-gray-900">{exp.position}</h3>
-                  <p className="text-gray-700">{exp.company}</p>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
+            Experience
+          </h2>
+          <div className="space-y-4">
+            {resumeData.experience.map((exp) => (
+              <div key={exp.id} className="text-left">
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <p className="text-base font-bold text-gray-900">{exp.company}</p>
+                    <h3 className="text-base italic text-gray-900 font-normal">{exp.position}</h3>
+                  </div>
+                  <div className="text-right text-sm text-gray-600">
+                    <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
+                    <p>{exp.location}</p>
+                  </div>
                 </div>
-                <div className="text-right text-gray-600">
-                  <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
-                  <p>{exp.location}</p>
-                </div>
+                {exp.description && (
+                  <p className="text-sm text-gray-700 mb-2">{exp.description}</p>
+                )}
+                {exp.achievements.length > 0 && (
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    {exp.achievements.map((achievement, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2">•</span>
+                        <span>{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <p className="text-gray-700 mb-3">{exp.description}</p>
-              {exp.achievements.length > 0 && (
-                <ul className="space-y-2">
-                  {exp.achievements.map((achievement, index) => (
-                    <li key={index} className="text-gray-700">
-                      — {achievement}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      )}
-      {/* Education Section */}
+      )}      {/* Education Section */}
       {resumeData.education.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6">Education</h2>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
+            Education
+          </h2>
           {resumeData.education.map((edu) => (
-            <div key={edu.id} className="grid grid-cols-3 gap-4 mb-4">
-              <div className="col-span-2">
-                <h3 className="text-lg font-medium text-gray-900">
-                  {edu.degree} in {edu.field}
-                </h3>
-                <p className="text-gray-700">{edu.institution}</p>
-              </div>
-              <div className="text-right text-gray-600">
-                <p>{edu.graduationDate}</p>
-                {edu.gpa && <p>GPA: {edu.gpa}</p>}
-              </div>
+            <div key={edu.id} className="mb-3">
+              <h3 className="text-lg font-bold text-gray-900">
+                {edu.degree} in {edu.field}
+              </h3>
+              <p className="text-gray-700">{edu.institution}</p>
+              <p className="text-gray-600">{edu.graduationDate}</p>
+              {edu.gpa && <p className="text-gray-600">GPA: {edu.gpa}</p>}
+              {edu.honors && <p className="text-gray-600 italic">{edu.honors}</p>}
             </div>
           ))}
         </div>
       )}
       {/* Projects Section */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6">Projects</h2>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
+            Projects
+          </h2>
           {resumeData.projects.map((project) => (
             <div key={project.id} className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
@@ -427,11 +436,11 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Additional Sections */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
+          <h2 className="text-xl font-bold text-orange-500 mb-4 text-center">Additional Information</h2>
           <div className="flex flex-col items-center">
-            {resumeData.additionalSections.map(section => (
+            {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id} className="mb-1">
-                <span className="font-semibold text-gray-900">{section.title}:</span>{' '}
+                <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
                 <span className="text-gray-700">{section.items.join(', ')}</span>
               </div>
             ))}
