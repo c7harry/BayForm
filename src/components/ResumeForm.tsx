@@ -1,11 +1,14 @@
+// ResumeForm: Main form for creating and editing resumes
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { ResumeData, PersonalInfo, Experience, Education, Skill, Project, AdditionalSection } from '@/types/resume';
 import { generateResumeId } from '@/utils/storage';
 import { FaChevronDown, FaChevronUp, FaPlus, FaTimes, FaUser, FaBriefcase, FaGraduationCap, FaCode, FaProjectDiagram, FaInfoCircle } from 'react-icons/fa';
 
+// Default skill categories
 const DEFAULT_SKILL_CATEGORIES = ['Software', 'Technologies & Frameworks', 'General'];
 
+// Props for the ResumeForm component
 interface ResumeFormProps {
   initialData?: ResumeData;
   onSave: (resume: ResumeData) => void;
@@ -13,6 +16,7 @@ interface ResumeFormProps {
 }
 
 export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onCancel }) => {
+  // --- State Management ---
   const [resumeData, setResumeData] = useState<ResumeData>(
     initialData || {
       id: generateResumeId(),
@@ -24,7 +28,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         location: '',
         linkedIn: '',
         website: '',
-        summary: '' // Add summary for type compatibility
+        summary: ''
       },
       experience: [],
       education: [],
@@ -40,7 +44,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }
   );
 
-  // Section collapse states
+  // --- Section Collapse State ---
   const [collapsedSections, setCollapsedSections] = useState({
     personal: false,
     skills: false,
@@ -49,7 +53,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     projects: false,
     additional: false
   });
-
   const toggleSection = (section: keyof typeof collapsedSections) => {
     setCollapsedSections(prev => ({
       ...prev,
@@ -57,7 +60,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
-  // Restore helper functions for personal info, experience, education
+  // --- Personal Info Helpers ---
   const updatePersonalInfo = (field: keyof PersonalInfo, value: string) => {
     setResumeData(prev => ({
       ...prev,
@@ -67,6 +70,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       }
     }));
   };
+
+  // --- Experience Helpers ---
   const addExperience = () => {
     const newExp: Experience = {
       id: generateResumeId(),
@@ -98,6 +103,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       experience: prev.experience.filter(exp => exp.id !== id)
     }));
   };
+
+  // --- Education Helpers ---
   const addEducation = () => {
     const newEdu: Education = {
       id: generateResumeId(),
@@ -127,9 +134,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       education: prev.education.filter(edu => edu.id !== id)
     }));
   };
+
   // --- Skill Categories ---
   const [skillCategories, setSkillCategories] = useState<string[]>([...DEFAULT_SKILL_CATEGORIES]);
-
   // Ensure all categories in resumeData.skills are present in skillCategories
   React.useEffect(() => {
     const allCategories = [
@@ -141,7 +148,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       setSkillCategories(uniqueCategories);
     }
   }, [resumeData.skills, skillCategories]);
-
   const addSkillCategory = () => {
     const newCategory = prompt('Enter new skill category name:');
     if (newCategory && !skillCategories.includes(newCategory)) {
@@ -155,7 +161,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       skills: prev.skills.filter(skill => skill.category !== cat)
     }));
   };
-
+  // --- Skill Helpers ---
   const addSkill = (category: string) => {
     const newSkill: Skill = {
       id: generateResumeId(),
@@ -180,7 +186,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
-  // --- Additional Sections ---
+  // --- Additional Sections Helpers ---
   const addAdditionalSection = () => {
     const title = prompt('Enter new section title:');
     if (title) {
@@ -264,7 +270,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
-  // Set default additional sections to Languages and Certifications
+  // --- Default Additional Sections Initialization ---
   const [additionalSectionsInitialized, setAdditionalSectionsInitialized] = useState(false);
   React.useEffect(() => {
     if (!additionalSectionsInitialized && (!resumeData.additionalSections || resumeData.additionalSections.length === 0)) {
@@ -279,10 +285,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }
   }, [additionalSectionsInitialized, resumeData.additionalSections]);
 
+  // --- Form Submission ---
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(resumeData);
   };
+
+  // --- Render ---
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">        {/* Header */}

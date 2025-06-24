@@ -1,12 +1,15 @@
+// JobDescriptionForm: Modal form for entering job description details
 import React, { useState } from 'react';
 import { JobDescription } from '@/types/resume';
 
+// Props for the form component
 interface JobDescriptionFormProps {
   onSubmit: (jobDescription: JobDescription) => void;
   onCancel: () => void;
 }
 
 export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit, onCancel }) => {
+  // State for the job description fields
   const [jobDescription, setJobDescription] = useState<JobDescription>({
     title: '',
     company: '',
@@ -15,11 +18,13 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
     preferredSkills: []
   });
 
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(jobDescription);
   };
 
+  // Update a specific field in the job description
   const updateField = (field: keyof JobDescription, value: string | string[]) => {
     setJobDescription(prev => ({
       ...prev,
@@ -34,8 +39,9 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Paste Job Description for AI Tailoring
           </h2>
-          
+          {/* Job Description Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Job Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Job Title *
@@ -49,7 +55,7 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
                 required
               />
             </div>
-
+            {/* Company */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Company *
@@ -63,7 +69,7 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
                 required
               />
             </div>
-
+            {/* Job Description */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Job Description *
@@ -77,7 +83,7 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
                 required
               />
             </div>
-
+            {/* Key Requirements */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Key Requirements (one per line)
@@ -87,10 +93,10 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
                 onChange={(e) => updateField('requirements', e.target.value.split('\n').filter(req => req.trim()))}
                 rows={5}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="• Bachelor's degree in Computer Science&#10;• 3+ years of React experience&#10;• Experience with TypeScript"
+                placeholder="• Bachelor's degree in Computer Science\n• 3+ years of React experience\n• Experience with TypeScript"
               />
             </div>
-
+            {/* Preferred Skills */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Preferred Skills (one per line)
@@ -100,10 +106,10 @@ export const JobDescriptionForm: React.FC<JobDescriptionFormProps> = ({ onSubmit
                 onChange={(e) => updateField('preferredSkills', e.target.value.split('\n').filter(skill => skill.trim()))}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="• AWS experience&#10;• GraphQL knowledge&#10;• Agile/Scrum methodology"
+                placeholder="• AWS experience\n• GraphQL knowledge\n• Agile/Scrum methodology"
               />
             </div>
-
+            {/* Form Actions */}
             <div className="flex justify-end space-x-4 pt-4">
               <button
                 type="button"

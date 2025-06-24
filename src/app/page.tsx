@@ -1,3 +1,4 @@
+// This is the main page for the Resume Builder app
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,34 +10,37 @@ import { ResumeForm } from '@/components/ResumeForm';
 import { ModernTemplate, ClassicTemplate, MinimalTemplate } from '@/components/ResumeTemplates';
 
 export default function Home() {
+  // --- State Management ---
   const [resumes, setResumes] = useState<ResumeData[]>([]);
   const [currentView, setCurrentView] = useState<'list' | 'create' | 'edit' | 'preview'>('list');
   const [selectedResume, setSelectedResume] = useState<ResumeData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
+  // --- Load resumes on mount ---
   useEffect(() => {
     setResumes(getResumes());
   }, []);
+
+  // --- Resume Actions ---
   const handleSaveResume = (resume: ResumeData) => {
     saveResume(resume);
     setResumes(getResumes());
     setCurrentView('list');
     setSelectedResume(null);
-    // Scroll to top when returning to list
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
   const handleEditResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setCurrentView('edit');
-    // Scroll to top when switching to edit
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
   const handlePreviewResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setSelectedTemplate(resume.template);
     setCurrentView('preview');
-    // Scroll to top when switching to preview
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -47,21 +51,21 @@ export default function Home() {
     }
   };
 
+  // --- PDF Generation ---
   const handleGeneratePDF = async () => {
     if (!selectedResume) return;
-    
     setIsGeneratingPDF(true);
     try {
       await generatePDF(selectedResume, 'resume-preview');
     } catch (error) {
       console.error('Error generating PDF:', error);
-      // Fallback to simple PDF generation
       generateSimplePDF(selectedResume);
     } finally {
       setIsGeneratingPDF(false);
     }
   };
 
+  // --- Template Renderer ---
   const renderTemplate = (resume: ResumeData, template: TemplateType) => {
     switch (template) {
       case 'modern':
@@ -75,7 +79,9 @@ export default function Home() {
     }
   };
 
+  // --- Main Content Renderer ---
   const renderContent = () => {
+    // Create Resume View
     if (currentView === 'create') {
       return (
         <ResumeForm
@@ -85,6 +91,7 @@ export default function Home() {
       );
     }
 
+    // Edit Resume View
     if (currentView === 'edit' && selectedResume) {
       return (
         <ResumeForm
@@ -93,14 +100,19 @@ export default function Home() {
           onCancel={() => setCurrentView('list')}
         />
       );
-    }    if (currentView === 'preview' && selectedResume) {
+    }
+
+    // Preview Resume View
+    if (currentView === 'preview' && selectedResume) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
           {/* Preview Controls */}
           <div className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm no-print">
             <div className="max-w-7xl mx-auto px-4 py-4">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                <div className="flex items-center space-x-6">                  <button
+                {/* Back Button and Resume Info */}
+                <div className="flex items-center space-x-6">
+                  <button
                     onClick={() => {
                       setCurrentView('list');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,9 +132,8 @@ export default function Home() {
                     <p className="text-slate-600">{selectedResume.personalInfo.fullName}</p>
                   </div>
                 </div>
-                
+                {/* Template Selector and Actions */}
                 <div className="flex items-center space-x-4">
-                  {/* Template Selector */}
                   <div className="flex items-center space-x-2">
                     <label className="text-sm font-medium text-slate-700">Template:</label>
                     <select
@@ -135,7 +146,6 @@ export default function Home() {
                       <option value="minimal">Minimal</option>
                     </select>
                   </div>
-                  
                   <button
                     onClick={handleGeneratePDF}
                     disabled={isGeneratingPDF}
@@ -155,7 +165,6 @@ export default function Home() {
                       </>
                     )}
                   </button>
-                  
                   <button
                     onClick={() => handleEditResume(selectedResume)}
                     className="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-500/50 font-semibold transition-all duration-300 flex items-center space-x-2"
@@ -169,7 +178,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
           {/* Resume Preview */}
           <div className="max-w-5xl mx-auto px-4 py-8">
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
@@ -182,7 +190,8 @@ export default function Home() {
                     <span className="text-sm text-slate-600 font-medium">Resume Preview</span>
                   </div>
                 </div>
-              </div>              <div className="bg-white" id="resume-preview">
+              </div>
+              <div className="bg-white" id="resume-preview">
                 {renderTemplate(selectedResume, selectedTemplate)}
               </div>
             </div>
@@ -191,7 +200,7 @@ export default function Home() {
       );
     }
 
-  // Default: Resume List
+    // Default: Resume List View
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">
         {/* Hero Section */}
@@ -199,7 +208,9 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent"></div>
           <div className="relative max-w-7xl mx-auto px-4 py-16">
             <div className="flex flex-col lg:flex-row items-center justify-between">
-              <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">                <div className="flex items-center justify-center lg:justify-start mb-6">
+              {/* Left: Hero Text and Actions */}
+              <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">
+                <div className="flex items-center justify-center lg:justify-start mb-6">
                   <Image src="/images/header.png" alt="BayForm" width={64} height={64} className="h-16 w-auto" />
                 </div>
                 <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
@@ -209,7 +220,8 @@ export default function Home() {
                 <p className="text-xl text-slate-300 mb-8 max-w-2xl">
                   Create professional resumes with our intuitive builder. Choose from beautiful templates and land your dream job.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">                  <button
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <button
                     onClick={() => {
                       setCurrentView('create');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -228,8 +240,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              
-              {/* Stats Section */}
+              {/* Right: Stats */}
               <div className="flex-1 max-w-lg">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
@@ -249,7 +260,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
         {/* Features Section */}
         <div className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4">
@@ -259,18 +269,18 @@ export default function Home() {
                 Our platform combines simplicity with professional design to help you create resumes that stand out.
               </p>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Feature: Beautiful Templates */}
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-orange-500 to-orange-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">Beautiful Templates</h3>
                 <p className="text-slate-600">Choose from modern, classic, and minimal designs that make your resume stand out.</p>
               </div>
-              
+              {/* Feature: Easy to Use */}
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-slate-800 to-slate-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +290,7 @@ export default function Home() {
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">Easy to Use</h3>
                 <p className="text-slate-600">Intuitive form-based interface makes creating and editing resumes simple and fast.</p>
               </div>
-              
+              {/* Feature: Instant Download */}
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-green-500 to-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +303,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
         {/* Resume Grid Section */}
         <div id="resumes-section" className="py-16 bg-gradient-to-br from-slate-50 to-white">
           <div className="max-w-7xl mx-auto px-4">
@@ -307,7 +316,8 @@ export default function Home() {
                 <h3 className="text-3xl font-bold text-slate-900 mb-4">Ready to Get Started?</h3>
                 <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
                   Create your first professional resume in minutes. Our intuitive builder will guide you through every step.
-                </p>                <button
+                </p>
+                <button
                   onClick={() => {
                     setCurrentView('create');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -323,11 +333,10 @@ export default function Home() {
                   <h2 className="text-3xl font-bold text-slate-900 mb-4">Your Resumes</h2>
                   <p className="text-xl text-slate-600">Manage, edit, and download your professional resumes</p>
                 </div>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {resumes.map((resume, index) => (
-                    <div 
-                      key={resume.id} 
+                    <div
+                      key={resume.id}
                       className="group bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-2xl hover:border-orange-200 transition-all duration-300 overflow-hidden"
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
@@ -352,7 +361,6 @@ export default function Home() {
                             {resume.template}
                           </div>
                         </div>
-                        
                         <div className="bg-slate-50 rounded-xl p-4 mb-6">
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
@@ -365,7 +373,6 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                        
                         <div className="flex gap-2">
                           <button
                             onClick={() => handlePreviewResume(resume)}
@@ -393,9 +400,9 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                
                 {/* Quick Actions */}
-                <div className="mt-12 text-center">                  <button
+                <div className="mt-12 text-center">
+                  <button
                     onClick={() => {
                       setCurrentView('create');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -413,6 +420,7 @@ export default function Home() {
     );
   };
 
+  // --- Render the main content ---
   return (
     <>
       {renderContent()}

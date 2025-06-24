@@ -1,14 +1,17 @@
+// ResumeTemplates: Contains all resume template components
 import React from 'react';
 import { ResumeData } from '@/types/resume';
 import { FaLinkedin, FaGlobe } from 'react-icons/fa';
 
+// Props for all templates
 interface ResumeTemplateProps {
   resumeData: ResumeData;
   className?: string;
 }
 
+// --- Modern Template ---
 export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
-  // Group skills by category
+  // Group skills by category for display
   const skillsByCategory: Record<string, string[]> = {};
   resumeData.skills.forEach(skill => {
     if (!skillsByCategory[skill.category]) skillsByCategory[skill.category] = [];
@@ -16,7 +19,8 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
   });
 
   return (
-    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
+    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">
+      {/* Header */}
       <div className="border-b-4 border-orange-500 pb-6 mb-6">
         <h1 className="text-4xl font-bold text-gray-900 mb-2 text-center">
           {resumeData.personalInfo.fullName}
@@ -39,9 +43,9 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           )}
         </div>
       </div>
-
-      {/* Skills (Top Section) */}
-      {Object.keys(skillsByCategory).length > 0 && (        <div className="mb-6 text-center">
+      {/* Skills Section */}
+      {Object.keys(skillsByCategory).length > 0 && (
+        <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Skills</h2>
           <div className="flex flex-col items-center">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
@@ -54,14 +58,15 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           </div>
         </div>
       )}
-
-      {/* Experience */}
-      {resumeData.experience.length > 0 && (        <div className="mb-6 text-center">
+      {/* Experience Section */}
+      {resumeData.experience.length > 0 && (
+        <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Experience</h2>
           <div className="space-y-6">
             {resumeData.experience.map((exp) => (
               <div key={exp.id} className="text-left inline-block w-full max-w-2xl mx-auto">
-                <div className="flex justify-between items-start mb-2">                  <div>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
                     <h3 className="text-xl font-semibold text-gray-900">{exp.position}</h3>
                     <p className="text-lg text-orange-500 font-medium">{exp.company}</p>
                   </div>
@@ -83,14 +88,15 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           </div>
         </div>
       )}
-
-      {/* Education */}
-      {resumeData.education.length > 0 && (        <div className="mb-6 text-center">
+      {/* Education Section */}
+      {resumeData.education.length > 0 && (
+        <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Education</h2>
           <div className="space-y-4">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-left inline-block w-full max-w-2xl mx-auto">
-                <div className="flex justify-between items-start">                  <div>
+                <div className="flex justify-between items-start">
+                  <div>
                     <h3 className="text-lg font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
                     <p className="text-orange-500 font-medium">{edu.institution}</p>
                     {edu.honors && <p className="text-gray-600">{edu.honors}</p>}
@@ -105,12 +111,13 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           </div>
         </div>
       )}
-
-      {/* Projects */}
-      {resumeData.projects.length > 0 && (        <div className="mb-6 text-center">
+      {/* Projects Section */}
+      {resumeData.projects.length > 0 && (
+        <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Projects</h2>
           <div className="space-y-4">
-            {resumeData.projects.map((project) => (              <div key={project.id} className="text-left inline-block w-full max-w-2xl mx-auto">
+            {resumeData.projects.map((project) => (
+              <div key={project.id} className="text-left inline-block w-full max-w-2xl mx-auto">
                 <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
                 <p className="text-gray-700 mb-2">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -131,8 +138,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           </div>
         </div>
       )}
-
-      {/* Additional Information */}
+      {/* Additional Information Section */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
           <h2 className="text-2xl font-bold text-orange-500 mb-4">Additional Information</h2>
@@ -151,6 +157,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
   );
 };
 
+// --- Classic Template ---
 export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
   return (
     <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">
@@ -165,8 +172,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {resumeData.personalInfo.linkedIn && <p>{resumeData.personalInfo.linkedIn}</p>}
         </div>
       </div>
-
-      {/* Skills (Top Section) */}
+      {/* Skills Section */}
       {resumeData.skills.length > 0 && (
         <div className="mb-6 text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
@@ -186,8 +192,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           </div>
         </div>
       )}
-
-      {/* Experience */}
+      {/* Experience Section */}
       {resumeData.experience.length > 0 && (
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
@@ -216,8 +221,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           ))}
         </div>
       )}
-
-      {/* Education */}
+      {/* Education Section */}
       {resumeData.education.length > 0 && (
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
@@ -236,10 +240,10 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           ))}
         </div>
       )}
-
-      {/* Projects */}
+      {/* Projects Section */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-6">          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
             Projects
           </h2>
           {resumeData.projects.map((project) => (
@@ -262,7 +266,8 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             </div>
           ))}
         </div>
-      )}      {/* Additional Sections (Languages, Certifications, etc.) */}
+      )}
+      {/* Additional Sections */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="mt-8 text-center">
           <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
@@ -280,6 +285,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   );
 };
 
+// --- Minimal Template ---
 export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
   return (
     <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">
@@ -296,8 +302,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           <span>{resumeData.personalInfo.location}</span>
         </div>
       </div>
-
-      {/* Skills (Top Section) */}
+      {/* Skills Section */}
       {resumeData.skills.length > 0 && (
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-light text-gray-900 mb-6">Skills</h2>
@@ -315,8 +320,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           </div>
         </div>
       )}
-
-      {/* Experience */}
+      {/* Experience Section */}
       {resumeData.experience.length > 0 && (
         <div className="mb-8">
           <h2 className="text-2xl font-light text-gray-900 mb-6">Experience</h2>
@@ -346,8 +350,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           ))}
         </div>
       )}
-
-      {/* Education */}
+      {/* Education Section */}
       {resumeData.education.length > 0 && (
         <div className="mb-8">
           <h2 className="text-2xl font-light text-gray-900 mb-6">Education</h2>
@@ -367,10 +370,10 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           ))}
         </div>
       )}
-
-      {/* Projects */}
+      {/* Projects Section */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-8">          <h2 className="text-2xl font-light text-gray-900 mb-6">Projects</h2>
+        <div className="mb-8">
+          <h2 className="text-2xl font-light text-gray-900 mb-6">Projects</h2>
           {resumeData.projects.map((project) => (
             <div key={project.id} className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
@@ -392,10 +395,10 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           ))}
         </div>
       )}
-
-      {/* Additional Sections (Languages, Certifications, etc.) */}
+      {/* Additional Sections */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8 text-center">          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
+        <div className="mt-8 text-center">
+          <h2 className="text-xl font-bold text-orange-500 mb-4">Additional Information</h2>
           <div className="flex flex-col items-center">
             {resumeData.additionalSections.map(section => (
               <div key={section.id} className="mb-1">

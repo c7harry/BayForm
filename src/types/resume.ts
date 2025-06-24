@@ -1,3 +1,6 @@
+// Types for Resume Application
+
+// --- Personal Information ---
 export interface PersonalInfo {
   fullName: string;
   email: string;
@@ -5,9 +8,10 @@ export interface PersonalInfo {
   location: string;
   linkedIn?: string;
   website?: string;
-  summary: string;
+  summary: string; // Short professional summary
 }
 
+// --- Work Experience ---
 export interface Experience {
   id: string;
   company: string;
@@ -17,9 +21,10 @@ export interface Experience {
   endDate: string;
   current: boolean;
   description: string;
-  achievements: string[];
+  achievements: string[]; // List of key achievements
 }
 
+// --- Education ---
 export interface Education {
   id: string;
   institution: string;
@@ -30,12 +35,14 @@ export interface Education {
   honors?: string;
 }
 
+// --- Skill ---
 export interface Skill {
   id: string;
   name: string;
-  category: string; // e.g., 'Software', 'Technologies & Frameworks', 'General', or user-defined
+  category: string; // e.g. 'Software', 'Technologies & Frameworks', 'General', or user-defined
 }
 
+// --- Project ---
 export interface Project {
   id: string;
   name: string;
@@ -45,12 +52,14 @@ export interface Project {
   github?: string;
 }
 
+// --- Additional Section (Languages, Certifications, etc.) ---
 export interface AdditionalSection {
   id: string;
-  title: string; // e.g., 'Languages', 'Certifications', or user-defined
+  title: string; // e.g. 'Languages', 'Certifications', or user-defined
   items: string[];
 }
 
+// --- Main Resume Data ---
 export interface ResumeData {
   id: string;
   name: string;
@@ -62,11 +71,13 @@ export interface ResumeData {
   template: TemplateType;
   createdAt: string;
   updatedAt: string;
-  additionalSections?: AdditionalSection[]; // New: for languages, certifications, and user-defined
+  additionalSections?: AdditionalSection[]; // Optional: languages, certifications, user-defined
 }
 
+// --- Template Types ---
 export type TemplateType = 'modern' | 'classic' | 'minimal' | 'creative';
 
+// --- Job Description for AI Tailoring ---
 export interface JobDescription {
   title: string;
   company: string;
