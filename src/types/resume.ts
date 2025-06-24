@@ -3,12 +3,12 @@
 // --- Personal Information ---
 export interface PersonalInfo {
   fullName: string;
+  professionTitle: string; // Professional title (e.g., Software Engineer)
   email: string;
   phone: string;
   location: string;
   linkedIn?: string;
   website?: string;
-  summary: string; // Short professional summary
 }
 
 // --- Work Experience ---

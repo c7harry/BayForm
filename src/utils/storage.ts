@@ -60,8 +60,7 @@ export const tailorResumeToJob = (resume: ResumeData, jobDescription: JobDescrip
   return {
     ...resume,
     personalInfo: {
-      ...resume.personalInfo,
-      summary: tailorSummary(resume.personalInfo.summary, jobKeywords, jobDescription)
+      ...resume.personalInfo
     },
     experience: resume.experience.map(exp => ({
       ...exp,
@@ -87,11 +86,6 @@ const extractKeywords = (jobDescription: JobDescription): string[] => {
     .split(/\s+/)
     .filter(word => word.length > 2 && !commonWords.includes(word))
     .slice(0, 20); // Top 20 keywords
-};
-
-const tailorSummary = (originalSummary: string, keywords: string[], jobDescription: JobDescription): string => {
-  const relevantKeywords = keywords.slice(0, 5);
-  return originalSummary + ` Experienced in ${relevantKeywords.join(', ')} with a strong focus on ${jobDescription.title.toLowerCase()} responsibilities.`;
 };
 
 const enhanceDescription = (description: string, keywords: string[]): string => {

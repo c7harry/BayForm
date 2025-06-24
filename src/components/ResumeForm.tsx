@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { 
   ChevronDownIcon, 
-  ChevronUpIcon, 
   PlusIcon, 
   XMarkIcon,
   UserIcon,
@@ -103,15 +102,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   const [resumeData, setResumeData] = useState<ResumeData>(
     initialData || {
       id: generateResumeId(),
-      name: 'My Resume',
-      personalInfo: {
+      name: 'My Resume',      personalInfo: {
         fullName: '',
+        professionTitle: '',
         email: '',
         phone: '',
         location: '',
         linkedIn: '',
-        website: '',
-        summary: ''
+        website: ''
       },
       experience: [],
       education: [],
@@ -1384,8 +1382,7 @@ const PersonalInfoSection: React.FC<{
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     className="grid grid-cols-1 md:grid-cols-2 gap-6"
-  >
-    <motion.div 
+  >    <motion.div 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 }}
@@ -1405,15 +1402,38 @@ const PersonalInfoSection: React.FC<{
           required
         />
         <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>    </motion.div>
+      </div>
+    </motion.div>
+
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.15 }}
+      className="md:col-span-2"
+    >
+      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <BriefcaseIcon className="w-4 h-4 text-blue-500" />
+        Profession Title *
+      </label>
+      <div className="relative group">
+        <input
+          type="text"
+          value={resumeData.personalInfo.professionTitle}
+          onChange={(e) => updatePersonalInfo('professionTitle', e.target.value)}
+          className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
+          placeholder="Software Engineer, Front End Developer, Data Scientist, etc."
+          required
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      </div>
+    </motion.div>
     
     {[
       { field: 'email', label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com', required: true, icon: '📧' },
-      { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: true, icon: '📱' },
+      { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: false, icon: '📱' },
       { field: 'location', label: 'Location', type: 'text', placeholder: 'City, State', required: true, icon: '📍' },
-      { field: 'linkedIn', label: 'LinkedIn Profile', type: 'url', placeholder: 'https://linkedin.com/in/johndoe', required: false, icon: '💼' },
-      { field: 'website', label: 'Website/Portfolio', type: 'url', placeholder: 'https://johndoe.com', required: false, icon: '🌐' },
-    ].map((fieldConfig, index) => (
+      { field: 'linkedIn', label: 'LinkedIn Profile', type: 'text', placeholder: 'linkedin.com/in/user-name', required: false, icon: '💼' },
+      { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },    ].map((fieldConfig, index) => (
       <motion.div 
         key={fieldConfig.field}
         initial={{ opacity: 0, x: -20 }}
@@ -1428,15 +1448,25 @@ const PersonalInfoSection: React.FC<{
           <input
             type={fieldConfig.type}
             value={resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo]}
-            onChange={(e) => updatePersonalInfo(fieldConfig.field as keyof PersonalInfo, e.target.value)}
+            onChange={(e) => {
+              let value = e.target.value;
+              if (fieldConfig.field === 'linkedIn') {
+                // Remove protocol and domain if user pastes full URL
+                value = value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\//, 'linkedin.com/in/');
+              }
+              if (fieldConfig.field === 'website') {
+                // Remove protocol if user pastes full URL
+                value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
+              }
+              updatePersonalInfo(fieldConfig.field as keyof PersonalInfo, value);
+            }}
             className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
             placeholder={fieldConfig.placeholder}
             required={fieldConfig.required}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
-      </motion.div>
-    ))}
+      </motion.div>    ))}
   </motion.div>
 );
 

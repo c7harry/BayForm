@@ -25,82 +25,100 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
     throw new Error('Resume element not found');
   }
 
-  // CSS class for smaller font/margins if needed
-  const reduceClass = 'pdf-reduce-font';
-  let usedReduceClass = false;
+  // PDF page size in mm and px (A4: 210mm x 297mm)
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pdfWidth = pdf.internal.pageSize.getWidth(); // 210
+  const pdfHeight = pdf.internal.pageSize.getHeight(); // 297
+  // 1mm = 3.7795275591px
+  const pxPerMm = 3.7795275591;
+  const a4WidthPx = Math.floor(pdfWidth * pxPerMm); // ~794px
 
-  // Inject style for reduced font if not present
-  if (!document.getElementById('pdf-reduce-font-style')) {
+  // Inject compact styles if not present
+  if (!document.getElementById('pdf-compact-style')) {
     const style = document.createElement('style');
-    style.id = 'pdf-reduce-font-style';
+    style.id = 'pdf-compact-style';
     style.innerHTML = `
-      .${reduceClass} {
+      .pdf-compact, .pdf-compact * {
         font-size: 85% !important;
-      }
-      .${reduceClass} * {
-        font-size: 85% !important;
-        margin-top: 0.5em !important;
-        margin-bottom: 0.5em !important;
+        line-height: 1.1 !important;
+        margin-top: 0.3em !important;
+        margin-bottom: 0.3em !important;
         padding-top: 0.2em !important;
         padding-bottom: 0.2em !important;
+      }
+      .pdf-compact2, .pdf-compact2 * {
+        font-size: 75% !important;
+        line-height: 1.05 !important;
+        margin-top: 0.15em !important;
+        margin-bottom: 0.15em !important;
+        padding-top: 0.1em !important;
+        padding-bottom: 0.1em !important;
       }
     `;
     document.head.appendChild(style);
   }
 
-  try {
-    // First render attempt
-    let canvas = await html2canvas(element, {
+  // Clone the resume preview node for clean rendering
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.style.width = a4WidthPx + 'px';
+  clone.style.maxWidth = 'none';
+  clone.style.minWidth = '0';
+  clone.style.boxSizing = 'border-box';
+  clone.style.background = '#fff';
+  clone.id = 'resume-preview-pdf';
+  clone.style.position = 'fixed';
+  clone.style.left = '-9999px';
+  clone.style.top = '0';
+  document.body.appendChild(clone);
+
+  // Remove any transform/animation classes for static rendering
+  clone.classList.remove('motion-safe', 'animate-pulse');
+
+  // Try with compact class, then more compact if needed
+  let compactLevel = 1;
+  let fits = false;
+  let imgData = '';
+  let imgWidth = 0;
+  let imgHeight = 0;
+  let renderHeight = 0;
+  let canvas;
+  while (!fits && compactLevel <= 2) {
+    clone.classList.remove('pdf-compact', 'pdf-compact2');
+    if (compactLevel === 1) clone.classList.add('pdf-compact');
+    if (compactLevel === 2) clone.classList.add('pdf-compact2');
+    canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
-      height: element.scrollHeight,
-      width: element.scrollWidth
+      width: a4WidthPx,
+      height: clone.scrollHeight,
+      windowWidth: a4WidthPx,
+      windowHeight: clone.scrollHeight
     });
-
-    let imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    let imgWidth = canvas.width;
-    let imgHeight = canvas.height;
-    let ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-
-    // If ratio is too small, try reducing font size/margins and re-render
-    if (ratio < 0.7) {
-      applyTempClass(element, reduceClass);
-      usedReduceClass = true;
-      canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        height: element.scrollHeight,
-        width: element.scrollWidth
-      });
-      imgData = canvas.toDataURL('image/png');
-      imgWidth = canvas.width;
-      imgHeight = canvas.height;
-      ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-    }
-
-    // Show warning if still very small
-    if (ratio < 0.7) {
-      alert('Warning: Your resume is very long and will be shrunk to fit a single page. Consider reducing content for better readability.');
-    }
-
-    const imgX = (pdfWidth - imgWidth * ratio) / 2;
-    const imgY = 0;
-    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-    pdf.save(`${resumeData.personalInfo.fullName}_Resume.pdf`);
-
-    // Clean up
-    if (usedReduceClass) removeTempClass(element, reduceClass);
-  } catch (error) {
-    // Clean up in case of error
-    if (usedReduceClass) removeTempClass(element, reduceClass);
-    console.error('Error generating PDF:', error);
-    throw new Error('Failed to generate PDF');
+    imgData = canvas.toDataURL('image/png');
+    imgWidth = canvas.width;
+    imgHeight = canvas.height;
+    renderHeight = (imgHeight / imgWidth) * pdfWidth;
+    fits = renderHeight <= pdfHeight;
+    if (!fits) compactLevel++;
   }
+  if (!fits) {
+    alert('Warning: Your resume is very long and will be scaled down to fit a single page. Consider reducing content for best results.');
+  }
+  // Always scale the image to fill the entire PDF page (width and height)
+  const finalImgWidth = imgWidth;
+  const finalImgHeight = imgHeight;
+  // Calculate scale to fill the page (cover)
+  const scaleX = pdfWidth / (finalImgWidth / 2); // /2 because scale:2
+  const scaleY = pdfHeight / (finalImgHeight / 2);
+  const finalScale = Math.max(scaleX, scaleY); // Use max to cover the page
+  const finalRenderWidth = (finalImgWidth / 2) * finalScale;
+  const finalRenderHeight = (finalImgHeight / 2) * finalScale;
+  const x = (pdfWidth - finalRenderWidth) / 2;
+  const y = (pdfHeight - finalRenderHeight) / 2;
+  pdf.addImage(imgData, 'PNG', x, y, finalRenderWidth, finalRenderHeight);
+  pdf.save(`${resumeData.personalInfo.fullName}_Resume.pdf`);
+  document.body.removeChild(clone);
 };
 
 // --- Simple PDF Generation (text only, fallback) ---
