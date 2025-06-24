@@ -470,7 +470,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                     alt="BayForm" 
                     width={64} 
                     height={64} 
-                    className="h-16 w-auto rounded-2xl shadow-lg" 
+                    className="h-16 w-auto" 
                   />
                   <motion.div
                     animate={{ 
@@ -574,26 +574,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       />
                       
                       <div className="flex items-center space-x-4 relative z-10">
-                        <motion.div
-                          whileHover={{ rotate: 360, scale: 1.1 }}
-                          transition={{ duration: 0.5 }}
-                          className="relative"
-                        >
+                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 mr-2">
                           {section.icon}
-                          <motion.div
-                            animate={{ 
-                              scale: [1, 1.2, 1],
-                              opacity: [0.5, 1, 0.5]
-                            }}
-                            transition={{ 
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: "easeInOut"
-                            }}
-                            className="absolute inset-0 rounded-full bg-current opacity-20"
-                          />
-                        </motion.div>
-                        
+                        </span>
                         <div className="text-left">
                           <motion.h3 
                             className="text-xl font-bold text-gray-900 group-hover/button:text-gray-800 transition-colors"
