@@ -2,8 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSpring, animated, config } from 'react-spring';
-import { Transition } from '@headlessui/react';
+
 import { 
   ChevronDownIcon, 
   ChevronUpIcon, 
@@ -911,7 +910,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       <BriefcaseIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
                                     </motion.div>
                                     <p className="text-lg">No work experience added yet</p>
-                                    <p className="text-sm mt-2">Click "Add Experience" to get started ✨</p>
+                                    <p className="text-sm mt-2">Click &quot;Add Experience&quot; to get started ✨</p>
                                   </motion.div>
                                 )}
                               </div>
@@ -1014,7 +1013,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       <AcademicCapIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
                                     </motion.div>
                                     <p className="text-lg">No education added yet</p>
-                                    <p className="text-sm mt-2">Click "Add Education" to get started ✨</p>
+                                    <p className="text-sm mt-2">Click &quot;Add Education&quot; to get started ✨</p>
                                   </motion.div>
                                 )}
                               </div>
@@ -1133,7 +1132,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       <CubeIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
                                     </motion.div>
                                     <p className="text-lg">No projects added yet</p>
-                                    <p className="text-sm mt-2">Click "Add Project" to get started ✨</p>
+                                    <p className="text-sm mt-2">Click &quot;Add Project&quot; to get started ✨</p>
                                   </motion.div>
                                 )}
                               </div>
@@ -1268,7 +1267,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                     <InformationCircleIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
                                   </motion.div>
                                   <p className="text-lg">No additional sections added yet</p>
-                                  <p className="text-sm mt-2">Click "Add Section" to get started ✨</p>
+                                  <p className="text-sm mt-2">Click &quot;Add Section&quot; to get started ✨</p>
                                 </motion.div>
                               )}
                             </motion.div>
@@ -1572,7 +1571,7 @@ const SkillsSection: React.FC<{
                 addSkill(category);
                 toast.success('New skill added!', { icon: '⭐' });
               }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale:  1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-4 py-3 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 rounded-xl hover:from-emerald-200 hover:to-teal-200 transition-all duration-300 text-sm font-semibold border-2 border-emerald-200 hover:border-emerald-300"
             >
