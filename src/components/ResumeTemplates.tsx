@@ -189,6 +189,13 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
 
 // --- Classic Template ---
 export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
+  // Group skills by category for display
+  const skillsByCategory: Record<string, string[]> = {};
+  resumeData.skills.forEach(skill => {
+    if (!skillsByCategory[skill.category]) skillsByCategory[skill.category] = [];
+    skillsByCategory[skill.category].push(skill.name);
+  });
+
   return (
     <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
       <div className="text-center border-b-2 border-gray-300 pb-4 mb-6">
@@ -200,178 +207,54 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             {resumeData.personalInfo.professionTitle}
           </h2>
         )}
-        <div className="text-gray-600 space-y-1">
-          <p>{resumeData.personalInfo.email} | {formatPhoneNumber(resumeData.personalInfo.phone)}</p>
-          <p>{resumeData.personalInfo.location}</p>
-          {resumeData.personalInfo.linkedIn && <p>{resumeData.personalInfo.linkedIn}</p>}
+        <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-0 text-sm text-gray-700 whitespace-nowrap overflow-x-auto justify-center text-center">
+          { [
+              resumeData.personalInfo.location && resumeData.personalInfo.location,
+              resumeData.personalInfo.email && resumeData.personalInfo.email,
+              resumeData.personalInfo.phone && formatPhoneNumber(resumeData.personalInfo.phone),
+              resumeData.personalInfo.website && (
+                <span key="website" className="flex items-center gap-1">
+                  <span>{resumeData.personalInfo.website.charAt(0).toUpperCase() + resumeData.personalInfo.website.slice(1)}</span>
+                </span>
+              ),
+              resumeData.personalInfo.linkedIn && (
+                <span key="linkedin" className="flex items-center gap-1">
+                  <span>{resumeData.personalInfo.linkedIn.charAt(0).toUpperCase() + resumeData.personalInfo.linkedIn.slice(1)}</span>
+                </span>
+              )
+            ].filter(Boolean).map((item, idx, arr) => (
+              <React.Fragment key={idx}>
+                {idx > 0 && <span className="mx-[-3px] text-gray-400">|</span>}
+                {item}
+              </React.Fragment>
+            ))}
         </div>
-      </div>
-      {/* Skills Section */}
-      {resumeData.skills.length > 0 && (
-        <div className="mb-6 text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
-            Skills
-          </h2>
-          <div className="flex flex-col items-center">
-            {Array.from(new Set(resumeData.skills.map(skill => skill.category))).map(category => {
-              const categorySkills = resumeData.skills.filter(skill => skill.category === category);
-              if (categorySkills.length === 0) return null;
-              return (
-                <div key={category} className="mb-1">
-                  <span className="font-bold text-gray-900 capitalize">{category}:</span>{' '}
-                  <span className="text-gray-700">{categorySkills.map(skill => skill.name).join(', ')}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      {/* Experience Section */}
-      {resumeData.experience.length > 0 && (
+      </div>      {/* Skills Section */}
+      {Object.keys(skillsByCategory).length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
-            Professional Experience
-          </h2>
-          {resumeData.experience.map((exp) => (
-            <div key={exp.id} className="mb-5">
-              <div className="mb-2">
-                <p className="text-lg font-bold text-gray-900">{exp.company}</p>
-                <h3 className="text-lg italic text-gray-900 font-normal">{exp.position}</h3>
-                <p className="text-gray-600 italic">
-                  {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                </p>
-                <p className="text-gray-600">{exp.location}</p>
-              </div>
-              <p className="text-gray-700 mb-2">{exp.description}</p>
-              {exp.achievements.length > 0 && (
-                <ul className="space-y-1 ml-4">
-                  {exp.achievements.map((achievement, index) => (
-                    <li key={index} className="text-gray-700 list-disc">
-                      {achievement}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      {/* Education Section */}
-      {resumeData.education.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
-            Education
-          </h2>
-          {resumeData.education.map((edu) => (
-            <div key={edu.id} className="mb-3">
-              <h3 className="text-lg font-bold text-gray-900">
-                {edu.degree} in {edu.field}
-              </h3>
-              <p className="text-gray-700">{edu.institution}</p>
-              <p className="text-gray-600">{edu.graduationDate}</p>
-              {edu.gpa && <p className="text-gray-600">GPA: {edu.gpa}</p>}
-              {edu.honors && <p className="text-gray-600 italic">{edu.honors}</p>}
-            </div>
-          ))}
-        </div>
-      )}
-      {/* Projects Section */}
-      {resumeData.projects.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">
-            Projects
-          </h2>
-          {resumeData.projects.map((project) => (
-            <div key={project.id} className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
-              <p className="text-gray-700 mb-2">{project.description}</p>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {project.technologies.map((tech, index) => (
-                  <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              {(project.url || project.github) && (
-                <div className="text-orange-500 text-sm">
-                  {project.url && <span className="mr-4">Live: {project.url}</span>}
-                  {project.github && <span>GitHub: {project.github}</span>}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      {/* Additional Sections */}
-      {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-orange-500 mb-4 text-center">Additional Information</h2>
-          <div className="flex flex-col items-center">
-            {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
-              <div key={section.id} className="mb-1">
-                <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
-                <span className="text-gray-700">{section.items.join(', ')}</span>
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">SKILLS</h2>
+          <div className="space-y-0">
+            {Object.entries(skillsByCategory).map(([category, skills]) => (
+              <div key={category} className="text-center">
+                <span className="text-sm font-semibold text-gray-900 capitalize">
+                  {category}:
+                </span>{' '}
+                <span className="text-sm text-gray-700">{skills.join(', ')}</span>
               </div>
             ))}
           </div>
         </div>
-      )}
-    </div>
-  );
-};
-
-// --- Minimal Template ---
-export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
-  return (
-    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-5xl font-light text-gray-900 mb-4">
-          {resumeData.personalInfo.fullName}
-        </h1>
-        {resumeData.personalInfo.professionTitle && (
-          <h2 className="text-xl font-light text-gray-600 mb-4">
-            {resumeData.personalInfo.professionTitle}
-          </h2>
-        )}
-        <div className="text-gray-600 space-x-4">
-          <span>{resumeData.personalInfo.email}</span>
-          <span>•</span>
-          <span>{formatPhoneNumber(resumeData.personalInfo.phone)}</span>
-          <span>•</span>
-          <span>{resumeData.personalInfo.location}</span>
-        </div>
-      </div>
-      {/* Skills Section */}
-      {resumeData.skills.length > 0 && (
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">Skills</h2>
-          <div className="flex flex-col items-center">
-            {Array.from(new Set(resumeData.skills.map(skill => skill.category))).map(category => {
-              const categorySkills = resumeData.skills.filter(skill => skill.category === category);
-              if (categorySkills.length === 0) return null;
-              return (
-                <div key={category} className="mb-1">
-                  <span className="font-bold text-gray-900 capitalize">{category}:</span>{' '}
-                  <span className="text-gray-700">{categorySkills.map(skill => skill.name).join(', ')}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      {/* Experience Section */}
+      )}      {/* Experience Section */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">
-            Experience
-          </h2>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">EXPERIENCE</h2>
           <div className="space-y-4">
             {resumeData.experience.map((exp) => (
-              <div key={exp.id} className="border-b border-gray-300 pb-4 mb-4">
-                <div className="flex justify-between items-center mb-2">
+              <div key={exp.id} className="text-left">
+                <div className="flex justify-between items-start mb-1">
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">{exp.company}</p>
-                    <h3 className="text-lg italic text-gray-700">{exp.position}</h3>
+                    <p className="text-base font-bold text-gray-900">{exp.company}</p>
+                    <h3 className="text-base italic text-gray-900 font-normal">{exp.position}</h3>
                   </div>
                   <div className="text-right text-sm text-gray-600">
                     <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
@@ -382,7 +265,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                   <p className="text-sm text-gray-700 mb-2">{exp.description}</p>
                 )}
                 {exp.achievements.length > 0 && (
-                  <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
+                  <ul className="space-y-1 text-sm text-gray-700">
                     {exp.achievements.map((achievement, index) => (
                       <li key={index} className="flex items-start">
                         <span className="mr-2">•</span>
@@ -395,20 +278,17 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             ))}
           </div>
         </div>
-      )}
-      {/* Education Section */}
+      )}      {/* Education Section */}
       {resumeData.education.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">
-            Education
-          </h2>
-          <div className="space-y-4">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">EDUCATION</h2>
+          <div className="space-y-3">
             {resumeData.education.map((edu) => (
-              <div key={edu.id} className="border-b border-gray-300 pb-4 mb-4">
-                <div className="flex justify-between items-center mb-2">
+              <div key={edu.id} className="text-left">
+                <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
-                    <p className="text-sm text-gray-700">{edu.institution}</p>
+                    <h3 className="text-base font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
+                    <p className="text-sm text-gray-700 font-medium">{edu.institution}</p>
                     {edu.honors && <p className="text-sm text-gray-600">{edu.honors}</p>}
                   </div>
                   <div className="text-right text-sm text-gray-600">
@@ -420,25 +300,185 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             ))}
           </div>
         </div>
+      )}      {/* Projects Section */}
+      {resumeData.projects.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">PROJECTS</h2>
+          <div className="space-y-3">
+            {resumeData.projects.map((project) => (
+              <div key={project.id} className="text-left">
+                <h3 className="text-base font-semibold text-gray-900">{project.name}</h3>
+                <p className="text-sm text-gray-700 mb-2">{project.description}</p>
+                {project.technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {project.technologies.map((tech, index) => (
+                      <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {(project.url || project.github) && (
+                  <div className="text-blue-600 text-sm">
+                    {project.url && <span className="mr-4">Live: {project.url}</span>}
+                    {project.github && <span>GitHub: {project.github}</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>      )}
+      {/* Additional Information Section */}
+      {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
+        <div className="mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase tracking-wide text-center">ADDITIONAL INFORMATION</h2>
+            <div className="text-sm text-gray-700">
+              {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
+                <div key={section.id} className="mb-1 text-center">
+                  <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
+                  <span className="text-gray-700">{section.items.join(', ')}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
-      {/* Projects Section */}
+    </div>
+  );
+};
+
+// --- Minimal Template ---
+export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, className = '' }) => {
+  // Group skills by category for display
+  const skillsByCategory: Record<string, string[]> = {};
+  resumeData.skills.forEach(skill => {
+    if (!skillsByCategory[skill.category]) skillsByCategory[skill.category] = [];
+    skillsByCategory[skill.category].push(skill.name);
+  });
+
+  return (
+    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-5xl font-light text-gray-900 mb-4">
+          {resumeData.personalInfo.fullName}
+        </h1>
+        {resumeData.personalInfo.professionTitle && (
+          <h2 className="text-xl font-light text-gray-600 mb-4">
+            {resumeData.personalInfo.professionTitle}
+          </h2>
+        )}
+        <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-0 text-sm text-gray-600 whitespace-nowrap overflow-x-auto justify-center text-center">
+          { [
+              resumeData.personalInfo.location && resumeData.personalInfo.location,
+              resumeData.personalInfo.email && resumeData.personalInfo.email,
+              resumeData.personalInfo.phone && formatPhoneNumber(resumeData.personalInfo.phone),
+              resumeData.personalInfo.website && (
+                <span key="website" className="flex items-center gap-1">
+                  <span>{resumeData.personalInfo.website.charAt(0).toUpperCase() + resumeData.personalInfo.website.slice(1)}</span>
+                </span>
+              ),
+              resumeData.personalInfo.linkedIn && (
+                <span key="linkedin" className="flex items-center gap-1">
+                  <span>{resumeData.personalInfo.linkedIn.charAt(0).toUpperCase() + resumeData.personalInfo.linkedIn.slice(1)}</span>
+                </span>
+              )
+            ].filter(Boolean).map((item, idx, arr) => (
+              <React.Fragment key={idx}>
+                {idx > 0 && <span className="mx-[-3px] text-gray-400">•</span>}
+                {item}
+              </React.Fragment>
+            ))}
+        </div>
+      </div>      {/* Skills Section */}
+      {Object.keys(skillsByCategory).length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">SKILLS</h2>
+          <div className="space-y-0">
+            {Object.entries(skillsByCategory).map(([category, skills]) => (
+              <div key={category} className="text-center">
+                <span className="text-sm font-semibold text-gray-900 capitalize">
+                  {category}:
+                </span>{' '}
+                <span className="text-sm text-gray-700">{skills.join(', ')}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}      {/* Experience Section */}
+      {resumeData.experience.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">EXPERIENCE</h2>
+          <div className="space-y-4">
+            {resumeData.experience.map((exp) => (
+              <div key={exp.id} className="border-b border-gray-300 pb-4 mb-4">
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <p className="text-base font-bold text-gray-900">{exp.company}</p>
+                    <h3 className="text-base italic text-gray-900 font-normal">{exp.position}</h3>
+                  </div>
+                  <div className="text-right text-sm text-gray-600">
+                    <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
+                    <p>{exp.location}</p>
+                  </div>
+                </div>
+                {exp.description && (
+                  <p className="text-sm text-gray-700 mb-2">{exp.description}</p>
+                )}
+                {exp.achievements.length > 0 && (
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    {exp.achievements.map((achievement, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2">•</span>
+                        <span>{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}      {/* Education Section */}
+      {resumeData.education.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">EDUCATION</h2>
+          <div className="space-y-3">
+            {resumeData.education.map((edu) => (
+              <div key={edu.id} className="border-b border-gray-300 pb-4 mb-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
+                    <p className="text-sm text-gray-700 font-medium">{edu.institution}</p>
+                    {edu.honors && <p className="text-sm text-gray-600">{edu.honors}</p>}
+                  </div>
+                  <div className="text-right text-sm text-gray-600">
+                    <p>{edu.graduationDate}</p>
+                    {edu.gpa && <p>GPA: {edu.gpa}</p>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}      {/* Projects Section */}
       {resumeData.projects.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">
-            Projects
-          </h2>
-          <div className="space-y-4">
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">PROJECTS</h2>
+          <div className="space-y-3">
             {resumeData.projects.map((project) => (
               <div key={project.id} className="border-b border-gray-300 pb-4 mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
+                <h3 className="text-base font-semibold text-gray-900">{project.name}</h3>
                 <p className="text-sm text-gray-700 mb-2">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {project.technologies.map((tech, index) => (
-                    <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                {project.technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {project.technologies.map((tech, index) => (
+                      <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 {(project.url || project.github) && (
                   <div className="text-blue-600 text-sm">
                     {project.url && <span className="mr-4">Live: {project.url}</span>}
@@ -449,14 +489,13 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             ))}
           </div>
         </div>
-      )}
-      {/* Additional Sections */}
+      )}      {/* Additional Information Section */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-orange-500 mb-4 text-center">Additional Information</h2>
-          <div className="flex flex-col items-center">
+        <div className="mt-8">
+          <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">ADDITIONAL INFORMATION</h2>
+          <div className="text-sm text-gray-700">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
-              <div key={section.id} className="mb-1">
+              <div key={section.id} className="mb-1 text-center">
                 <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
                 <span className="text-gray-700">{section.items.join(', ')}</span>
               </div>

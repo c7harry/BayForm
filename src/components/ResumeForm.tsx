@@ -14,7 +14,6 @@ import {
   CubeIcon,
   InformationCircleIcon,
   EllipsisVerticalIcon,
-  SparklesIcon,
   HeartIcon
 } from '@heroicons/react/24/outline';
 import { 
@@ -440,11 +439,43 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           },
         }}
-      />      <motion.div 
+      />
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-md flex items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-4">
+          <Image src="/images/header.png" alt="Bayform Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
+          <div>
+            <h1 className="text-xl font-bold text-gray-900 leading-tight">Resume Builder</h1>
+            <p className="text-sm text-gray-600 font-medium">Create your professional resume with style ✨</p>
+          </div>
+        </div>
+        <div className="flex gap-4 ml-auto">
+          <motion.button
+            type="button"
+            onClick={onCancel}
+            whileHover={{ scale: 1.05, backgroundColor: '#f3f4f6' }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold"
+          >
+            Cancel
+          </motion.button>
+          <motion.button
+            type="submit"
+            form="resume-form"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-8 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+          >
+            ✨ Save Resume
+          </motion.button>
+        </div>
+      </header>
+      {/* Main Content with top padding for header */}
+      <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 pt-32"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -456,58 +487,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
           >
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 via-purple-400/10 to-pink-400/10 animate-pulse" />
-            
             <div className="relative">
-              <motion.div 
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex items-center space-x-4 mb-6"
-              >
-                <div className="relative">
-                  <Image 
-                    src="/images/header.png" 
-                    alt="BayForm" 
-                    width={64} 
-                    height={64} 
-                    className="h-16 w-auto" 
-                  />
-                  <motion.div
-                    animate={{ 
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0]
-                    }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                    className="absolute -top-1 -right-1"
-                  >
-                    <SparklesIcon className="w-5 h-5 text-yellow-400" />
-                  </motion.div>
-                </div>
-                <div>
-                  <motion.h1 
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-                  >
-                    Resume Builder
-                  </motion.h1>
-                  <motion.p 
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    className="text-gray-600 mt-1"
-                  >
-                    Create your professional resume with style ✨
-                  </motion.p>
-                </div>
-              </motion.div>
-              
-              {/* Resume Name */}
+              {/* Resume Name only, logo and subtitle removed */}
               <motion.div 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -533,7 +514,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             </div>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form id="resume-form" onSubmit={handleSubmit} className="space-y-8">
             <AnimatePresence>
               {sections.map((section, idx) => (
                 <motion.div
@@ -1269,25 +1250,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
               transition={{ duration: 0.5, delay: 0.6 }}
               className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8"
             >
-              <div className="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-6">
-                <motion.button
-                  type="button"
-                  onClick={onCancel}
-                  whileHover={{ scale: 1.05, backgroundColor: '#f3f4f6' }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold"
-                >
-                  Cancel
-                </motion.button>
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-                >
-                  ✨ Save Resume
-                </motion.button>
-              </div>
+              {/* Action buttons removed from here, now in header */}
             </motion.div>
           </form>
 
