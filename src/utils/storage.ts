@@ -1,7 +1,22 @@
 // Local Storage Utilities for Resume Application
-import { ResumeData, JobDescription } from '@/types/resume';
+import { ResumeData, JobDescription, TemplateType } from '@/types/resume';
 
 const STORAGE_KEY = 'resumeforge_resumes';
+
+// --- Template Migration ---
+/**
+ * Migrate old template names to new ones
+ */
+const migrateTemplate = (template: string): TemplateType => {
+  switch (template) {
+    case 'classic':
+      return 'executive';
+    case 'minimal':
+      return 'creative';
+    default:
+      return template as TemplateType;
+  }
+};
 
 // --- Resume CRUD Operations ---
 /**
@@ -24,7 +39,14 @@ export const saveResume = (resume: ResumeData): void => {
 export const getResumes = (): ResumeData[] => {
   if (typeof window === 'undefined') return [];
   const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
+  if (!stored) return [];
+  
+  const resumes: ResumeData[] = JSON.parse(stored);
+  // Migrate old template names
+  return resumes.map(resume => ({
+    ...resume,
+    template: migrateTemplate(resume.template)
+  }));
 };
 
 /**

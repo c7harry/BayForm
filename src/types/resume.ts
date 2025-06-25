@@ -75,7 +75,7 @@ export interface ResumeData {
 }
 
 // --- Template Types ---
-export type TemplateType = 'modern' | 'classic' | 'minimal' | 'creative';
+export type TemplateType = 'modern' | 'executive' | 'creative' | 'tech' | 'elegant';
 
 // --- Job Description for AI Tailoring ---
 export interface JobDescription {

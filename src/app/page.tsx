@@ -7,7 +7,7 @@ import { ResumeData, TemplateType } from '@/types/resume';
 import { getResumes, saveResume, deleteResume } from '@/utils/storage';
 import { generatePDF, generateSimplePDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
-import { ModernTemplate, ClassicTemplate, MinimalTemplate } from '@/components/ResumeTemplates';
+import { ModernTemplate, ClassicTemplate, MinimalTemplate, TechTemplate, ElegantTemplate } from '@/components/ResumeTemplates';
 
 export default function Home() {
   // --- State Management ---
@@ -70,10 +70,14 @@ export default function Home() {
     switch (template) {
       case 'modern':
         return <ModernTemplate resumeData={resume} />;
-      case 'classic':
+      case 'executive':
         return <ClassicTemplate resumeData={resume} />;
-      case 'minimal':
+      case 'creative':
         return <MinimalTemplate resumeData={resume} />;
+      case 'tech':
+        return <TechTemplate resumeData={resume} />;
+      case 'elegant':
+        return <ElegantTemplate resumeData={resume} />;
       default:
         return <ModernTemplate resumeData={resume} />;
     }
@@ -142,8 +146,10 @@ export default function Home() {
                       className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 bg-white text-slate-900 font-medium"
                     >
                       <option value="modern">Modern</option>
-                      <option value="classic">Classic</option>
-                      <option value="minimal">Minimal</option>
+                      <option value="executive">Executive</option>
+                      <option value="creative">Creative</option>
+                      <option value="tech">Tech</option>
+                      <option value="elegant">Elegant</option>
                     </select>
                   </div>
                   <button
@@ -355,10 +361,18 @@ export default function Home() {
                           </div>
                           <div className={`px-3 py-1 rounded-full text-xs font-medium ${
                             resume.template === 'modern' ? 'bg-blue-100 text-blue-800' :
-                            resume.template === 'classic' ? 'bg-green-100 text-green-800' :
-                            'bg-purple-100 text-purple-800'
+                            resume.template === 'executive' ? 'bg-green-100 text-green-800' :
+                            resume.template === 'creative' ? 'bg-purple-100 text-purple-800' :
+                            resume.template === 'tech' ? 'bg-gray-100 text-gray-800' :
+                            resume.template === 'elegant' ? 'bg-amber-100 text-amber-800' :
+                            'bg-slate-100 text-slate-800'
                           }`}>
-                            {resume.template}
+                            {resume.template === 'modern' ? 'Modern' :
+                             resume.template === 'executive' ? 'Executive' :
+                             resume.template === 'creative' ? 'Creative' :
+                             resume.template === 'tech' ? 'Tech' :
+                             resume.template === 'elegant' ? 'Elegant' :
+                             resume.template}
                           </div>
                         </div>
                         <div className="bg-slate-50 rounded-xl p-4 mb-6">
