@@ -130,6 +130,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const [currentProgressStep, setCurrentProgressStep] = useState('personal');
 
+  // Reset current step to 'personal' when starting with new resume data
+  useEffect(() => {
+    if (!initialData) {
+      setCurrentProgressStep('personal');
+    }
+  }, [initialData]);
+
   // --- Progress Bar Steps ---
   const progressSteps = [
     {
@@ -137,9 +144,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       label: 'Personal Info',
       icon: <UserIcon className="w-4 h-4" />,
       gradient: 'from-orange-400 to-pink-500',
-      completed: resumeData.personalInfo.fullName !== '' && resumeData.personalInfo.email !== '' && resumeData.personalInfo.professionTitle !== '',
+      completed: resumeData.personalInfo.fullName.trim() !== '' && resumeData.personalInfo.email.trim() !== '' && resumeData.personalInfo.professionTitle.trim() !== '',
       color: '#f97316',
-      count: [resumeData.personalInfo.fullName, resumeData.personalInfo.email, resumeData.personalInfo.professionTitle].filter(Boolean).length,
+      count: [resumeData.personalInfo.fullName, resumeData.personalInfo.email, resumeData.personalInfo.professionTitle].filter(item => item.trim() !== '').length,
       total: 3
     },
     {
@@ -209,28 +216,43 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   // --- Intersection Observer for Progress Tracking ---
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const sectionKey = entry.target.getAttribute('data-section');
-            if (sectionKey) {
-              setCurrentProgressStep(sectionKey);
-            }
+      (entries: IntersectionObserverEntry[]) => {
+        // Find the section that's most visible
+        let mostVisibleEntry: IntersectionObserverEntry | undefined;
+        let maxVisibilityRatio = 0;
+        
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio > maxVisibilityRatio) {
+            maxVisibilityRatio = entry.intersectionRatio;
+            mostVisibleEntry = entry;
           }
-        });
+        }
+        
+        if (mostVisibleEntry) {
+          const sectionKey = (mostVisibleEntry.target as Element).getAttribute('data-section');
+          if (sectionKey && sectionKey !== currentProgressStep) {
+            setCurrentProgressStep(sectionKey);
+          }
+        }
       },
       {
-        threshold: 0.3,
+        threshold: [0.1, 0.3, 0.5, 0.7, 0.9], // Multiple thresholds for better detection
         rootMargin: '-100px 0px -200px 0px'
       }
     );
 
-    Object.values(sectionRefs.current).forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
+    // Observe sections with a slight delay to ensure they're rendered
+    const timeoutId = setTimeout(() => {
+      Object.values(sectionRefs.current).forEach((ref) => {
+        if (ref) observer.observe(ref);
+      });
+    }, 100);
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, [currentProgressStep]);
 
   // --- Section Collapse State ---
   const [collapsedSections, setCollapsedSections] = useState({
@@ -562,7 +584,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
           <Image src="/images/header.png" alt="Bayform Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
           <div>
             <h1 className="text-xl font-bold text-gray-900 leading-tight">Resume Builder</h1>
-            <p className="text-sm text-gray-600 font-medium">Create your professional resume with style ✨</p>
+            <p className="text-sm text-gray-600 font-medium">Create your professional resume with style</p>
           </div>
         </div>
         <div className="flex gap-4 ml-auto">
@@ -591,7 +613,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 pt-32"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 pt-24"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}

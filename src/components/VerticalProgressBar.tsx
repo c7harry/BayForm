@@ -651,7 +651,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             className="mt-3 pt-2 border-t border-white/20 text-center"
           >
             <p className="text-xs text-gray-500">
-              Click to navigate ✨
+              Click to navigate
             </p>
           </motion.div>
             </motion.div>
