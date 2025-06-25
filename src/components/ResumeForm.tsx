@@ -848,7 +848,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold shadow-lg"
+                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold"
                                 >
                                   <PlusIcon className="w-5 h-5 mr-2" />
                                   Add Experience
@@ -1352,7 +1352,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                               )}
                             </motion.div>
                           )}
-                          {/* Add similar enhanced styling for education, projects, and additional sections */}
                         </motion.div>
                       </motion.div>
                     )}
@@ -1362,14 +1361,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             </AnimatePresence>
 
             {/* Action Buttons */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8"
-            >
-              {/* Action buttons removed from here, now in header */}
-            </motion.div>
           </form>
 
           {/* Enhanced Rename Modal */}
@@ -1582,6 +1573,7 @@ const SkillsSection: React.FC<{
       </motion.button>
     </motion.div>
     
+       
     <motion.div 
       layout
       className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
