@@ -2,6 +2,7 @@
 import React from 'react';
 import { ResumeData } from '@/types/resume';
 import { FaLinkedin, FaGlobe } from 'react-icons/fa';
+import { QRCodeComponent } from './QRCodeComponent';
 
 // Props for all templates
 interface ResumeTemplateProps {
@@ -33,8 +34,13 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
 
   return (
     <div className={`bg-white px-0 py-4 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
-      <div className="mb-2">
-        <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left tracking-tight">
+      <div className="mb-2 relative">
+        {/* QR Code positioned absolutely in top right */}
+        <div className="absolute top-0 right-0">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+        </div>
+        
+        <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left tracking-tight pr-12">
           {resumeData.personalInfo.fullName}
         </h1>
         {resumeData.personalInfo.professionTitle && (
@@ -201,7 +207,13 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Header with gradient accent */}
       <div className="relative mb-4">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
-        <div className="pt-6 pb-4">
+        
+        {/* QR Code positioned absolutely in top right */}
+        <div className="absolute top-6 right-0">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+        </div>
+        
+        <div className="pt-6 pb-4 pr-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
             {resumeData.personalInfo.fullName}
           </h1>
@@ -391,7 +403,13 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       <div className="relative mb-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10"></div>
         <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20"></div>
-        <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg">
+        
+        {/* QR Code positioned absolutely in top right, with higher z-index */}
+        <div className="absolute top-2 right-2 z-20">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+        </div>
+        
+        <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg pr-14">
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
             {resumeData.personalInfo.fullName}
           </h1>
@@ -590,8 +608,13 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
   return (
     <div className={`bg-gray-900 text-white p-6 w-full ${className}`} id="resume-preview">
       {/* Header with terminal-like design */}
-      <div className="bg-black rounded-lg p-4 mb-6 border border-green-500">
-        <div className="flex items-center space-x-2 mb-3">
+      <div className="bg-black rounded-lg p-4 mb-6 border border-green-500 relative">
+        {/* QR Code positioned absolutely in top right */}
+        <div className="absolute top-2 right-2">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+        </div>
+        
+        <div className="flex items-center space-x-2 mb-3 pr-12">
           <div className="w-3 h-3 bg-red-500 rounded-full"></div>
           <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
           <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -770,6 +793,12 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       {/* Elegant Header */}
       <div className="text-center mb-8 relative">
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+        
+        {/* QR Code positioned absolutely in top right */}
+        <div className="absolute top-0 right-0">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+        </div>
+        
         <h1 className="text-4xl font-serif text-gray-900 mb-3 tracking-wide">
           {resumeData.personalInfo.fullName}
         </h1>

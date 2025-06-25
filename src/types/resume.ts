@@ -1,5 +1,11 @@
 // Types for Resume Application
 
+// --- QR Code Settings ---
+export interface QRCodeSettings {
+  enabled: boolean;
+  type: 'linkedin' | 'website' | 'none';
+}
+
 // --- Personal Information ---
 export interface PersonalInfo {
   fullName: string;
@@ -9,6 +15,7 @@ export interface PersonalInfo {
   location: string;
   linkedIn?: string;
   website?: string;
+  qrCode?: QRCodeSettings;
 }
 
 // --- Work Experience ---

@@ -110,7 +110,11 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         phone: '',
         location: '',
         linkedIn: '',
-        website: ''
+        website: '',
+        qrCode: {
+          enabled: false,
+          type: 'linkedin'
+        }
       },
       experience: [],
       education: [],
@@ -277,6 +281,17 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       personalInfo: {
         ...prev.personalInfo,
         [field]: value
+      }
+    }));
+  };
+
+  // --- QR Code Settings Helper ---
+  const updateQRCodeSettings = (enabled: boolean, type: 'linkedin' | 'website' | 'none') => {
+    setResumeData(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        qrCode: { enabled, type }
       }
     }));
   };
@@ -840,7 +855,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           {section.key === 'personal' && (
                             <PersonalInfoSection 
                               resumeData={resumeData} 
-                              updatePersonalInfo={updatePersonalInfo} 
+                              updatePersonalInfo={updatePersonalInfo}
+                              updateQRCodeSettings={updateQRCodeSettings}
                             />
                           )}
                           {section.key === 'skills' && (
@@ -1454,12 +1470,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
 const PersonalInfoSection: React.FC<{
   resumeData: ResumeData;
   updatePersonalInfo: (field: keyof PersonalInfo, value: string) => void;
-}> = ({ resumeData, updatePersonalInfo }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="grid grid-cols-1 md:grid-cols-2 gap-6"
-  >    <motion.div 
+  updateQRCodeSettings: (enabled: boolean, type: 'linkedin' | 'website' | 'none') => void;
+}> = ({ resumeData, updatePersonalInfo, updateQRCodeSettings }) => {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-6"
+    >    <motion.div 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 }}
@@ -1524,7 +1542,7 @@ const PersonalInfoSection: React.FC<{
         <div className="relative group">
           <input
             type={fieldConfig.type}
-            value={resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo]}
+            value={(resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo] as string) || ''}
             onChange={(e) => {
               let value = e.target.value;
               if (fieldConfig.field === 'linkedIn') {
@@ -1544,8 +1562,83 @@ const PersonalInfoSection: React.FC<{
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </motion.div>    ))}
+    
+    {/* QR Code Settings Section */}
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.4 }}
+      className="md:col-span-2 mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200"
+    >
+      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        📱 QR Code Settings (Optional)
+      </label>
+      <p className="text-xs text-gray-600 mb-4">Add a QR code to your resume header for easy access to your LinkedIn or portfolio</p>
+      
+      <div className="space-y-3">
+        <div className="flex items-center space-x-3">
+          <input
+            type="checkbox"
+            id="qr-enabled"
+            checked={resumeData.personalInfo.qrCode?.enabled || false}
+            onChange={(e) => updateQRCodeSettings(
+              e.target.checked, 
+              resumeData.personalInfo.qrCode?.type || 'linkedin'
+            )}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700">
+            Include QR code in resume header
+          </label>
+        </div>
+        
+        {resumeData.personalInfo.qrCode?.enabled && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="ml-7 space-y-2"
+          >
+            <p className="text-xs text-gray-600 mb-2">QR code will link to:</p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="qr-linkedin"
+                  name="qr-type"
+                  value="linkedin"
+                  checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
+                  onChange={() => updateQRCodeSettings(true, 'linkedin')}
+                  disabled={!resumeData.personalInfo.linkedIn}
+                  className="h-3 w-3 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="qr-linkedin" className={`text-xs ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
+                  LinkedIn Profile {!resumeData.personalInfo.linkedIn && '(add LinkedIn URL first)'}
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="qr-website"
+                  name="qr-type"
+                  value="website"
+                  checked={resumeData.personalInfo.qrCode?.type === 'website'}
+                  onChange={() => updateQRCodeSettings(true, 'website')}
+                  disabled={!resumeData.personalInfo.website}
+                  className="h-3 w-3 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="qr-website" className={`text-xs ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
+                  Website/Portfolio {!resumeData.personalInfo.website && '(add website URL first)'}
+                </label>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
   </motion.div>
-);
+  );
+};
 
 // Enhanced Skills Section Component
 const SkillsSection: React.FC<{
