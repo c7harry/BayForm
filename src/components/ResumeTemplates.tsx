@@ -37,7 +37,11 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       <div className="mb-2 relative">
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute top-0 right-0">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+          <QRCodeComponent 
+            personalInfo={resumeData.personalInfo} 
+            size={60} 
+            theme="modern" 
+          />
         </div>
         
         <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left tracking-tight pr-12">
@@ -210,7 +214,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute top-6 right-0">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} theme="classic" />
         </div>
         
         <div className="pt-6 pb-4 pr-12">
@@ -406,7 +410,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         
         {/* QR Code positioned absolutely in top right, with higher z-index */}
         <div className="absolute top-2 right-2 z-20">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} theme="minimal" />
         </div>
         
         <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg pr-14">
@@ -611,7 +615,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       <div className="bg-black rounded-lg p-4 mb-6 border border-green-500 relative">
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute top-2 right-2">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} theme="tech" />
         </div>
         
         <div className="flex items-center space-x-2 mb-3 pr-12">
@@ -796,7 +800,7 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute top-0 right-0">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} />
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={60} theme="elegant" />
         </div>
         
         <h1 className="text-4xl font-serif text-gray-900 mb-3 tracking-wide">
