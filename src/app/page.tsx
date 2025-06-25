@@ -1,4 +1,4 @@
-// This is the main page for the Resume Builder app
+// This is the landing page
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -167,7 +167,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={() => handleEditResume(selectedResume)}
-                    className="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-500/50 font-semibold transition-all duration-300 flex items-center space-x-2"
+                    className="bg-[#0F2D52] text-white px-6 py-2 rounded-xl hover:bg-[#0a1f3d] focus:outline-none focus:ring-4 focus:ring-[#0F2D52]/50 font-semibold transition-all duration-300 flex items-center space-x-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -181,7 +181,7 @@ export default function Home() {
           {/* Resume Preview */}
           <div className="max-w-5xl mx-auto px-4 py-8">
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-              <div className="p-2 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200">
+              <div className="p-2 bg-gradient-to-r from-[#0F2D52]/10 to-[#0F2D52]/5 border-b border-slate-200">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full bg-red-400"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
@@ -204,7 +204,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+        <div className="relative overflow-hidden bg-gradient-to-r from-[#0F2D52] via-[#0a1f3d] to-[#0F2D52]">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent"></div>
           <div className="relative max-w-7xl mx-auto px-4 py-16">
             <div className="flex flex-col lg:flex-row items-center justify-between">

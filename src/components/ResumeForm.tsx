@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { VerticalProgressBar } from './VerticalProgressBar';
 
 import { 
   ChevronDownIcon, 
@@ -101,7 +102,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   const [resumeData, setResumeData] = useState<ResumeData>(
     initialData || {
       id: generateResumeId(),
-      name: 'My Resume',      personalInfo: {
+      name: 'My Resume',
+      personalInfo: {
         fullName: '',
         professionTitle: '',
         email: '',
@@ -123,6 +125,112 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       ]
     }
   );
+
+  // --- Section Refs for Navigation ---
+  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [currentProgressStep, setCurrentProgressStep] = useState('personal');
+
+  // --- Progress Bar Steps ---
+  const progressSteps = [
+    {
+      id: 'personal',
+      label: 'Personal Info',
+      icon: <UserIcon className="w-4 h-4" />,
+      gradient: 'from-orange-400 to-pink-500',
+      completed: resumeData.personalInfo.fullName !== '' && resumeData.personalInfo.email !== '' && resumeData.personalInfo.professionTitle !== '',
+      color: '#f97316',
+      count: [resumeData.personalInfo.fullName, resumeData.personalInfo.email, resumeData.personalInfo.professionTitle].filter(Boolean).length,
+      total: 3
+    },
+    {
+      id: 'skills',
+      label: 'Skills',
+      icon: <CodeBracketIcon className="w-4 h-4" />,
+      gradient: 'from-emerald-400 to-teal-500',
+      completed: resumeData.skills.length > 0,
+      color: '#10b981',
+      count: resumeData.skills.length,
+      total: 5
+    },
+    {
+      id: 'experience',
+      label: 'Experience',
+      icon: <BriefcaseIcon className="w-4 h-4" />,
+      gradient: 'from-blue-400 to-indigo-500',
+      completed: resumeData.experience.length > 0,
+      color: '#3b82f6',
+      count: resumeData.experience.length,
+      total: 2
+    },
+    {
+      id: 'education',
+      label: 'Education',
+      icon: <AcademicCapIcon className="w-4 h-4" />,
+      gradient: 'from-purple-400 to-violet-500',
+      completed: resumeData.education.length > 0,
+      color: '#8b5cf6',
+      count: resumeData.education.length,
+      total: 1
+    },
+    {
+      id: 'projects',
+      label: 'Projects',
+      icon: <CubeIcon className="w-4 h-4" />,
+      gradient: 'from-rose-400 to-pink-500',
+      completed: resumeData.projects.length > 0,
+      color: '#ec4899',
+      count: resumeData.projects.length,
+      total: 2
+    },
+    {
+      id: 'additional',
+      label: 'Additional',
+      icon: <InformationCircleIcon className="w-4 h-4" />,
+      gradient: 'from-amber-400 to-orange-500',
+      completed: (resumeData.additionalSections?.some(section => section.items.length > 0)) || false,
+      color: '#f59e0b',
+      count: resumeData.additionalSections?.reduce((total, section) => total + section.items.length, 0) || 0,
+      total: 3
+    }
+  ];
+
+  // --- Navigation Handler ---
+  const handleProgressStepClick = (stepId: string) => {
+    const targetRef = sectionRefs.current[stepId];
+    if (targetRef) {
+      targetRef.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+      setCurrentProgressStep(stepId);
+    }
+  };
+
+  // --- Intersection Observer for Progress Tracking ---
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionKey = entry.target.getAttribute('data-section');
+            if (sectionKey) {
+              setCurrentProgressStep(sectionKey);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: '-100px 0px -200px 0px'
+      }
+    );
+
+    Object.values(sectionRefs.current).forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // --- Section Collapse State ---
   const [collapsedSections, setCollapsedSections] = useState({
@@ -440,6 +548,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
           },
         }}
       />
+      
+      {/* Vertical Progress Bar */}
+      <VerticalProgressBar
+        steps={progressSteps}
+        currentStep={currentProgressStep}
+        onStepClick={handleProgressStepClick}
+      />
+      
       {/* Fixed Header */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-md flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-4">
@@ -464,9 +580,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             form="resume-form"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+            className="px-8 py-2 bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white rounded-xl hover:from-orange-600 hover:to-[#0a1f3d] focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
           >
-            ✨ Save Resume
+             Save Resume
           </motion.button>
         </div>
       </header>
@@ -519,6 +635,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
               {sections.map((section, idx) => (
                 <motion.div
                   key={section.key}
+                  ref={(el) => { sectionRefs.current[section.key] = el; }}
+                  data-section={section.key}
                   layout
                   initial={{ opacity: 0, y: 50, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -1304,7 +1422,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       onClick={handleRenameSubmit} 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-medium shadow-lg"
+                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white hover:from-orange-600 hover:to-[#0a1f3d] transition-all duration-300 font-medium shadow-lg"
                     >
                       Save
                     </motion.button>
