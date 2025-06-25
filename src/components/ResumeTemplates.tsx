@@ -59,7 +59,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
               )
             ].filter(Boolean).map((item, idx, arr) => (
               <React.Fragment key={idx}>
-                {idx > 0 && <span className="mx-[-3px] text-gray-400">|</span>}
+                {idx > 0 && <span className="mx-[-5px] text-gray-400">|</span>}
                 {item}
               </React.Fragment>
             ))}
@@ -70,7 +70,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {Object.keys(skillsByCategory).length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b border-gray-300 pb-1 text-center">SKILLS</h2>
-          <div className="space-y-0">
+          <div className="space-y-0 mt-4">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <div key={category} className="text-left">
                 <span className="text-sm font-semibold text-gray-900 capitalize">
@@ -85,7 +85,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {resumeData.experience.length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b border-gray-300 pb-1 text-center">EXPERIENCE</h2>
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             {resumeData.experience.map((exp) => (
               <div key={exp.id} className="text-left">
                 <div className="flex justify-between items-start mb-1">
@@ -119,7 +119,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {resumeData.education.length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b border-gray-300 pb-1 text-center">EDUCATION</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 mt-4">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-left">
                 <div className="flex justify-between items-start">
@@ -141,7 +141,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
       {resumeData.projects.length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b border-gray-300 pb-1 text-center">PROJECTS</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 mt-4">
             {resumeData.projects.map((project) => (
               <div key={project.id} className="text-left">
                 <h3 className="text-base font-semibold text-gray-900">{project.name}</h3>
@@ -172,7 +172,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
         <div className="mb-2">
           <div className="mb-2">
             <h2 className="text-lg font-bold text-gray-900 mb-2 border-b border-gray-300 pb-1 uppercase text-center">Additional Information</h2>
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-gray-700 mt-4">
               {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
                 <div key={section.id} className="mb-1">
                   <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
@@ -224,7 +224,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               )
             ].filter(Boolean).map((item, idx, arr) => (
               <React.Fragment key={idx}>
-                {idx > 0 && <span className="mx-[-3px] text-gray-400">|</span>}
+                {idx > 0 && <span className="mx-[-5px] text-gray-400">|</span>}
                 {item}
               </React.Fragment>
             ))}
@@ -368,7 +368,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             {resumeData.personalInfo.professionTitle}
           </h2>
         )}
-        <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-0 text-sm text-gray-600 whitespace-nowrap overflow-x-auto justify-center text-center">
+        <div className="w-full flex flex-row flex-nowrap items-center gap-x-2 text-sm text-gray-600 whitespace-nowrap overflow-x-auto justify-center text-center">
           { [
               resumeData.personalInfo.location && resumeData.personalInfo.location,
               resumeData.personalInfo.email && resumeData.personalInfo.email,
@@ -385,7 +385,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               )
             ].filter(Boolean).map((item, idx, arr) => (
               <React.Fragment key={idx}>
-                {idx > 0 && <span className="mx-[-3px] text-gray-400">•</span>}
+                {idx > 0 && <span className="mx-[-5px] text-gray-400">|</span>}
                 {item}
               </React.Fragment>
             ))}
