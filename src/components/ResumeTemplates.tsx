@@ -207,7 +207,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             {resumeData.personalInfo.professionTitle}
           </h2>
         )}
-        <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-0 text-sm text-gray-700 whitespace-nowrap overflow-x-auto justify-center text-center">
+        <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-700 justify-center text-center">
           { [
               resumeData.personalInfo.location && resumeData.personalInfo.location,
               resumeData.personalInfo.email && resumeData.personalInfo.email,
@@ -368,7 +368,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             {resumeData.personalInfo.professionTitle}
           </h2>
         )}
-        <div className="w-full flex flex-row flex-nowrap items-center gap-x-2 text-sm text-gray-600 whitespace-nowrap overflow-x-auto justify-center text-center">
+       <div className="w-full flex flex-row flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-700 justify-center text-center">
           { [
               resumeData.personalInfo.location && resumeData.personalInfo.location,
               resumeData.personalInfo.email && resumeData.personalInfo.email,
