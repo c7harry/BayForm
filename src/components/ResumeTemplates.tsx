@@ -400,7 +400,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               {resumeData.personalInfo.professionTitle}
             </h2>
           )}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm text-gray-600">
+          <div className="grid grid-cols-5 gap-2 text-sm text-gray-600">
             {[
               resumeData.personalInfo.location && { icon: "📍", text: resumeData.personalInfo.location },
               resumeData.personalInfo.email && { icon: "✉️", text: resumeData.personalInfo.email },
@@ -425,7 +425,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             SKILLS
           </h2>
           <div className="bg-white rounded-lg p-4 shadow-md">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {Object.entries(skillsByCategory).map(([category, skills]) => (
                 <div key={category} className="space-y-2">
                   <h3 className="text-sm font-bold text-purple-700 uppercase tracking-wide border-b border-purple-200 pb-1">
@@ -485,7 +485,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       )}
 
       {/* Education and Projects in two columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Education Section */}
         {resumeData.education.length > 0 && (
           <div>
@@ -555,7 +555,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             <span className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs mr-2">✨</span>
             ADDITIONAL INFO
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id}>
                 <h3 className="text-sm font-bold text-indigo-700 mb-1 uppercase tracking-wide">
@@ -680,7 +680,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       )}
 
       {/* Projects and Education in grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Projects as repositories */}
         {resumeData.projects.length > 0 && (
           <div>
@@ -737,7 +737,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="bg-gray-800 rounded-lg p-4 border border-yellow-500">
           <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono"># Additional Info</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id} className="font-mono">
                 <div className="text-yellow-400 text-sm">{section.title.toLowerCase().replace(/\s+/g, '_')}: [</div>
@@ -893,7 +893,7 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           )}
 
           {/* Education and Projects */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
             {/* Education */}
             {resumeData.education.length > 0 && (
               <div>
