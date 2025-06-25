@@ -34,7 +34,7 @@ const FloatingProgressBubble: React.FC<{
         damping: 20,
         delay: 2 // Appear after 2 seconds
       }}
-      className="fixed top-32 right-6 z-50 cursor-pointer"
+      className="fixed top-24 right-4 z-50 cursor-pointer"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
@@ -54,7 +54,7 @@ const FloatingProgressBubble: React.FC<{
         {/* Main bubble */}
         <motion.div
           whileHover={{ scale: 1.1, rotateY: 360 }}
-          className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-600 to-[#0F2D52] rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden"
+          className="w-16 h-16 bg-orange-500 rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden"
           style={{
             transformStyle: 'preserve-3d'
           }}
@@ -70,7 +70,7 @@ const FloatingProgressBubble: React.FC<{
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="absolute inset-0 bg-gradient-to-br from-orange-400/50 to-[#0F2D52]/50 rounded-full"
+            className="absolute inset-0 bg-orange-400/50 rounded-full"
           />
           
           {/* Progress ring */}
@@ -261,7 +261,8 @@ const ProgressNode: React.FC<{
 const ProgressLine: React.FC<{
   completed: boolean;
   isNext: boolean;
-}> = ({ completed, isNext }) => {
+  gradient?: string;
+}> = ({ completed, isNext, gradient }) => {
   return (
     <div className="relative flex items-center justify-center">
       <motion.div
@@ -273,9 +274,9 @@ const ProgressLine: React.FC<{
         <motion.div
           className={`absolute inset-0 rounded-full ${
             completed 
-              ? 'bg-gradient-to-b from-green-400 to-green-600' 
+              ? `bg-gradient-to-b ${gradient || 'from-green-400 to-green-600'}` 
               : isNext 
-                ? 'bg-gradient-to-b from-orange-400 to-[#0F2D52]'
+                ? 'bg-gradient-to-b from-orange-400 to-orange-600'
                 : 'bg-gray-300'
           }`}
           initial={{ height: completed ? '100%' : '0%', y: completed ? '0%' : '100%' }}
@@ -287,11 +288,10 @@ const ProgressLine: React.FC<{
         />
         
         {/* Animated progress dots */}
-        {(completed || isNext) && (
-          <motion.div
-            className={`absolute w-1 h-1 rounded-full ${
-              completed ? 'bg-green-300' : 'bg-orange-300'
-            }`}
+        {(completed || isNext) && (        <motion.div
+          className={`absolute w-1 h-1 rounded-full ${
+            completed ? 'bg-green-300' : 'bg-orange-300'
+          }`}
             animate={{
               y: ['0%', '100%'],
               opacity: [1, 0.3, 1]
@@ -313,7 +313,8 @@ const ProgressScene: React.FC<{
   steps: ProgressStep[];
   currentStep: string;
   onStepClick: (stepId: string) => void;
-}> = ({ steps, currentStep, onStepClick }) => {
+  getStepGradient: (stepId: string) => string;
+}> = ({ steps, currentStep, onStepClick, getStepGradient }) => {
   const currentIndex = steps.findIndex(s => s.id === currentStep);
 
   return (
@@ -344,6 +345,7 @@ const ProgressScene: React.FC<{
               <ProgressLine
                 completed={isCompleted}
                 isNext={isNext}
+                gradient={getStepGradient(step.id)}
               />
             )}
           </React.Fragment>
@@ -361,6 +363,32 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [hoveredStep, setHoveredStep] = useState<string | null>(null);
+
+  // Helper function to get the appropriate gradient for each step
+  const getStepGradient = (stepId: string) => {
+    const gradientMap: { [key: string]: string } = {
+      'personal': 'from-orange-400 to-pink-500',
+      'skills': 'from-emerald-400 to-teal-500', 
+      'experience': 'from-blue-400 to-indigo-500',
+      'education': 'from-purple-400 to-violet-500',
+      'projects': 'from-rose-400 to-pink-500',
+      'additional': 'from-amber-400 to-orange-500'
+    };
+    return gradientMap[stepId] || 'from-gray-400 to-gray-500';
+  };
+
+  // Helper function to get the appropriate text color for each step
+  const getStepTextColor = (stepId: string) => {
+    const colorMap: { [key: string]: string } = {
+      'personal': 'text-orange-700',
+      'skills': 'text-emerald-700', 
+      'experience': 'text-blue-700',
+      'education': 'text-purple-700',
+      'projects': 'text-rose-700',
+      'additional': 'text-amber-700'
+    };
+    return colorMap[stepId] || 'text-gray-700';
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 1000);
@@ -426,7 +454,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
               stiffness: 260,
               damping: 20
             }}
-            className="fixed top-28 right-4 z-40 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 shadow-xl p-3 w-48"
+            className="fixed top-40 right-4 z-40 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 shadow-xl p-3 w-48"
             onMouseLeave={handleProgressBarLeave}
             onMouseEnter={() => setShowProgressBar(true)}
           >
@@ -444,7 +472,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   initial={{ width: 0 }}
                   animate={{ width: `${enhancedProgress}%` }}
                   transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
-                  className="h-full bg-gradient-to-r from-orange-500 to-[#0F2D52] rounded-full"
+                  className="h-full bg-orange-500 rounded-full"
                 />
               </div>
               <span className="text-xs font-semibold text-gray-600 min-w-[3rem]">
@@ -458,19 +486,20 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
 
           {/* Enhanced 3D-style Visual Progress Display */}
           <div 
-            className="relative h-56 mb-3 rounded-lg overflow-hidden bg-gradient-to-br from-orange-50/50 to-[#0F2D52]/10 border border-white/30"
+            className="relative h-56 mb-3 rounded-lg overflow-hidden bg-gradient-to-br from-orange-50/50 to-orange-100/20 border border-white/30"
             style={{ 
               perspective: '1000px',
               transformStyle: 'preserve-3d'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-100/20 via-[#0F2D52]/10 to-orange-100/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-100/20 via-orange-200/10 to-orange-100/20" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(249,115,22,0.1)_70%)]" />
             
             <ProgressScene
               steps={steps}
               currentStep={currentStep}
               onStepClick={onStepClick}
+              getStepGradient={getStepGradient}
             />
 
             {/* Floating background elements */}
@@ -518,9 +547,9 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   className={`
                     w-full p-2 rounded-lg text-left transition-all duration-300 group
                     ${isActive 
-                      ? 'bg-gradient-to-r from-orange-500/20 to-[#0F2D52]/20 border-2 border-orange-300 shadow-lg' 
+                      ? `bg-gradient-to-r ${getStepGradient(step.id)}/20 border-2 border-orange-300 shadow-lg` 
                       : isCompleted 
-                        ? 'bg-green-50/50 border border-green-200 hover:bg-green-100/50' 
+                        ? `bg-gradient-to-r ${getStepGradient(step.id)}/10 border border-gray-200 hover:bg-gradient-to-r hover:${getStepGradient(step.id)}/15` 
                         : 'bg-gray-50/50 border border-gray-200 hover:bg-gray-100/50'
                     }
                     ${hoveredStep === step.id ? 'transform scale-105 shadow-xl' : ''}
@@ -544,7 +573,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                       className={`
                         w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold
                         ${isCompleted 
-                          ? 'bg-green-500 text-white' 
+                          ? `bg-gradient-to-r ${getStepGradient(step.id)} text-white` 
                           : isActive 
                             ? 'bg-orange-500 text-white' 
                             : 'bg-gray-300 text-gray-600'
@@ -560,7 +589,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                         <span className="text-sm">{step.icon}</span>
                         <span className={`
                           font-semibold text-xs truncate
-                          ${isActive ? 'text-orange-700' : isCompleted ? 'text-green-700' : 'text-gray-600'}
+                          ${isActive ? 'text-orange-700' : isCompleted ? getStepTextColor(step.id) : 'text-gray-600'}
                         `}>
                           {step.label}
                         </span>
@@ -572,7 +601,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                           initial={{ width: 0 }}
                           animate={{ width: '100%' }}
                           transition={{ duration: 0.5, delay: 0.2 }}
-                          className="mt-1 h-1 bg-gradient-to-r from-orange-400 to-[#0F2D52] rounded-full"
+                          className={`mt-1 h-1 bg-gradient-to-r ${getStepGradient(step.id)} rounded-full`}
                         />
                       )}
                     </div>
@@ -602,7 +631,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             className="mt-3 pt-2 border-t border-white/20 text-center"
           >
             <p className="text-xs text-gray-500">
-              Click to navigate ✨
+              Click to navigate
             </p>
           </motion.div>
         </motion.div>

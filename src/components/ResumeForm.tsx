@@ -580,7 +580,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             form="resume-form"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-2 bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white rounded-xl hover:from-orange-600 hover:to-[#0a1f3d] focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+            className="px-8 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
           >
              Save Resume
           </motion.button>
