@@ -1,4 +1,4 @@
-// This is the landing page
+// This is the landing and view resume page
 'use client';
 
 import { useState, useEffect } from 'react';
