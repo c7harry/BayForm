@@ -34,7 +34,7 @@ const FloatingProgressBubble: React.FC<{
         damping: 20,
         delay: 2 // Appear after 2 seconds
       }}
-      className="fixed top-24 right-4 z-50 cursor-pointer"
+      className="fixed top-20 right-6 z-50 cursor-pointer"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
@@ -417,16 +417,23 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   };
 
   const handleBubbleLeave = () => {
-    // Delay hiding to allow mouse to move to progress bar
+    // Longer delay to allow mouse to move to progress bar
     setTimeout(() => {
-      if (!hoveredStep) {
+      if (!hoveredStep && !showProgressBar) {
         setShowProgressBar(false);
       }
-    }, 300);
+    }, 500);
+  };
+
+  const handleProgressBarEnter = () => {
+    setShowProgressBar(true);
   };
 
   const handleProgressBarLeave = () => {
-    setShowProgressBar(false);
+    // Shorter delay when leaving progress bar
+    setTimeout(() => {
+      setShowProgressBar(false);
+    }, 200);
   };
 
   return (
@@ -442,22 +449,29 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Main Progress Bar */}
+      {/* Main Progress Bar with buffer zone */}
       <AnimatePresence>
         {showProgressBar && (
-          <motion.div
-            initial={{ opacity: 0, x: 100, scale: 0.8 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 100, scale: 0.8 }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 20
-            }}
-            className="fixed top-40 right-4 z-40 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 shadow-xl p-3 w-48"
-            onMouseLeave={handleProgressBarLeave}
-            onMouseEnter={() => setShowProgressBar(true)}
-          >
+          <>
+            {/* Invisible buffer zone to help with mouse movement */}
+            <div 
+              className="fixed top-20 right-0 w-60 h-96 z-30"
+              onMouseEnter={handleProgressBarEnter}
+              onMouseLeave={handleProgressBarLeave}
+            />
+            <motion.div
+              initial={{ opacity: 0, x: 100, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 100, scale: 0.8 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20
+              }}
+              className="fixed top-32 right-4 z-40 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 shadow-2xl p-4 w-52"
+              onMouseLeave={handleProgressBarLeave}
+              onMouseEnter={handleProgressBarEnter}
+            >
           {/* Header */}
           <motion.div
             initial={{ y: -20, opacity: 0 }}
@@ -541,21 +555,27 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 + index * 0.1 }}
                   onClick={() => onStepClick(step.id)}
-                  onMouseEnter={() => setHoveredStep(step.id)}
-                  onMouseLeave={() => setHoveredStep(null)}
+                  onMouseEnter={() => {
+                    setHoveredStep(step.id);
+                    setShowProgressBar(true); // Keep progress bar open when hovering steps
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredStep(null);
+                    // Don't immediately close on step hover leave
+                  }}
                   disabled={!isClickable}
                   className={`
-                    w-full p-2 rounded-lg text-left transition-all duration-300 group
+                    w-full p-3 rounded-xl text-left transition-all duration-300 group
                     ${isActive 
-                      ? `bg-gradient-to-r ${getStepGradient(step.id)}/20 border-2 border-orange-300 shadow-lg` 
+                      ? `bg-gradient-to-r ${getStepGradient(step.id)}/25 border-2 border-orange-400/60 shadow-lg` 
                       : isCompleted 
-                        ? `bg-gradient-to-r ${getStepGradient(step.id)}/10 border border-gray-200 hover:bg-gradient-to-r hover:${getStepGradient(step.id)}/15` 
-                        : 'bg-gray-50/50 border border-gray-200 hover:bg-gray-100/50'
+                        ? `bg-gradient-to-r ${getStepGradient(step.id)}/15 border border-gray-300/50 hover:bg-gradient-to-r hover:${getStepGradient(step.id)}/25 hover:border-gray-400/70` 
+                        : 'bg-gray-50/70 border border-gray-200/50 hover:bg-gray-100/80 hover:border-gray-300/70'
                     }
-                    ${hoveredStep === step.id ? 'transform scale-105 shadow-xl' : ''}
+                    ${hoveredStep === step.id ? 'transform scale-105 shadow-xl border-orange-400/80' : ''}
                     ${!isClickable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
                   `}
-                  whileHover={isClickable ? { scale: 1.02, y: -2 } : {}}
+                  whileHover={isClickable ? { scale: 1.02, y: -3 } : {}}
                   whileTap={isClickable ? { scale: 0.98 } : {}}
                 >
                   <div className="flex items-center gap-2">
@@ -631,12 +651,13 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             className="mt-3 pt-2 border-t border-white/20 text-center"
           >
             <p className="text-xs text-gray-500">
-              Click to navigate
+              Click to navigate ✨
             </p>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };
