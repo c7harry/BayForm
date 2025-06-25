@@ -197,7 +197,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-6 max-w-4xl mx-auto ${className}`} id="resume-preview">
+    <div className={`bg-white p-6 w-full ${className}`} id="resume-preview">
       {/* Header with gradient accent */}
       <div className="relative mb-4">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
@@ -386,7 +386,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-6 max-w-4xl mx-auto ${className}`} id="resume-preview">
+    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-6 w-full ${className}`} id="resume-preview">
       {/* Header with geometric design */}
       <div className="relative mb-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10"></div>
@@ -588,7 +588,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
   });
 
   return (
-    <div className={`bg-gray-900 text-white p-6 max-w-4xl mx-auto ${className}`} id="resume-preview">
+    <div className={`bg-gray-900 text-white p-6 w-full ${className}`} id="resume-preview">
       {/* Header with terminal-like design */}
       <div className="bg-black rounded-lg p-4 mb-6 border border-green-500">
         <div className="flex items-center space-x-2 mb-3">
@@ -766,7 +766,7 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-8 max-w-4xl mx-auto ${className}`} id="resume-preview">
+    <div className={`bg-white p-8 w-full ${className}`} id="resume-preview">
       {/* Elegant Header */}
       <div className="text-center mb-8 relative">
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
