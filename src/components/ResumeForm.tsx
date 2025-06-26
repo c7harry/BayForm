@@ -623,62 +623,95 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         onStepClick={handleProgressStepClick}
       />
       
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-md flex items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-4">
-          <Image src="/images/header.png" alt="Bayform Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 leading-tight">Resume Builder</h1>
-            <p className="text-sm text-gray-600 font-medium">Create your professional resume with style</p>
+      {/* Fixed Header - Mobile Optimized */}
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-md">
+        {/* Mobile Layout */}
+        <div className="sm:hidden">
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <Image src="/images/header.png" alt="Bayform Logo" width={80} height={26} className="h-6 w-auto object-contain rounded-md flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-sm font-bold text-gray-900 leading-tight truncate">Resume Builder</h1>
+              </div>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <motion.button
+                type="button"
+                onClick={onCancel}
+                whileTap={{ scale: 0.95 }}
+                className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium touch-manipulation min-h-[44px] min-w-[60px]"
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                type="submit"
+                form="resume-form"
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium shadow-lg touch-manipulation min-h-[44px]"
+              >
+                Save
+              </motion.button>
+            </div>
           </div>
         </div>
-        <div className="flex gap-4 ml-auto">
-          <motion.button
-            type="button"
-            onClick={onCancel}
-            whileHover={{ scale: 1.05, backgroundColor: '#f3f4f6' }}
-            whileTap={{ scale: 0.95 }}
-            className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold"
-          >
-            Cancel
-          </motion.button>
-          <motion.button
-            type="submit"
-            form="resume-form"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-          >
-             Save Resume
-          </motion.button>
+
+        {/* Desktop Layout */}
+        <div className="hidden sm:flex items-center justify-between px-6 py-3">
+          <div className="flex items-center gap-4">
+            <Image src="/images/header.png" alt="Bayform Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 leading-tight">Resume Builder</h1>
+              <p className="text-sm text-gray-600 font-medium">Create your professional resume with style</p>
+            </div>
+          </div>
+          <div className="flex gap-4 ml-auto">
+            <motion.button
+              type="button"
+              onClick={onCancel}
+              whileHover={{ scale: 1.05, backgroundColor: '#f3f4f6' }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold"
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              type="submit"
+              form="resume-form"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+            >
+               Save Resume
+            </motion.button>
+          </div>
         </div>
       </header>
-      {/* Main Content with top padding for header */}
+      {/* Main Content with mobile-optimized padding */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 pt-24"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 pt-20 sm:pt-24"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          {/* Header - Mobile Optimized */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 mb-8 relative overflow-hidden"
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-4 sm:p-8 mb-4 sm:mb-8 relative overflow-hidden"
           >
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 via-purple-400/10 to-pink-400/10 animate-pulse" />
             <div className="relative">
-              {/* Resume Name only, logo and subtitle removed */}
+              {/* Resume Name - Mobile optimized */}
               <motion.div 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="max-w-md"
+                className="w-full max-w-md"
               >
-                <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
                   <HeartIcon className="w-4 h-4 text-red-400" />
                   Resume Name *
                 </label>
@@ -687,7 +720,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                     type="text"
                     value={resumeData.name}
                     onChange={(e) => setResumeData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-400 group-hover:border-gray-300"
+                    className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-400 group-hover:border-gray-300 text-base touch-manipulation"
                     placeholder="e.g., John Doe - Software Engineer"
                     required
                   />
@@ -697,7 +730,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             </div>
           </motion.div>
 
-          <form id="resume-form" onSubmit={handleSubmit} className="space-y-8">
+          <form id="resume-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-8">
             <AnimatePresence>
               {sections.map((section, idx) => (
                 <motion.div
@@ -719,7 +752,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                   {/* Animated border */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${section.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-2xl`} />
                   
-                  {/* Header + Dropdown wrapper with extended background */}
+                  {/* Header + Dropdown wrapper with extended background - Mobile optimized */}
                   <div className={`flex items-center justify-between relative ${section.bgColor} border-b border-white/30`}>
                     <motion.button
                       type="button"
@@ -731,7 +764,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className="w-full px-8 py-6 flex items-center justify-between transition-all duration-300 focus:outline-none group/button relative overflow-hidden"
+                      className="w-full px-4 sm:px-8 py-4 sm:py-6 flex items-center justify-between transition-all duration-300 focus:outline-none group/button relative overflow-hidden touch-manipulation"
                     >
                       {/* Button background animation */}
                       <motion.div 
@@ -739,13 +772,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         layoutId={`bg-${section.key}`}
                       />
                       
-                      <div className="flex items-center space-x-4 relative z-10">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 mr-2">
+                      <div className="flex items-center space-x-2 sm:space-x-4 relative z-10 min-w-0 flex-1">
+                        <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 flex-shrink-0">
                           {section.icon}
                         </span>
-                        <div className="text-left">
+                        <div className="text-left min-w-0 flex-1">
                           <motion.h3 
-                            className="text-xl font-bold text-gray-900 group-hover/button:text-gray-800 transition-colors"
+                            className="text-lg sm:text-xl font-bold text-gray-900 group-hover/button:text-gray-800 transition-colors leading-tight"
                             layoutId={`title-${section.key}`}
                           >
                             {section.label}
@@ -753,31 +786,31 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="flex items-center gap-4 mt-1"
+                            className="flex items-center gap-2 sm:gap-4 mt-1 flex-wrap"
                           >
                             {section.key === 'personal' && (
-                              <span className="text-sm text-amber-600 font-medium bg-amber-100 px-3 py-1 rounded-full">Required fields</span>
+                              <span className="text-xs sm:text-sm text-amber-600 font-medium bg-amber-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">Required fields</span>
                             )}
                             {section.key === 'skills' && (
-                              <span className="text-sm text-emerald-600 font-medium bg-emerald-100 px-3 py-1 rounded-full">Organize by category</span>
+                              <span className="text-xs sm:text-sm text-emerald-600 font-medium bg-emerald-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">Organize by category</span>
                             )}
                             {section.key === 'experience' && (
-                              <span className="text-sm text-blue-600 font-medium bg-blue-100 px-3 py-1 rounded-full">
+                              <span className="text-xs sm:text-sm text-blue-600 font-medium bg-blue-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
                                 {resumeData.experience.length} {resumeData.experience.length === 1 ? 'position' : 'positions'}
                               </span>
                             )}
                             {section.key === 'education' && (
-                              <span className="text-sm text-purple-600 font-medium bg-purple-100 px-3 py-1 rounded-full">
+                              <span className="text-xs sm:text-sm text-purple-600 font-medium bg-purple-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
                                 {resumeData.education.length} {resumeData.education.length === 1 ? 'entry' : 'entries'}
                               </span>
                             )}
                             {section.key === 'projects' && (
-                              <span className="text-sm text-rose-600 font-medium bg-rose-100 px-3 py-1 rounded-full">
+                              <span className="text-xs sm:text-sm text-rose-600 font-medium bg-rose-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
                                 {resumeData.projects.length} {resumeData.projects.length === 1 ? 'project' : 'projects'}
                               </span>
                             )}
                             {section.key === 'additional' && (
-                              <span className="text-sm text-amber-600 font-medium bg-amber-100 px-3 py-1 rounded-full">Languages, Certifications, etc.</span>
+                              <span className="text-xs sm:text-sm text-amber-600 font-medium bg-amber-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">Languages, Certifications, etc.</span>
                             )}
                           </motion.div>
                         </div>
@@ -788,14 +821,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           rotate: collapsedSections[section.key as keyof typeof collapsedSections] ? 0 : 180 
                         }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="relative z-10"
+                        className="relative z-10 flex-shrink-0 ml-2"
                       >
-                        <ChevronDownIcon className="w-6 h-6 text-gray-500 group-hover/button:text-gray-700 transition-colors" />
+                        <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover/button:text-gray-700 transition-colors" />
                       </motion.div>
                     </motion.button>
                     
                     {section.key !== 'personal' && (
-                      <div className="relative pr-4" ref={el => { menuRefs.current[idx] = el; }}>
+                      <div className="relative pr-2 sm:pr-4" ref={el => { menuRefs.current[idx] = el; }}>
                         <motion.button
                           type="button"
                           ref={el => { threeDotRefs.current[idx] = el; }}
@@ -807,9 +840,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           }}
                           whileHover={{ scale: 1.1, rotate: 90 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-3 text-gray-500 hover:text-gray-800 focus:outline-none rounded-xl hover:bg-white/50 transition-all duration-300"
+                          className="p-2 sm:p-3 text-gray-500 hover:text-gray-800 focus:outline-none rounded-xl hover:bg-white/50 transition-all duration-300 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                         >
-                          <EllipsisVerticalIcon className="w-5 h-5" />
+                          <EllipsisVerticalIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                         </motion.button>
                         
                         <AnimatePresence>
@@ -819,11 +852,11 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
                               transition={{ duration: 0.2 }}
-                              className={`absolute right-0 top-full mt-2 w-48 ${section.bgColor} border border-white/30 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-lg`}
+                              className={`absolute right-0 top-full mt-2 w-44 sm:w-48 ${section.bgColor} border border-white/30 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-lg`}
                             >
                               <motion.button
                                 whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className={`block w-full text-left px-4 py-3 text-sm transition-all duration-200 ${idx === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'}`}
+                                className={`block w-full text-left px-3 sm:px-4 py-3 text-sm transition-all duration-200 ${idx === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'} touch-manipulation min-h-[44px] flex items-center`}
                                 onClick={() => { 
                                   if (idx > 0) { 
                                     moveSection(idx, 'up'); 
@@ -837,7 +870,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                               </motion.button>
                               <motion.button
                                 whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className={`block w-full text-left px-4 py-3 text-sm transition-all duration-200 ${idx === sections.length - 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'}`}
+                                className={`block w-full text-left px-3 sm:px-4 py-3 text-sm transition-all duration-200 ${idx === sections.length - 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'} touch-manipulation min-h-[44px] flex items-center`}
                                 onClick={() => { 
                                   if (idx < sections.length - 1) { 
                                     moveSection(idx, 'down'); 
@@ -851,7 +884,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                               </motion.button>
                               <motion.button
                                 whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:text-gray-900 transition-all duration-200"
+                                className="block w-full text-left px-3 sm:px-4 py-3 text-sm text-gray-700 hover:text-gray-900 transition-all duration-200 touch-manipulation min-h-[44px] flex items-center"
                                 onClick={() => {
                                   handleRename(idx);
                                   toast.success('Rename dialog opened', { icon: '✏️' });
@@ -880,7 +913,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: -20, opacity: 0 }}
                           transition={{ duration: 0.3, delay: 0.1 }}
-                          className="p-8 bg-gradient-to-br from-white/50 to-gray-50/50 backdrop-blur-sm"
+                          className="p-4 sm:p-8 bg-gradient-to-br from-white/50 to-gray-50/50 backdrop-blur-sm"
                         >                          {/* Section content rendering logic remains the same, just with updated styling */}
                           {section.key === 'personal' && (
                             <PersonalInfoSection 
@@ -905,9 +938,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           )}
                           {section.key === 'experience' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              <motion.div className="flex justify-between items-center mb-8">
-                                <p className="text-gray-600 flex items-center gap-2">
-                                  <BriefcaseIcon className="w-5 h-5 text-blue-500" />
+                              {/* Mobile-optimized header */}
+                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                                  <BriefcaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
                                   Add your work experience in reverse chronological order.
                                 </p>
                                 <motion.button
@@ -918,13 +952,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold"
+                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold w-full sm:w-auto touch-manipulation min-h-[44px]"
                                 >
-                                  <PlusIcon className="w-5 h-5 mr-2" />
+                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                   Add Experience
                                 </motion.button>
                               </motion.div>
-                              <div className="space-y-6">
+                              <div className="space-y-4 sm:space-y-6">
                                 <AnimatePresence>
                                   {resumeData.experience.map((exp, index) => (
                                     <motion.div
@@ -934,12 +968,12 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       animate={{ opacity: 1, scale: 1, y: 0 }}
                                       exit={{ opacity: 0, scale: 0.95, y: -20 }}
                                       transition={{ delay: index * 0.1 }}
-                                      className="bg-gradient-to-br from-white/80 to-blue-50/50 border-2 border-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
+                                      className="bg-gradient-to-br from-white/80 to-blue-50/50 border-2 border-blue-100 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
                                     >
-                                      <div className="flex justify-between items-start mb-6">
-                                        <motion.h4 className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                                      <div className="flex justify-between items-start mb-4 sm:mb-6">
+                                        <motion.h4 className="font-bold text-gray-900 text-base sm:text-lg flex items-center gap-2 flex-1 min-w-0">
                                           <span className="text-blue-500">🏢</span>
-                                          Experience #{index + 1}
+                                          <span className="truncate">Experience #{index + 1}</span>
                                         </motion.h4>
                                         <motion.button
                                           type="button"
@@ -949,13 +983,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
-                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center ml-2"
                                         >
-                                          <XMarkIcon className="w-5 h-5" />
+                                          <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                                         </motion.button>
                                       </div>
-                                      {/* Experience form fields with enhanced styling */}
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                      {/* Experience form fields - Mobile optimized */}
+                                      <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4">
                                         {[
                                           { field: 'position', label: 'Job Title', placeholder: 'Software Engineer' },
                                           { field: 'company', label: 'Company', placeholder: 'Tech Company Inc.' },
@@ -969,74 +1003,86 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                               type="text"
                                               value={exp[fieldConfig.field as keyof Experience] as string}
                                               onChange={(e) => updateExperience(exp.id, fieldConfig.field as keyof Experience, e.target.value)}
-                                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation"
                                               placeholder={fieldConfig.placeholder}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                                           </div>
-                                        ))}                                        <div className="flex items-center space-x-3 mt-6">
+                                        ))}
+
+                                        {/* Date fields - Mobile stacked */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                          <div className="relative group">
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                              Start Date
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={exp.startDate}
+                                              onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
+                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation"
+                                              placeholder="MM/YYYY"
+                                              inputMode="numeric"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                          </div>
+                                          <div className="relative group">
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                              End Date
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={exp.endDate}
+                                              onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
+                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm disabled:bg-gray-100 text-base touch-manipulation"
+                                              placeholder="MM/YYYY"
+                                              disabled={exp.current}
+                                              inputMode="numeric"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                          </div>
+                                        </div>
+
+                                        {/* Current job checkbox */}
+                                        <div className="flex items-center space-x-3">
                                           <input
                                             type="checkbox"
                                             checked={exp.current}
                                             onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
                                           />
                                           <label className="text-sm font-medium text-gray-700">Currently work here</label>
                                         </div>
+
+                                        {/* Job description */}
                                         <div className="relative group">
-                                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Start Date
-                                          </label>
-                                          <input
-                                            type="text"
-                                            value={exp.startDate}
-                                            onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
-                                            placeholder="MM/YYYY"
+                                          <label className="block text-sm font-semibold text-gray-700 mb-2">Job Description</label>
+                                          <textarea
+                                            value={exp.description}
+                                            onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
+                                            rows={3}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation resize-y"
+                                            placeholder="Describe your role and responsibilities..."
                                           />
                                           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                                         </div>
+
+                                        {/* Key achievements */}
                                         <div className="relative group">
                                           <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            End Date
+                                            Key Achievements
+                                            <span className="text-xs text-gray-500 ml-1">(one per line)</span>
                                           </label>
-                                          <input
-                                            type="text"
-                                            value={exp.endDate}
-                                            onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm disabled:bg-gray-100"
-                                            placeholder="MM/YYYY"
-                                            disabled={exp.current}
+                                          <textarea
+                                            value={exp.achievements.join('\n')}
+                                            onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
+                                            rows={4}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation resize-y"
+                                            placeholder="• Increased sales by 25%&#10;• Led a team of 5 developers&#10;• Implemented new process that saved 10 hours/week"
                                           />
                                           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                                         </div>
                                       </div>
-                                      <div className="mb-4 relative group">
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Job Description</label>
-                                        <textarea
-                                          value={exp.description}
-                                          onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
-                                          rows={3}
-                                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
-                                          placeholder="Describe your role and responsibilities..."
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                      </div>
-                                      <div className="relative group">
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                          Key Achievements
-                                          <span className="text-xs text-gray-500 ml-1">(one per line)</span>
-                                        </label>
-                                        <textarea
-                                          value={exp.achievements.join('\n')}
-                                          onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
-                                          rows={4}
-                                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
-                                          placeholder="• Increased sales by 25%&#10;• Led a team of 5 developers&#10;• Implemented new process that saved 10 hours/week"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                      </div>
-                                      {/* Continue with description and achievements fields... */}
                                     </motion.div>
                                   ))}
                                 </AnimatePresence>
@@ -1044,7 +1090,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   <motion.div 
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="text-center py-12 text-gray-500"
+                                    className="text-center py-8 sm:py-12 text-gray-500"
                                   >
                                     <motion.div
                                       animate={{ 
@@ -1057,19 +1103,19 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                         ease: "easeInOut"
                                       }}
                                     >
-                                      <BriefcaseIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
+                                      <BriefcaseIcon className="mx-auto w-12 h-12 sm:w-16 sm:h-16 mb-4 text-gray-300" />
                                     </motion.div>
-                                    <p className="text-lg">No work experience added yet</p>
-                                    <p className="text-sm mt-2">Click &quot;Add Experience&quot; to get started ✨</p>
+                                    <p className="text-base sm:text-lg">No work experience added yet</p>
+                                    <p className="text-sm mt-2">Click "Add Experience" to get started ✨</p>
                                   </motion.div>
                                 )}
                               </div>
                             </motion.div>                          )}
                           {section.key === 'education' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              <motion.div className="flex justify-between items-center mb-8">
-                                <p className="text-gray-600 flex items-center gap-2">
-                                  <AcademicCapIcon className="w-5 h-5 text-purple-500" />
+                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                                  <AcademicCapIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
                                   Add your educational background.
                                 </p>
                                 <motion.button
@@ -1080,9 +1126,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl hover:from-purple-600 hover:to-violet-700 focus:outline-none focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 font-semibold shadow-lg"
+                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl hover:from-purple-600 hover:to-violet-700 focus:outline-none focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 font-semibold shadow-lg w-full sm:w-auto touch-manipulation min-h-[44px]"
                                 >
-                                  <PlusIcon className="w-5 h-5 mr-2" />
+                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                   Add Education
                                 </motion.button>
                               </motion.div>
@@ -1171,9 +1217,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           )}
                           {section.key === 'projects' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              <motion.div className="flex justify-between items-center mb-8">
-                                <p className="text-gray-600 flex items-center gap-2">
-                                  <CubeIcon className="w-5 h-5 text-rose-500" />
+                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                                  <CubeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
                                   Showcase your notable projects and achievements.
                                 </p>
                                 <motion.button
@@ -1184,9 +1230,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-xl hover:from-rose-600 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold shadow-lg"
+                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-xl hover:from-rose-600 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold shadow-lg w-full sm:w-auto touch-manipulation min-h-[44px]"
                                 >
-                                  <PlusIcon className="w-5 h-5 mr-2" />
+                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                   Add Project
                                 </motion.button>
                               </motion.div>
@@ -1290,9 +1336,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                           )}
                           {section.key === 'additional' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              <motion.div className="flex justify-between items-center mb-8">
-                                <p className="text-gray-600 flex items-center gap-2">
-                                  <InformationCircleIcon className="w-5 h-5 text-amber-500" />
+                              {/* Mobile-optimized header */}
+                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                                  <InformationCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                                   Add languages, certifications, and other relevant information.
                                 </p>
                                 <motion.button
@@ -1303,15 +1350,17 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl hover:from-amber-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-amber-500/20 transition-all duration-300 font-semibold shadow-lg"
+                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl hover:from-amber-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-amber-500/20 transition-all duration-300 font-semibold shadow-lg w-full sm:w-auto touch-manipulation min-h-[44px]"
                                 >
-                                  <PlusIcon className="w-5 h-5 mr-2" />
+                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                   Add Section
                                 </motion.button>
                               </motion.div>
+                              
+                              {/* Mobile-first grid layout */}
                               <motion.div 
                                 layout
-                                className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
                               >
                                 <AnimatePresence>
                                   {(resumeData.additionalSections || []).map((additionalSection, index) => (
@@ -1322,12 +1371,12 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       animate={{ opacity: 1, scale: 1, y: 0 }}
                                       exit={{ opacity: 0, scale: 0.9, y: -20 }}
                                       transition={{ delay: index * 0.1 }}
-                                      className="bg-gradient-to-br from-white/80 to-amber-50/50 border-2 border-amber-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
+                                      className="bg-gradient-to-br from-white/80 to-amber-50/50 border-2 border-amber-100 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
                                     >
-                                      <div className="flex justify-between items-center mb-4">
-                                        <motion.h4 className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                                      <div className="flex justify-between items-start mb-3 sm:mb-4">
+                                        <motion.h4 className="font-bold text-gray-900 text-base sm:text-lg flex items-center gap-2 flex-1 min-w-0">
                                           <span className="text-amber-500">📋</span>
-                                          {additionalSection.title}
+                                          <span className="truncate">{additionalSection.title}</span>
                                         </motion.h4>
                                         <motion.button
                                           type="button"
@@ -1337,13 +1386,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
-                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center ml-2"
                                         >
-                                          <XMarkIcon className="w-5 h-5" />
+                                          <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                                         </motion.button>
                                       </div>
                                       
-                                      <div className="space-y-3 mb-4">
+                                      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                                         <AnimatePresence>
                                           {additionalSection.items.map((item, itemIndex) => (
                                             <motion.div
@@ -1352,14 +1401,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                               animate={{ opacity: 1, x: 0 }}
                                               exit={{ opacity: 0, x: 10 }}
                                               transition={{ delay: itemIndex * 0.05 }}
-                                              className="flex items-center space-x-3 group/item"
+                                              className="flex items-center space-x-2 sm:space-x-3 group/item"
                                             >
                                               <div className="relative flex-1">
                                                 <input
                                                   type="text"
                                                   value={item}
                                                   onChange={e => updateAdditionalSectionItem(additionalSection.id, itemIndex, e.target.value)}
-                                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 text-sm bg-white/70 backdrop-blur-sm"
+                                                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 text-sm bg-white/70 backdrop-blur-sm text-base touch-manipulation"
                                                   placeholder="Enter item"
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -1372,9 +1421,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                                 }}
                                                 whileHover={{ scale: 1.1, rotate: 90 }}
                                                 whileTap={{ scale: 0.9 }}
-                                                className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 opacity-0 group-hover/item:opacity-100"
+                                                className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 sm:opacity-0 sm:group-hover/item:opacity-100 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                                               >
-                                                <XMarkIcon className="w-4 h-4" />
+                                                <XMarkIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                               </motion.button>
                                             </motion.div>
                                           ))}
@@ -1389,7 +1438,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                         }}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="w-full px-4 py-3 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-xl hover:from-amber-200 hover:to-orange-200 transition-all duration-300 text-sm font-semibold border-2 border-amber-200 hover:border-amber-300"
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-xl hover:from-amber-200 hover:to-orange-200 transition-all duration-300 text-sm font-semibold border-2 border-amber-200 hover:border-amber-300 touch-manipulation min-h-[44px]"
                                       >
                                         + Add Item
                                       </motion.button>
@@ -1397,11 +1446,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   ))}
                                 </AnimatePresence>
                               </motion.div>
+                              
+                              {/* Empty state - Mobile optimized */}
                               {(!resumeData.additionalSections || resumeData.additionalSections.length === 0) && (
                                 <motion.div 
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
-                                  className="text-center py-12 text-gray-500"
+                                  className="text-center py-8 sm:py-12 text-gray-500"
                                 >
                                   <motion.div
                                     animate={{ 
@@ -1414,10 +1465,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       ease: "easeInOut"
                                     }}
                                   >
-                                    <InformationCircleIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
+                                    <InformationCircleIcon className="mx-auto w-12 h-12 sm:w-16 sm:h-16 mb-4 text-gray-300" />
                                   </motion.div>
-                                  <p className="text-lg">No additional sections added yet</p>
-                                  <p className="text-sm mt-2">Click &quot;Add Section&quot; to get started ✨</p>
+                                  <p className="text-base sm:text-lg">No additional sections added yet</p>
+                                  <p className="text-sm mt-2">Click "Add Section" to get started ✨</p>
                                 </motion.div>
                               )}
                             </motion.div>
@@ -1433,26 +1484,26 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             {/* Action Buttons */}
           </form>
 
-          {/* Enhanced Rename Modal */}
+          {/* Enhanced Rename Modal - Mobile Optimized */}
           <AnimatePresence>
             {renameModal.open && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
               >
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 w-full max-w-md border border-white/20"
+                  className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm sm:max-w-md border border-white/20"
                 >
                   <motion.h2 
                     initial={{ y: -10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-2"
+                    className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-900 flex items-center gap-2"
                   >
                     ✏️ Rename Section
                   </motion.h2>
@@ -1462,20 +1513,20 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                     type="text"
                     value={renameValue}
                     onChange={e => setRenameValue(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl mb-6 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                    className="w-full px-3 sm:px-4 py-3 border-2 border-gray-200 rounded-xl mb-4 sm:mb-6 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base touch-manipulation"
                     autoFocus
                     placeholder="Enter new section name..."
                   />
                   <motion.div 
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="flex justify-end space-x-4"
+                    className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4"
                   >
                     <motion.button 
                       onClick={handleRenameCancel} 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-300 font-medium"
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-300 font-medium touch-manipulation min-h-[44px]"
                     >
                       Cancel
                     </motion.button>
@@ -1483,7 +1534,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       onClick={handleRenameSubmit} 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white hover:from-orange-600 hover:to-[#0a1f3d] transition-all duration-300 font-medium shadow-lg"
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white hover:from-orange-600 hover:to-[#0a1f3d] transition-all duration-300 font-medium shadow-lg touch-manipulation min-h-[44px]"
                     >
                       Save
                     </motion.button>
@@ -1498,7 +1549,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   );
 };
 
-// Enhanced Personal Info Section Component
+// Enhanced Personal Info Section Component - Mobile Optimized
 const PersonalInfoSection: React.FC<{
   resumeData: ResumeData;
   updatePersonalInfo: (field: keyof PersonalInfo, value: string) => void;
@@ -1510,224 +1561,225 @@ const PersonalInfoSection: React.FC<{
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6"
-    >    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.1 }}
-      className="md:col-span-2"
+      className="grid grid-cols-1 gap-4 sm:gap-6"
     >
-      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        <UserIcon className="w-4 h-4 text-orange-500" />
-        Full Name *
-      </label>
-      <div className="relative group">
-        <input
-          type="text"
-          value={resumeData.personalInfo.fullName}
-          onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
-          className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-          placeholder="John Doe"
-          required
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    </motion.div>
-
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.15 }}
-      className="md:col-span-2"
-    >
-      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        <BriefcaseIcon className="w-4 h-4 text-blue-500" />
-        Profession Title *
-      </label>
-      <div className="relative group">
-        <input
-          type="text"
-          value={resumeData.personalInfo.professionTitle}
-          onChange={(e) => updatePersonalInfo('professionTitle', e.target.value)}
-          className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-          placeholder="Software Engineer, Front End Developer, Data Scientist, etc."
-          required
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    </motion.div>
-
-    {/* Profile Picture Upload Section */}
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.2 }}
-      className="md:col-span-2"
-    >
-      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        📸 Profile Picture (Optional)
-      </label>
-      <div className="flex items-center gap-4">
-        {resumeData.personalInfo.profilePicture ? (
-          <div className="relative">
-            <img
-              src={resumeData.personalInfo.profilePicture}
-              alt="Profile"
-              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
-            />
-            <button
-              type="button"
-              onClick={removeProfilePicture}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors"
-            >
-              ×
-            </button>
-          </div>
-        ) : (
-          <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
-            📸
-          </div>
-        )}
-        <div className="flex-1">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleProfilePictureUpload}
-            className="hidden"
-            id="profile-picture-upload"
-          />
-          <label
-            htmlFor="profile-picture-upload"
-            className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-500"
-          >
-            {resumeData.personalInfo.profilePicture ? 'Change Picture' : 'Upload Picture'}
-          </label>
-          <p className="text-xs text-gray-500 mt-1">Square images work best. Max 5MB.</p>
-        </div>
-      </div>
-    </motion.div>
-    
-       
-    {/*
-      { field: 'email', label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com', required: true, icon: '📧' },
-      { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: false, icon: '📱' },
-      { field: 'location', label: 'Location', type: 'text', placeholder: 'City, State', required: true, icon: '📍' },
-      { field: 'linkedIn', label: 'LinkedIn Profile', type: 'text', placeholder: 'linkedin.com/in/user-name', required: false, icon: '💼' },
-      { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },
-    ].map((fieldConfig, index) => (
+      {/* Full Name */}
       <motion.div 
-        key={fieldConfig.field}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.1 + index * 0.05 }}
+        transition={{ delay: 0.1 }}
       >
-        <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-          <span>{fieldConfig.icon}</span>
-          {fieldConfig.label} {fieldConfig.required && '*'}
+        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+          <UserIcon className="w-4 h-4 text-orange-500" />
+          Full Name *
         </label>
         <div className="relative group">
           <input
-            type={fieldConfig.type}
-            value={(resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo] as string) || ''}
-            onChange={(e) => {
-              let value = e.target.value;
-              if (fieldConfig.field === 'linkedIn') {
-                // Remove protocol and domain if user pastes full URL
-                value = value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\//, 'linkedin.com/in/');
-              }
-              if (fieldConfig.field === 'website') {
-                // Remove protocol if user pastes full URL
-                value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
-              }
-              updatePersonalInfo(fieldConfig.field as keyof PersonalInfo, value);
-            }}
-            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-            placeholder={fieldConfig.placeholder}
-            required={fieldConfig.required}
+            type="text"
+            value={resumeData.personalInfo.fullName}
+            onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+            placeholder="John Doe"
+            required
           />
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </motion.div>
-    ))}
-    
-    {/* QR Code Settings Section */}
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.4 }}
-      className="md:col-span-2 mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200"
-    >
-      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        📱 QR Code Settings (Optional)
-      </label>
-      <p className="text-xs text-gray-600 mb-4">Add a QR code to your resume header for easy access to your LinkedIn or portfolio</p>
-      
-      <div className="space-y-3">
-        <div className="flex items-center space-x-3">
+
+      {/* Profession Title */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.15 }}
+      >
+        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+          <BriefcaseIcon className="w-4 h-4 text-blue-500" />
+          Profession Title *
+        </label>
+        <div className="relative group">
           <input
-            type="checkbox"
-            id="qr-enabled"
-            checked={resumeData.personalInfo.qrCode?.enabled || false}
-            onChange={(e) => updateQRCodeSettings(
-              e.target.checked, 
-              resumeData.personalInfo.qrCode?.type || 'linkedin'
-            )}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            type="text"
+            value={resumeData.personalInfo.professionTitle}
+            onChange={(e) => updatePersonalInfo('professionTitle', e.target.value)}
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+            placeholder="Software Engineer, Front End Developer, Data Scientist, etc."
+            required
           />
-          <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700">
-            Include QR code in resume header
-          </label>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
-        
-        {resumeData.personalInfo.qrCode?.enabled && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="ml-7 space-y-2"
-          >
-            <p className="text-xs text-gray-600 mb-2">QR code will link to:</p>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="qr-linkedin"
-                  name="qr-type"
-                  value="linkedin"
-                  checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
-                  onChange={() => updateQRCodeSettings(true, 'linkedin')}
-                  disabled={!resumeData.personalInfo.linkedIn}
-                  className="h-3 w-3 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor="qr-linkedin" className={`text-xs ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
-                  LinkedIn Profile {!resumeData.personalInfo.linkedIn && '(add LinkedIn URL first)'}
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="qr-website"
-                  name="qr-type"
-                  value="website"
-                  checked={resumeData.personalInfo.qrCode?.type === 'website'}
-                  onChange={() => updateQRCodeSettings(true, 'website')}
-                  disabled={!resumeData.personalInfo.website}
-                  className="h-3 w-3 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor="qr-website" className={`text-xs ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
-                  Website/Portfolio {!resumeData.personalInfo.website && '(add website URL first)'}
-                </label>
-              </div>
+      </motion.div>
+
+      {/* Profile Picture Upload Section - Mobile Optimized */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+          📸 Profile Picture (Optional)
+        </label>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          {resumeData.personalInfo.profilePicture ? (
+            <div className="relative flex-shrink-0">
+              <img
+                src={resumeData.personalInfo.profilePicture}
+                alt="Profile"
+                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border-2 border-gray-200"
+              />
+              <button
+                type="button"
+                onClick={removeProfilePicture}
+                className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors touch-manipulation flex items-center justify-center"
+              >
+                ×
+              </button>
             </div>
-          </motion.div>
-        )}
-      </div>
+          ) : (
+            <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0">
+              📸
+            </div>
+          )}
+          <div className="flex-1 w-full sm:w-auto">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfilePictureUpload}
+              className="hidden"
+              id="profile-picture-upload"
+            />
+            <label
+              htmlFor="profile-picture-upload"
+              className="cursor-pointer inline-flex items-center justify-center w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-500 touch-manipulation min-h-[44px]"
+            >
+              {resumeData.personalInfo.profilePicture ? 'Change Picture' : 'Upload Picture'}
+            </label>
+            <p className="text-xs text-gray-500 mt-1">Square images work best. Max 5MB.</p>
+          </div>
+        </div>
+      </motion.div>
+    
+      {/* Contact Information Fields */}
+      {[
+        { field: 'email', label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com', required: true, icon: '📧' },
+        { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: false, icon: '📱' },
+        { field: 'location', label: 'Location', type: 'text', placeholder: 'City, State', required: true, icon: '📍' },
+        { field: 'linkedIn', label: 'LinkedIn Profile', type: 'text', placeholder: 'linkedin.com/in/user-name', required: false, icon: '💼' },
+        { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },
+      ].map((fieldConfig, index) => (
+        <motion.div 
+          key={fieldConfig.field}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 + index * 0.05 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+            <span>{fieldConfig.icon}</span>
+            {fieldConfig.label} {fieldConfig.required && '*'}
+          </label>
+          <div className="relative group">
+            <input
+              type={fieldConfig.type}
+              value={(resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo] as string) || ''}
+              onChange={(e) => {
+                let value = e.target.value;
+                if (fieldConfig.field === 'linkedIn') {
+                  // Remove protocol and domain if user pastes full URL
+                  value = value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\//, 'linkedin.com/in/');
+                }
+                if (fieldConfig.field === 'website') {
+                  // Remove protocol if user pastes full URL
+                  value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
+                }
+                updatePersonalInfo(fieldConfig.field as keyof PersonalInfo, value);
+              }}
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder={fieldConfig.placeholder}
+              required={fieldConfig.required}
+              inputMode={fieldConfig.type === 'email' ? 'email' : fieldConfig.type === 'tel' ? 'tel' : 'text'}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
+        </motion.div>
+      ))}
+      
+      {/* QR Code Settings Section - Mobile Optimized */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.4 }}
+        className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200"
+      >
+        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+          📱 QR Code Settings (Optional)
+        </label>
+        <p className="text-xs text-gray-600 mb-3 sm:mb-4">Add a QR code to your resume header for easy access to your LinkedIn or portfolio</p>
+        
+        <div className="space-y-3">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              id="qr-enabled"
+              checked={resumeData.personalInfo.qrCode?.enabled || false}
+              onChange={(e) => updateQRCodeSettings(
+                e.target.checked, 
+                resumeData.personalInfo.qrCode?.type || 'linkedin'
+              )}
+              className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
+            />
+            <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700 flex-1">
+              Include QR code in resume header
+            </label>
+          </div>
+          
+          {resumeData.personalInfo.qrCode?.enabled && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="ml-8 space-y-3"
+            >
+              <p className="text-xs text-gray-600 mb-2">QR code will link to:</p>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="radio"
+                    id="qr-linkedin"
+                    name="qr-type"
+                    value="linkedin"
+                    checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
+                    onChange={() => updateQRCodeSettings(true, 'linkedin')}
+                    disabled={!resumeData.personalInfo.linkedIn}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-1 touch-manipulation"
+                  />
+                  <label htmlFor="qr-linkedin" className={`text-xs flex-1 ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
+                    LinkedIn Profile {!resumeData.personalInfo.linkedIn && '(add LinkedIn URL first)'}
+                  </label>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="radio"
+                    id="qr-website"
+                    name="qr-type"
+                    value="website"
+                    checked={resumeData.personalInfo.qrCode?.type === 'website'}
+                    onChange={() => updateQRCodeSettings(true, 'website')}
+                    disabled={!resumeData.personalInfo.website}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-1 touch-manipulation"
+                  />
+                  <label htmlFor="qr-website" className={`text-xs flex-1 ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
+                    Website/Portfolio {!resumeData.personalInfo.website && '(add website URL first)'}
+                  </label>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
   );
 };
 
-// Enhanced Skills Section Component (placeholder)
+// Enhanced Skills Section Component - Mobile Optimized
 const SkillsSection: React.FC<{
   resumeData: ResumeData;
   skillCategories: string[];
@@ -1742,41 +1794,41 @@ const SkillsSection: React.FC<{
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
-      <p className="text-gray-600 flex items-center gap-2">
-        <CodeBracketIcon className="w-5 h-5 text-emerald-500" />
+      <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+        <CodeBracketIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
         Add your technical and soft skills organized by category.
       </p>
       
       {skillCategories.map((category) => (
-        <div key={category} className="bg-white/70 rounded-xl p-4 border border-emerald-200">
-          <h4 className="font-semibold text-gray-900 mb-3">{category}</h4>
-          <div className="space-y-2">
+        <div key={category} className="bg-white/70 rounded-xl p-3 sm:p-4 border border-emerald-200">
+          <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">{category}</h4>
+          <div className="space-y-2 sm:space-y-3">
             {resumeData.skills
               .filter(skill => skill.category === category)
               .map((skill) => (
-                <div key={skill.id} className="flex items-center gap-2">
+                <div key={skill.id} className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="text"
                     value={skill.name}
                     onChange={(e) => updateSkill(skill.id, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base touch-manipulation"
                     placeholder="Enter skill"
                   />
                   <button
                     type="button"
                     onClick={() => removeSkill(skill.id)}
-                    className="text-red-500 hover:text-red-700 p-1"
+                    className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                   >
-                    <XMarkIcon className="w-4 h-4" />
+                    <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               ))}
             <button
               type="button"
               onClick={() => addSkill(category)}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
+              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium py-2 px-3 rounded-lg hover:bg-emerald-50 transition-colors touch-manipulation min-h-[44px] flex items-center justify-center w-full sm:w-auto"
             >
               + Add {category} Skill
             </button>
