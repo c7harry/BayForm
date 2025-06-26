@@ -1,6 +1,6 @@
 // ResumeTemplates: Contains all resume template components
 import React from 'react';
-import { ResumeData } from '@/types/resume';
+import { ResumeData } from '../types/resume';
 import { FaLinkedin, FaGlobe } from 'react-icons/fa';
 import { QRCodeComponent } from './QRCodeComponent';
 
@@ -8,6 +8,58 @@ import { QRCodeComponent } from './QRCodeComponent';
 interface ResumeTemplateProps {
   resumeData: ResumeData;
   className?: string;
+}
+
+// Helper to group experiences by company and sort by date
+function groupExperiencesByCompany(experiences: ResumeData['experience']) {
+  const grouped: { [company: string]: ResumeData['experience'] } = {};
+  
+  experiences.forEach(exp => {
+    // Normalize company name for grouping (trim whitespace and normalize case)
+    const normalizedCompany = exp.company.trim();
+    const groupKey = normalizedCompany;
+    
+    if (!grouped[groupKey]) {
+      grouped[groupKey] = [];
+    }
+    grouped[groupKey].push(exp);
+  });
+
+  // Sort experiences within each company by start date (most recent first)
+  Object.keys(grouped).forEach(company => {
+    grouped[company].sort((a, b) => {
+      // Parse dates for proper sorting
+      const parseDate = (dateStr: string) => {
+        // Handle different date formats like "06/2025", "2025", "May 2025", etc.
+        if (!dateStr) return new Date(0);
+        
+        // If it's just a year
+        if (/^\d{4}$/.test(dateStr)) {
+          return new Date(parseInt(dateStr), 0);
+        }
+        
+        // If it's MM/YYYY format
+        if (/^\d{2}\/\d{4}$/.test(dateStr)) {
+          const [month, year] = dateStr.split('/');
+          return new Date(parseInt(year), parseInt(month) - 1);
+        }
+        
+        // If it's Month YYYY format
+        if (/^[A-Za-z]+ \d{4}$/.test(dateStr)) {
+          return new Date(dateStr);
+        }
+        
+        // Try to parse as regular date
+        return new Date(dateStr);
+      };
+      
+      const dateA = parseDate(a.startDate);
+      const dateB = parseDate(b.startDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+  });
+
+  return grouped;
 }
 
 // Helper to format phone numbers (US-style, fallback to original if not matched)
@@ -91,41 +143,81 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
             ))}
           </div>
         </div>
-      )}{/* Experience Section */}
+      )}      {/* Experience Section */}
       {resumeData.experience.length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">EXPERIENCE</h2>
-          <div className="space-y-4 mt-4">
-            {resumeData.experience.map((exp) => (
-              <div key={exp.id} className="text-left">
-                <div className="flex justify-between items-start mb-1">
-                  <div>
-                    <p className="text-base font-bold text-gray-900">{exp.company}</p>
-                    <h3 className="text-base italic text-gray-900 font-normal">{exp.position}</h3>
-                  </div>
-                  <div className="text-right text-sm text-gray-600">
-                    <p>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
-                    <p>{exp.location}</p>
-                  </div>
+          <div className="space-y-6 mt-4">
+            {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+              <div key={company} className="text-left">
+                {/* Company Header */}
+                <div className="border-l-4 border-blue-500 pl-4 mb-3">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{company}</h3>
+                  <p className="text-sm text-gray-600">{experiences[0].location}</p>
+                  {experiences.length > 1 && (
+                    <p className="text-xs text-blue-600 font-medium">
+                      {experiences.length} roles • Career progression
+                    </p>
+                  )}
                 </div>
-                {exp.description && (
-                  <p className="text-sm text-gray-700 mb-2">{exp.description}</p>
-                )}
-                {exp.achievements.length > 0 && (
-                  <ul className="space-y-1 text-sm text-gray-700">
-                    {exp.achievements.map((achievement, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="mr-2">•</span>
-                        <span>{achievement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                
+                {/* Positions within the company */}
+                <div className="space-y-4 relative">
+                  {experiences.map((exp, index) => (
+                    <div key={exp.id} className="relative pl-8">
+                      {/* Timeline for multiple roles */}
+                      {experiences.length > 1 && (
+                        <div className="absolute -left-2 top-2">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                            <span className="text-white text-xs font-bold">{experiences.length - index}</span>
+                          </div>
+                          {index < experiences.length - 1 && (
+                            <div className="absolute left-1/2 top-full w-0.5 h-8 bg-blue-300 transform -translate-x-1/2"></div>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
+                          {experiences.length > 1 && index === 0 && (
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                              Current Role
+                            </span>
+                          )}
+                          {experiences.length > 1 && index > 0 && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                              Previous Role
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right text-sm text-gray-600">
+                          <p className="font-medium">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
+                        </div>
+                      </div>
+                      
+                      {exp.description && (
+                        <p className="text-sm text-gray-700 mb-2 italic">{exp.description}</p>
+                      )}
+                      
+                      {exp.achievements.length > 0 && (
+                        <ul className="space-y-1 text-sm text-gray-700">
+                          {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                            <li key={achievementIndex} className="flex items-start">
+                              <span className="mr-2 text-blue-500">•</span>
+                              <span>{achievement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </div>
-      )}      {/* Education Section */}
+      )}{/* Education Section */}
       {resumeData.education.length > 0 && (
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">EDUCATION</h2>
@@ -301,32 +393,73 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {resumeData.experience.length > 0 && (
             <div>
               <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">EXPERIENCE</h2>
-              <div className="space-y-3">
-                {resumeData.experience.map((exp) => (
-                  <div key={exp.id}>
-                    <div className="flex justify-between items-start mb-1">
-                      <div>
-                        <h3 className="text-base font-bold text-gray-900">{exp.position}</h3>
-                        <p className="text-sm font-medium text-blue-700">{exp.company}</p>
-                      </div>
-                      <div className="text-right text-xs text-gray-600">
-                        <p className="font-medium">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
-                        <p>{exp.location}</p>
-                      </div>
+              <div className="space-y-4">
+                {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+                  <div key={company}>
+                    {/* Company Header */}
+                    <div className="mb-2">
+                      <h3 className="text-base font-bold text-blue-700 border-l-3 border-blue-600 pl-2">
+                        {company}
+                      </h3>
+                      <p className="text-xs text-gray-600 pl-2">{experiences[0].location}</p>
+                      {experiences.length > 1 && (
+                        <p className="text-xs text-blue-600 font-medium pl-2">
+                          {experiences.length} positions
+                        </p>
+                      )}
                     </div>
-                    {exp.description && (
-                      <p className="text-sm text-gray-700 mb-2 italic">{exp.description}</p>
-                    )}
-                    {exp.achievements.length > 0 && (
-                      <ul className="space-y-1 text-sm text-gray-700">
-                        {exp.achievements.map((achievement, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="w-1 h-1 bg-blue-600 rounded-full mr-2 mt-2 flex-shrink-0"></span>
-                            <span>{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    
+                    {/* Positions within the company */}
+                    <div className="space-y-2 relative">
+                      {experiences.map((exp, index) => (
+                        <div key={exp.id} className="relative pl-8">
+                          {/* Timeline indicator for multiple roles */}
+                          {experiences.length > 1 && (
+                            <div className="absolute -left-2 top-1">
+                              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                                <span className="text-white text-xs font-bold">{experiences.length - index}</span>
+                              </div>
+                              {index < experiences.length - 1 && (
+                                <div className="absolute left-1/2 top-full w-0.5 h-6 bg-blue-300 transform -translate-x-1/2"></div>
+                              )}
+                            </div>
+                          )}
+                          
+                          <div className="flex justify-between items-start mb-1">
+                            <div>
+                              <h4 className="text-sm font-bold text-gray-900">{exp.position}</h4>
+                              {experiences.length > 1 && (
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                  index === 0 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {index === 0 ? 'Current' : 'Previous'}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-right text-xs text-gray-600">
+                              <p className="font-medium">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
+                            </div>
+                          </div>
+                          
+                          {exp.description && (
+                            <p className="text-xs text-gray-700 mb-1 italic">{exp.description}</p>
+                          )}
+                          
+                          {exp.achievements.length > 0 && (
+                            <ul className="space-y-1 text-xs text-gray-700">
+                              {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                                <li key={achievementIndex} className="flex items-start">
+                                  <span className="w-1 h-1 bg-blue-600 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                                  <span>{achievement}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -474,32 +607,83 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             <span className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-sm mr-3">💼</span>
             EXPERIENCE
           </h2>
-          <div className="space-y-4">
-            {resumeData.experience.map((exp, index) => (
-              <div key={exp.id} className="bg-white rounded-lg p-4 shadow-md border-l-4 border-blue-500">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">{exp.position}</h3>
-                    <p className="text-cyan-400 font-mono">{exp.company}</p>
-                  </div>
-                  <div className="text-right text-sm text-gray-600 bg-gray-50 px-3 py-1 rounded font-mono">
-                    <p>{exp.startDate} → {exp.current ? 'Present' : exp.endDate}</p>
-                    <p>{exp.location}</p>
-                  </div>
+          <div className="space-y-6">
+            {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+              <div key={company} className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                {/* Company Header */}
+                <div className="mb-4 pb-3 border-b border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></span>
+                    {company}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">{experiences[0].location}</p>
+                  {experiences.length > 1 && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1 rounded-full font-medium">
+                        Career Progression • {experiences.length} Roles
+                      </span>
+                    </div>
+                  )}
                 </div>
-                {exp.description && (
-                  <p className="text-sm text-gray-700 mb-3 italic">{exp.description}</p>
-                )}
-                {exp.achievements.length > 0 && (
-                  <ul className="space-y-1 text-sm text-gray-700">
-                    {exp.achievements.map((achievement, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="w-1 h-1 bg-blue-600 rounded-full mr-2 mt-2 flex-shrink-0"></span>
-                        <span>{achievement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                
+                {/* Positions within the company */}
+                <div className="space-y-4">
+                  {experiences.map((exp, index) => (
+                    <div key={exp.id} className="relative pl-8">
+                      {/* Timeline for multiple roles */}
+                      {experiences.length > 1 && (
+                        <div className="absolute -left-2 top-2">
+                          <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                            <span className="text-white text-xs font-bold">{experiences.length - index}</span>
+                          </div>
+                          {index < experiences.length - 1 && (
+                            <div className="absolute left-1/2 top-full w-0.5 h-8 bg-gradient-to-b from-blue-300 to-cyan-300 transform -translate-x-1/2"></div>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className={`${experiences.length > 1 ? '' : ''}`}>
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="text-lg font-bold text-gray-900">{exp.position}</h4>
+                            {experiences.length > 1 && (
+                              <div className="flex gap-2 mt-1">
+                                {index === 0 && (
+                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                                    Current Position
+                                  </span>
+                                )}
+                                {index > 0 && (
+                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                                    Previous Position
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-right text-sm text-gray-600 bg-gradient-to-r from-gray-50 to-blue-50 px-3 py-1 rounded-lg font-mono">
+                            <p className="font-semibold">{exp.startDate} → {exp.current ? 'Present' : exp.endDate}</p>
+                          </div>
+                        </div>
+                        
+                        {exp.description && (
+                          <p className="text-sm text-gray-700 mb-3 italic bg-gray-50 p-3 rounded-lg">{exp.description}</p>
+                        )}
+                        
+                        {exp.achievements.length > 0 && (
+                          <ul className="space-y-2 text-sm text-gray-700">
+                            {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                              <li key={achievementIndex} className="flex items-start">
+                                <span className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
+                                <span>{achievement}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -674,32 +858,83 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       {resumeData.experience.length > 0 && (
         <div className="mb-6">
           <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono"># Work Experience</h2>
-          <div className="space-y-3">
-            {resumeData.experience.map((exp, index) => (
-              <div key={exp.id} className="bg-gray-800 rounded-lg p-4 border-l-4 border-green-500">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{exp.position}</h3>
-                    <p className="text-cyan-400 font-mono">{exp.company}</p>
+          <div className="space-y-6">
+            {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+              <div key={company} className="bg-gray-800 rounded-lg p-4 border border-green-500">
+                {/* Company Header - Git repo style */}
+                <div className="mb-4 pb-3 border-b border-gray-700">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-green-400 font-mono">$</span>
+                    <span className="text-cyan-400 font-mono">cd</span>
+                    <h3 className="text-lg font-bold text-white font-mono">{company.toLowerCase().replace(/\s+/g, '-')}/</h3>
                   </div>
-                  <div className="text-right text-sm text-gray-400 bg-gray-700 px-2 py-1 rounded font-mono">
-                    <p>{exp.startDate} → {exp.current ? 'HEAD' : exp.endDate}</p>
-                    <p>{exp.location}</p>
-                  </div>
+                  <p className="text-gray-400 text-sm font-mono ml-4">📍 {experiences[0].location}</p>
+                  {experiences.length > 1 && (
+                    <p className="text-green-400 text-xs font-mono ml-4">
+                      # {experiences.length} commits (career progression)
+                    </p>
+                  )}
                 </div>
-                {exp.description && (
-                  <p className="text-gray-300 mb-2 text-sm bg-gray-700 p-2 rounded">{exp.description}</p>
-                )}
-                {exp.achievements.length > 0 && (
-                  <div className="space-y-1">
-                    {exp.achievements.map((achievement, index) => (
-                      <div key={index} className="flex items-start text-sm">
-                        <span className="text-green-400 mr-2 font-mono">+</span>
-                        <span className="text-gray-300">{achievement}</span>
+                
+                {/* Git log style for positions */}
+                <div className="space-y-3">
+                  {experiences.map((exp, index) => (
+                    <div key={exp.id} className="relative">
+                      {/* Commit hash and timeline */}
+                      <div className="flex items-start gap-3 mb-2">
+                        {experiences.length > 1 && (
+                          <div className="flex-shrink-0">
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                              <span className="text-xs font-bold text-black">{experiences.length - index}</span>
+                            </div>
+                            {index < experiences.length - 1 && (
+                              <div className="w-0.5 h-8 bg-green-500 mx-auto mt-1"></div>
+                            )}
+                          </div>
+                        )}
+                        
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="text-base font-bold text-white font-mono">{exp.position}</h4>
+                              {experiences.length > 1 && (
+                                <span className={`text-xs px-2 py-1 rounded font-mono ${
+                                  index === 0 
+                                    ? 'bg-green-900 text-green-300' 
+                                    : 'bg-gray-700 text-gray-300'
+                                }`}>
+                                  {index === 0 ? 'HEAD' : `~${index}`}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-right text-xs text-gray-400 bg-gray-900 px-2 py-1 rounded font-mono">
+                              <p>{exp.startDate} → {exp.current ? 'HEAD' : exp.endDate}</p>
+                            </div>
+                          </div>
+                          
+                          {exp.description && (
+                            <div className="mb-2">
+                              <span className="text-green-400 font-mono text-xs"># </span>
+                              <span className="text-gray-300 text-sm bg-gray-900 p-2 rounded font-mono">{exp.description}</span>
+                            </div>
+                          )}
+                          
+                          {exp.achievements.length > 0 && (
+                            <div className="space-y-1">
+                              <div className="text-green-400 font-mono text-xs">// Key contributions:</div>
+                              {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                                <div key={achievementIndex} className="flex items-start text-sm">
+                                  <span className="text-green-400 mr-2 font-mono">+</span>
+                                  <span className="text-gray-300">{achievement}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -892,33 +1127,73 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               <h2 className="text-xl font-serif text-gray-900 mb-6 border-b border-gray-300 pb-2">
                 PROFESSIONAL EXPERIENCE
               </h2>
-              <div className="space-y-5">
-                {resumeData.experience.map((exp) => (
-                  <div key={exp.id} className="relative pl-6">
-                    <div className="absolute left-0 top-1 w-2 h-2 bg-gray-400 rounded-full"></div>
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{exp.position}</h3>
-                        <p className="text-base text-gray-700 font-medium italic">{exp.company}</p>
-                      </div>
-                      <div className="text-right text-sm text-gray-600">
-                        <p className="font-light">{exp.startDate} – {exp.current ? 'Present' : exp.endDate}</p>
-                        <p className="font-light">{exp.location}</p>
-                      </div>
+              <div className="space-y-6">
+                {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+                  <div key={company} className="relative">
+                    {/* Company Header */}
+                    <div className="mb-4">
+                      <h3 className="text-lg font-serif text-gray-900 font-semibold border-l-4 border-yellow-500 pl-3">
+                        {company}
+                      </h3>
+                      <p className="text-sm text-gray-600 font-light pl-3 mt-1">{experiences[0].location}</p>
+                      {experiences.length > 1 && (
+                        <p className="text-xs text-yellow-600 font-light pl-3 uppercase tracking-wide">
+                          Career Progression • {experiences.length} Positions
+                        </p>
+                      )}
                     </div>
-                    {exp.description && (
-                      <p className="text-sm text-gray-700 mb-3 italic font-light">{exp.description}</p>
-                    )}
-                    {exp.achievements.length > 0 && (
-                      <ul className="space-y-2 text-sm text-gray-700">
-                        {exp.achievements.map((achievement, index) => (
-                          <li key={index} className="flex items-start font-light">
-                            <span className="w-1 h-1 bg-gray-400 rounded-full mr-3 mt-2 flex-shrink-0"></span>
-                            <span>{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    
+                    {/* Positions within the company */}
+                    <div className="space-y-4 relative">
+                      {experiences.map((exp, index) => (
+                        <div key={exp.id} className="relative pl-8">
+                          {/* Timeline for multiple roles */}
+                          {experiences.length > 1 && (
+                            <div className="absolute -left-2 top-1">
+                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center border-2 border-white">
+                                <span className="text-white text-xs font-bold">{experiences.length - index}</span>
+                              </div>
+                              {index < experiences.length - 1 && (
+                                <div className="absolute left-1/2 top-full w-0.5 h-8 bg-yellow-300 transform -translate-x-1/2"></div>
+                              )}
+                            </div>
+                          )}
+                          
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
+                              {experiences.length > 1 && (
+                                <span className={`text-xs px-2 py-1 rounded-full font-light uppercase tracking-wide ${
+                                  index === 0 
+                                    ? 'bg-green-100 text-green-700' 
+                                    : 'bg-gray-100 text-gray-700'
+                                }`}>
+                                  {index === 0 ? 'Current Role' : 'Previous Role'}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-right text-sm text-gray-600">
+                              <p className="font-light">{exp.startDate} – {exp.current ? 'Present' : exp.endDate}</p>
+                            </div>
+                          </div>
+                          
+                          {exp.description && (
+                            <p className="text-sm text-gray-700 mb-3 italic font-light">{exp.description}</p>
+                          )}
+                          
+                          {exp.achievements.length > 0 && (
+                            <ul className="space-y-2 text-sm text-gray-700">
+                              {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                                <li key={achievementIndex} className="flex items-start font-light">
+                                  <span className="w-1 h-1 bg-yellow-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                                  <span>{achievement}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
