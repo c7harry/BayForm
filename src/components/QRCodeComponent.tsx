@@ -6,6 +6,7 @@ interface QRCodeComponentProps {
   personalInfo: {
     linkedIn?: string;
     website?: string;
+    profilePicture?: string;
     qrCode?: QRCodeSettings;
   };
   size?: number;
@@ -15,7 +16,7 @@ interface QRCodeComponentProps {
 
 export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({ 
   personalInfo, 
-  size = 48, 
+  size = 80, 
   className = '',
   theme = 'default'
 }) => {
@@ -93,7 +94,7 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
   const style = getQRStyle();
 
   return (
-    <div className={`flex-shrink-0 ${className}`}>
+    <div className={`flex items-center gap-3 flex-shrink-0 ${className}`}>
       <div className={style.container}>
         <QRCodeSVG
           value={qrValue}
@@ -105,6 +106,16 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
           className={style.border}
         />
       </div>
+      {personalInfo.profilePicture && (
+        <div className={style.container}>
+          <img
+            src={personalInfo.profilePicture}
+            alt="Profile"
+            className={`${style.border} object-cover`}
+            style={{ width: size - 8, height: size - 8 }}
+          />
+        </div>
+      )}
     </div>
   );
 };

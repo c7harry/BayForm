@@ -15,6 +15,7 @@ export interface PersonalInfo {
   location: string;
   linkedIn?: string;
   website?: string;
+  profilePicture?: string; // Base64 encoded image or URL
   qrCode?: QRCodeSettings;
 }
 

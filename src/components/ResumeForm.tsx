@@ -111,6 +111,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         location: '',
         linkedIn: '',
         website: '',
+        profilePicture: '',
         qrCode: {
           enabled: false,
           type: 'linkedin'
@@ -294,6 +295,35 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         qrCode: { enabled, type }
       }
     }));
+  };
+
+  // --- Profile Picture Helper ---
+  const handleProfilePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+      }
+      
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        updatePersonalInfo('profilePicture', base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeProfilePicture = () => {
+    updatePersonalInfo('profilePicture', '');
   };
 
   // --- Experience Helpers ---
@@ -857,6 +887,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                               resumeData={resumeData} 
                               updatePersonalInfo={updatePersonalInfo}
                               updateQRCodeSettings={updateQRCodeSettings}
+                              handleProfilePictureUpload={handleProfilePictureUpload}
+                              removeProfilePicture={removeProfilePicture}
                             />
                           )}
                           {section.key === 'skills' && (
@@ -1471,7 +1503,9 @@ const PersonalInfoSection: React.FC<{
   resumeData: ResumeData;
   updatePersonalInfo: (field: keyof PersonalInfo, value: string) => void;
   updateQRCodeSettings: (enabled: boolean, type: 'linkedin' | 'website' | 'none') => void;
-}> = ({ resumeData, updatePersonalInfo, updateQRCodeSettings }) => {
+  handleProfilePictureUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  removeProfilePicture: () => void;
+}> = ({ resumeData, updatePersonalInfo, updateQRCodeSettings, handleProfilePictureUpload, removeProfilePicture }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -1522,13 +1556,65 @@ const PersonalInfoSection: React.FC<{
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
     </motion.div>
+
+    {/* Profile Picture Upload Section */}
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.2 }}
+      className="md:col-span-2"
+    >
+      <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        📸 Profile Picture (Optional)
+      </label>
+      <div className="flex items-center gap-4">
+        {resumeData.personalInfo.profilePicture ? (
+          <div className="relative">
+            <img
+              src={resumeData.personalInfo.profilePicture}
+              alt="Profile"
+              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
+            />
+            <button
+              type="button"
+              onClick={removeProfilePicture}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors"
+            >
+              ×
+            </button>
+          </div>
+        ) : (
+          <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+            📸
+          </div>
+        )}
+        <div className="flex-1">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePictureUpload}
+            className="hidden"
+            id="profile-picture-upload"
+          />
+          <label
+            htmlFor="profile-picture-upload"
+            className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-500"
+          >
+            {resumeData.personalInfo.profilePicture ? 'Change Picture' : 'Upload Picture'}
+          </label>
+          <p className="text-xs text-gray-500 mt-1">Square images work best. Max 5MB.</p>
+        </div>
+      </div>
+    </motion.div>
     
-    {[
+       
+    {/*
       { field: 'email', label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com', required: true, icon: '📧' },
       { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: false, icon: '📱' },
       { field: 'location', label: 'Location', type: 'text', placeholder: 'City, State', required: true, icon: '📍' },
       { field: 'linkedIn', label: 'LinkedIn Profile', type: 'text', placeholder: 'linkedin.com/in/user-name', required: false, icon: '💼' },
-      { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },    ].map((fieldConfig, index) => (
+      { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },
+    ].map((fieldConfig, index) => (
       <motion.div 
         key={fieldConfig.field}
         initial={{ opacity: 0, x: -20 }}
@@ -1561,7 +1647,8 @@ const PersonalInfoSection: React.FC<{
           />
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
-      </motion.div>    ))}
+      </motion.div>
+    ))}
     
     {/* QR Code Settings Section */}
     <motion.div 
@@ -1640,7 +1727,7 @@ const PersonalInfoSection: React.FC<{
   );
 };
 
-// Enhanced Skills Section Component
+// Enhanced Skills Section Component (placeholder)
 const SkillsSection: React.FC<{
   resumeData: ResumeData;
   skillCategories: string[];
@@ -1650,137 +1737,52 @@ const SkillsSection: React.FC<{
   updateSkill: (id: string, value: string) => void;
   removeSkill: (id: string) => void;
   DEFAULT_SKILL_CATEGORIES: string[];
-}> = ({ 
-  resumeData, 
-  skillCategories, 
-  addSkillCategory, 
-  removeSkillCategory, 
-  addSkill, 
-  updateSkill, 
-  removeSkill, 
-  DEFAULT_SKILL_CATEGORIES 
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-  >
+}> = ({ resumeData, skillCategories, addSkill, updateSkill, removeSkill }) => {
+  return (
     <motion.div 
-      initial={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex justify-between items-center mb-8"
+      className="space-y-6"
     >
       <p className="text-gray-600 flex items-center gap-2">
         <CodeBracketIcon className="w-5 h-5 text-emerald-500" />
-        Organize your skills into categories for better presentation.
+        Add your technical and soft skills organized by category.
       </p>
-      <motion.button
-        type="button"
-        onClick={() => {
-          addSkillCategory();
-          toast.success('New skill category added!', { icon: '🎯' });
-        }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 font-semibold shadow-lg"
-      >
-        <PlusIcon className="w-5 h-5 mr-2" />
-        Add Category
-      </motion.button>
-    </motion.div>
-    
-       
-    <motion.div 
-      layout
-      className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-    >
-      <AnimatePresence>
-        {skillCategories.map((category, index) => (
-          <motion.div
-            key={category}
-            layout
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-gradient-to-br from-white/80 to-emerald-50/50 border-2 border-emerald-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm group"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <motion.h4 
-                className="font-bold text-gray-900 capitalize text-lg flex items-center gap-2"
-                layoutId={`category-${category}`}
-              >
-                <span className="text-emerald-500">💻</span>
-                {category.replace(/\b\w/g, c => c.toUpperCase())}
-              </motion.h4>
-              {!DEFAULT_SKILL_CATEGORIES.includes(category) && (
-                <motion.button
-                  type="button"
-                  onClick={() => {
-                    removeSkillCategory(category);
-                    toast.success('Skill category removed!', { icon: '🗑️' });
-                  }}
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50"
-                >
-                  <XMarkIcon className="w-5 h-5" />
-                </motion.button>
-              )}
-            </div>
-            
-            <div className="space-y-3 mb-4">
-              <AnimatePresence>
-                {resumeData.skills.filter(skill => skill.category === category).map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ delay: skillIndex * 0.05 }}
-                    className="flex items-center space-x-3 group/skill"
+      
+      {skillCategories.map((category) => (
+        <div key={category} className="bg-white/70 rounded-xl p-4 border border-emerald-200">
+          <h4 className="font-semibold text-gray-900 mb-3">{category}</h4>
+          <div className="space-y-2">
+            {resumeData.skills
+              .filter(skill => skill.category === category)
+              .map((skill) => (
+                <div key={skill.id} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={skill.name}
+                    onChange={(e) => updateSkill(skill.id, e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    placeholder="Enter skill"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSkill(skill.id)}
+                    className="text-red-500 hover:text-red-700 p-1"
                   >
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={skill.name}
-                        onChange={e => updateSkill(skill.id, e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-sm bg-white/70 backdrop-blur-sm"
-                        placeholder="Enter skill"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    </div>
-                    <motion.button
-                      type="button"
-                      onClick={() => {
-                        removeSkill(skill.id);
-                        toast.success('Skill removed!', { icon: '❌' });
-                      }}
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 opacity-0 group-hover/skill:opacity-100"
-                    >
-                      <XMarkIcon className="w-4 h-4" />
-                    </motion.button>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-            
-            <motion.button
+                    <XMarkIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            <button
               type="button"
-              onClick={() => {
-                addSkill(category);
-                toast.success('New skill added!', { icon: '⭐' });
-              }}
-              whileHover={{ scale:  1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full px-4 py-3 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 rounded-xl hover:from-emerald-200 hover:to-teal-200 transition-all duration-300 text-sm font-semibold border-2 border-emerald-200 hover:border-emerald-300"
+              onClick={() => addSkill(category)}
+              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
             >
-              + Add Skill
-            </motion.button>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+              + Add {category} Skill
+            </button>
+          </div>
+        </div>
+      ))}
     </motion.div>
-  </motion.div>
-);
+  );
+};
