@@ -139,52 +139,54 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Template Selector - Mobile Optimized */}
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <label className="text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">Template:</label>
-                  <select
-                    value={selectedTemplate}
-                    onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
-                    className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2 border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 bg-white text-slate-900 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]"
-                  >
-                    <option value="modern">Modern</option>
-                    <option value="executive">Executive</option>
-                    <option value="creative">Creative</option>
-                    <option value="tech">Tech</option>
-                    <option value="elegant">Elegant</option>
-                  </select>
-                </div>
+                {/* Template Selector and Action Buttons - Desktop Row */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                    <label className="text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">Template:</label>
+                    <select
+                      value={selectedTemplate}
+                      onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
+                      className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2 border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 bg-white text-slate-900 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]"
+                    >
+                      <option value="modern">Modern</option>
+                      <option value="executive">Executive</option>
+                      <option value="creative">Creative</option>
+                      <option value="tech">Tech</option>
+                      <option value="elegant">Elegant</option>
+                    </select>
+                  </div>
 
-                {/* Action Buttons - Mobile Stacked */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <button
-                    onClick={handleGeneratePDF}
-                    disabled={isGeneratingPDF}
-                    className="flex-1 sm:flex-none bg-gradient-to-r from-green-500 to-green-600 text-white px-4 sm:px-6 py-3 sm:py-2 rounded-lg sm:rounded-xl hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 flex items-center justify-center space-x-2 touch-manipulation min-h-[44px]"
-                  >
-                    {isGeneratingPDF ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-sm sm:text-base">Generating...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span className="text-sm sm:text-base">Download PDF</span>
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => handleEditResume(selectedResume)}
-                    className="flex-1 sm:flex-none bg-[#0F2D52] text-white px-4 sm:px-6 py-3 sm:py-2 rounded-lg sm:rounded-xl hover:bg-[#0a1f3d] focus:outline-none focus:ring-4 focus:ring-[#0F2D52]/50 font-semibold transition-all duration-300 flex items-center justify-center space-x-2 touch-manipulation min-h-[44px]"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span className="text-sm sm:text-base">Edit Resume</span>
-                  </button>
+                  {/* Action Buttons - Mobile Row, Desktop Inline */}
+                  <div className="flex flex-row gap-2 sm:gap-3">
+                    <button
+                      onClick={handleGeneratePDF}
+                      disabled={isGeneratingPDF}
+                      className="flex-1 sm:flex-none bg-gradient-to-r from-green-500 to-green-600 text-white px-4 sm:px-6 py-3 sm:py-2 rounded-lg sm:rounded-xl hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 flex items-center justify-center space-x-2 touch-manipulation min-h-[44px]"
+                    >
+                      {isGeneratingPDF ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-sm sm:text-base">Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-sm sm:text-base">Download PDF</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => handleEditResume(selectedResume)}
+                      className="flex-1 sm:flex-none bg-[#0F2D52] text-white px-4 sm:px-6 py-3 sm:py-2 rounded-lg sm:rounded-xl hover:bg-[#0a1f3d] focus:outline-none focus:ring-4 focus:ring-[#0F2D52]/50 font-semibold transition-all duration-300 flex items-center justify-center space-x-2 touch-manipulation min-h-[44px]"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      <span className="text-sm sm:text-base">Edit Resume</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
