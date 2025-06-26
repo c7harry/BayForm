@@ -5,16 +5,18 @@ import { Inter } from 'next/font/google';
 // Initialize the Inter font with Latin subset
 const interFont = Inter({ subsets: ['latin'] });
 
-// Metadata for the application - Mobile optimized
+// Metadata for the application
 export const metadata = {
   title: 'BayForm',
   description: 'Create professional simple resumes for job applications',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+// Viewport configuration - separate export as required by Next.js
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 // Root layout component wraps all pages
