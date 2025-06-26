@@ -193,7 +193,7 @@ export default function Home() {
           </div>
           {/* Resume Preview - Mobile Optimized */}
           <div className="w-full px-2 sm:px-4 py-4 sm:py-8">
-            <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit">
               {/* Browser-like header - Hidden on small mobile */}
               <div className="hidden sm:block p-2 bg-gradient-to-r from-[#0F2D52]/10 to-[#0F2D52]/5 border-b border-slate-200">
                 <div className="flex items-center space-x-2">
@@ -205,11 +205,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              {/* Resume Content - Mobile responsive with better scaling */}
-              <div className="bg-white relative overflow-hidden" id="resume-preview">
-                <div className="w-full overflow-x-auto overflow-y-auto max-h-[80vh] sm:max-h-none">
-                  <div className="origin-top-left scale-[0.55] sm:scale-100 w-[180%] sm:w-full">
-                    {renderTemplate(selectedResume, selectedTemplate)}
+              {/* Resume Content - Mobile responsive with proper fit */}
+              <div className="bg-white relative h-fit overflow-hidden" id="resume-preview">
+                <div className="w-full overflow-hidden h-fit">
+                  <div className="origin-top-left scale-[0.55] sm:scale-100 w-[calc(100%/0.55)] sm:w-full h-fit leading-none">
+                    <div className="w-full h-fit leading-none">
+                      {renderTemplate(selectedResume, selectedTemplate)}
+                    </div>
                   </div>
                 </div>
               </div>
