@@ -85,7 +85,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
   });
 
   return (
-    <div className={`bg-white px-0 py-4 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
+    <div className={`bg-white px-6 py-4 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>      {/* Header */}
       <div className="mb-1 relative">
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute -top-3 right-6">
@@ -96,7 +96,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
           />
         </div>
         
-        <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left tracking-tight pr-40">
+        <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left tracking-tight pr-24">
           {resumeData.personalInfo.fullName}
         </h1>
         {resumeData.personalInfo.professionTitle && (
@@ -299,7 +299,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-6 w-full ${className}`} id="resume-preview">
+    <div className={`bg-white p-6 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with gradient accent */}
       <div className="relative mb-4">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
@@ -309,7 +309,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="classic" />
         </div>
         
-        <div className="pt-6 pb-4 pr-40">
+        <div className="pt-6 pb-4 pr-24">
           <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
             {resumeData.personalInfo.fullName}
           </h1>
@@ -535,7 +535,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-6 w-full ${className}`} id="resume-preview">
+    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-6 mx-auto print:bg-white print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with geometric design */}
       <div className="relative mb-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10"></div>
@@ -546,7 +546,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="minimal" />
         </div>
         
-        <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg pr-48">
+        <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg pr-24">
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
             {resumeData.personalInfo.fullName}
           </h1>
@@ -794,7 +794,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
   });
 
   return (
-    <div className={`bg-gray-900 text-white p-6 w-full ${className}`} id="resume-preview">
+    <div className={`bg-gray-900 text-white p-6 mx-auto print:bg-white print:text-black print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with terminal-like design */}
       <div className="bg-black rounded-lg p-4 mb-6 border border-green-500 relative">
         {/* QR Code positioned absolutely in top right */}
@@ -802,7 +802,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
           <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="tech" />
         </div>
         
-        <div className="flex items-center space-x-2 mb-3 pr-48">
+        <div className="flex items-center space-x-2 mb-3 pr-24">
           <div className="w-3 h-3 bg-red-500 rounded-full"></div>
           <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
           <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -1028,7 +1028,7 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-8 w-full ${className}`} id="resume-preview">
+    <div className={`bg-white p-8 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Elegant Header */}
       <div className="text-center mb-8 relative">
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>

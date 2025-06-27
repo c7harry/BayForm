@@ -193,8 +193,8 @@ export default function Home() {
             </div>
           </div>
           {/* Resume Preview - Mobile Optimized */}
-          <div className="w-full px-2 sm:px-4 py-4 sm:py-8">
-            <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit">
+          <div className="w-full px-2 sm:px-4 py-4 sm:py-8 flex justify-center">
+            <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit w-fit">
               {/* Browser-like header - Hidden on small mobile */}
               <div className="hidden sm:block p-2 bg-gradient-to-r from-[#0F2D52]/10 to-[#0F2D52]/5 border-b border-slate-200">
                 <div className="flex items-center space-x-2">
@@ -207,10 +207,10 @@ export default function Home() {
                 </div>
               </div>
               {/* Resume Content - Mobile responsive with proper fit */}
-              <div className="bg-white relative h-fit overflow-hidden" id="resume-preview">
-                <div className="w-full overflow-hidden h-fit">
-                  <div className="origin-top-left scale-[0.55] sm:scale-100 w-[calc(100%/0.55)] sm:w-full h-fit leading-none">
-                    <div className="w-full h-fit leading-none">
+              <div className="bg-white relative h-fit overflow-hidden flex justify-center" id="resume-preview">
+                <div className="overflow-hidden h-fit">
+                  <div className="origin-top-left scale-[0.55] sm:scale-100 w-[calc(210mm*0.55)] sm:w-[210mm] h-fit leading-none">
+                    <div className="h-fit leading-none">
                       {renderTemplate(selectedResume, selectedTemplate)}
                     </div>
                   </div>
