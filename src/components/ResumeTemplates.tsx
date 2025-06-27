@@ -299,22 +299,22 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-6 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
+    <div className={`bg-white p-3 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with gradient accent */}
-      <div className="relative mb-4">
+      <div className="relative mb-1">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
         
         {/* QR Code positioned absolutely in top right */}
-        <div className="absolute top-6 right-0">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="classic" />
+        <div className="absolute top-4 right-0">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={75} theme="classic" />
         </div>
         
-        <div className="pt-6 pb-4 pr-24">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
+        <div className="pt-4 pb-2 pr-20">
+          <h1 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">
             {resumeData.personalInfo.fullName}
           </h1>
           {resumeData.personalInfo.professionTitle && (
-            <h2 className="text-xl font-medium text-blue-700 mb-3 uppercase tracking-wide">
+            <h2 className="text-lg font-medium text-blue-700 mb-2 uppercase tracking-wide">
               {resumeData.personalInfo.professionTitle}
             </h2>
           )}
@@ -336,14 +336,14 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       </div>
 
       {/* Two-column layout */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-4">
         {/* Left column - Skills and Additional Info */}
-        <div className="col-span-1 space-y-4">
+        <div className="col-span-1 space-y-3">
           {/* Skills Section */}
           {Object.keys(skillsByCategory).length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">SKILLS</h2>
-              <div className="space-y-2">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 pb-1 border-b-2 border-blue-600 uppercase tracking-wide">SKILLS</h2>
+              <div className="space-y-1">
                 {Object.entries(skillsByCategory).map(([category, skills]) => (
                   <div key={category}>
                     <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-1">
@@ -365,8 +365,8 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {/* Additional Information */}
           {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">ADDITIONAL</h2>
-              <div className="space-y-2">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 pb-1 border-b-2 border-blue-600 uppercase tracking-wide">ADDITIONAL</h2>
+              <div className="space-y-1">
                 {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
                   <div key={section.id}>
                     <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-1">
@@ -388,12 +388,12 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         </div>
 
         {/* Right column - Experience, Education, Projects */}
-        <div className="col-span-2 space-y-4">
+        <div className="col-span-2 space-y-3">
           {/* Experience Section */}
           {resumeData.experience.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">EXPERIENCE</h2>
-              <div className="space-y-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 pb-1 border-b-2 border-blue-600 uppercase tracking-wide">EXPERIENCE</h2>
+              <div className="space-y-3">
                 {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
                   <div key={company}>
                     {/* Company Header */}
@@ -410,7 +410,7 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                     </div>
                     
                     {/* Positions within the company */}
-                    <div className="space-y-2 relative">
+                    <div className="space-y-1 relative">
                       {experiences.map((exp, index) => (
                         <div key={exp.id} className="relative pl-8">
                           {/* Timeline indicator for multiple roles */}
@@ -469,8 +469,8 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {/* Education Section */}
           {resumeData.education.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">EDUCATION</h2>
-              <div className="space-y-2">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 pb-1 border-b-2 border-blue-600 uppercase tracking-wide">EDUCATION</h2>
+              <div className="space-y-1">
                 {resumeData.education.map((edu) => (
                   <div key={edu.id}>
                     <div className="flex justify-between items-start">
@@ -493,8 +493,8 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {/* Projects Section */}
           {resumeData.projects.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">PROJECTS</h2>
-              <div className="space-y-2">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 pb-1 border-b-2 border-blue-600 uppercase tracking-wide">PROJECTS</h2>
+              <div className="space-y-1">
                 {resumeData.projects.map((project) => (
                   <div key={project.id}>
                     <h3 className="text-sm font-bold text-gray-900">{project.name}</h3>
