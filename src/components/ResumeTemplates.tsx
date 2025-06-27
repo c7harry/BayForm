@@ -835,7 +835,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       {/* Skills as code blocks */}
       {Object.keys(skillsByCategory).length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono"># Technical Skills</h2>
+          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono">&#35; Technical Skills</h2>
           <div className="bg-gray-800 rounded-lg p-4 border border-cyan-500">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <div key={category} className="mb-3 font-mono">
@@ -857,7 +857,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       {/* Experience as commit history */}
       {resumeData.experience.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono"># Work Experience</h2>
+          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono">&#35; Work Experience</h2>
           <div className="space-y-6">
             {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
               <div key={company} className="bg-gray-800 rounded-lg p-4 border border-green-500">
@@ -914,14 +914,14 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                           
                           {exp.description && (
                             <div className="mb-2">
-                              <span className="text-green-400 font-mono text-xs"># </span>
+                              <span className="text-green-400 font-mono text-xs">&#35; </span>
                               <span className="text-gray-300 text-sm bg-gray-900 p-2 rounded font-mono">{exp.description}</span>
                             </div>
                           )}
                           
                           {exp.achievements.length > 0 && (
                             <div className="space-y-1">
-                              <div className="text-green-400 font-mono text-xs">// Key contributions:</div>
+                              <div className="text-green-400 font-mono text-xs">&#47;&#47; Key contributions:</div>
                               {exp.achievements.map((achievement: string, achievementIndex: number) => (
                                 <div key={achievementIndex} className="flex items-start text-sm">
                                   <span className="text-green-400 mr-2 font-mono">+</span>
@@ -946,7 +946,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         {/* Projects as repositories */}
         {resumeData.projects.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono"># Projects</h2>
+            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Projects</h2>
             <div className="space-y-3">
               {resumeData.projects.map((project) => (
                 <div key={project.id} className="bg-gray-800 rounded-lg p-3 border border-purple-500">
@@ -976,7 +976,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         {/* Education */}
         {resumeData.education.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono"># Education</h2>
+            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Education</h2>
             <div className="space-y-3">
               {resumeData.education.map((edu) => (
                 <div key={edu.id} className="bg-gray-800 rounded-lg p-3 border border-blue-500">
@@ -998,7 +998,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       {/* Additional Info */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
         <div className="bg-gray-800 rounded-lg p-4 border border-yellow-500">
-          <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono"># Additional Info</h2>
+          <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Additional Info</h2>
           <div className="grid grid-cols-2 gap-3">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id} className="font-mono">
