@@ -794,144 +794,153 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
   });
 
   return (
-    <div className={`bg-gray-900 text-white p-6 mx-auto print:bg-white print:text-black print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
-      {/* Header with terminal-like design */}
-      <div className="bg-black rounded-lg p-4 mb-6 border border-green-500 relative">
+    <div className={`bg-white p-4 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
+      {/* Header with modern geometric design */}
+      <div className="relative bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-white rounded-lg p-4 mb-4">
+        {/* Geometric accent elements */}
+        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-bl-full"></div>
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-teal-500/20 to-blue-500/20 rounded-tr-full"></div>
+        
         {/* QR Code positioned absolutely in top right */}
-        <div className="absolute top-2 right-2">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="tech" />
+        <div className="absolute top-2 right-2 z-10">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={75} theme="tech" />
         </div>
         
-        <div className="flex items-center space-x-2 mb-3 pr-24">
-          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span className="text-green-400 text-xs ml-2">~/resume/portfolio</span>
-        </div>
-        <div className="font-mono">
-          <div className="text-green-400 mb-1">$ whoami</div>
-          <h1 className="text-2xl font-bold text-white mb-2">{resumeData.personalInfo.fullName}</h1>
+        <div className="relative z-10 pr-20">
+          <h1 className="text-3xl font-bold mb-1 tracking-tight">{resumeData.personalInfo.fullName}</h1>
           {resumeData.personalInfo.professionTitle && (
-            <>
-              <div className="text-green-400 mb-1">$ cat role.txt</div>
-              <h2 className="text-lg text-cyan-400 mb-3">{resumeData.personalInfo.professionTitle}</h2>
-            </>
+            <h2 className="text-lg font-medium text-blue-200 mb-3 tracking-wide">
+              {resumeData.personalInfo.professionTitle}
+            </h2>
           )}
-          <div className="text-green-400 mb-1">$ ls contact/</div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             {[
-              resumeData.personalInfo.email && `📧 ${resumeData.personalInfo.email}`,
-              resumeData.personalInfo.phone && `📱 ${formatPhoneNumber(resumeData.personalInfo.phone)}`,
-              resumeData.personalInfo.location && `📍 ${resumeData.personalInfo.location}`,
-              resumeData.personalInfo.website && `🌐 ${resumeData.personalInfo.website}`,
-              resumeData.personalInfo.linkedIn && `🔗 ${resumeData.personalInfo.linkedIn}`
+              resumeData.personalInfo.email && resumeData.personalInfo.email,
+              resumeData.personalInfo.phone && formatPhoneNumber(resumeData.personalInfo.phone),
+              resumeData.personalInfo.location && resumeData.personalInfo.location,
+              resumeData.personalInfo.website && resumeData.personalInfo.website,
+              resumeData.personalInfo.linkedIn && resumeData.personalInfo.linkedIn
             ].filter(Boolean).map((item, idx) => (
-              <div key={idx} className="text-gray-300">{item}</div>
+              <div key={idx} className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></div>
+                <span className="text-gray-200">{item}</span>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Skills as code blocks */}
+      {/* Skills with modern card design */}
       {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono">&#35; Technical Skills</h2>
-          <div className="bg-gray-800 rounded-lg p-4 border border-cyan-500">
-            {Object.entries(skillsByCategory).map(([category, skills]) => (
-              <div key={category} className="mb-3 font-mono">
-                <div className="text-yellow-400 text-sm">const {category.toLowerCase().replace(/\s+/g, '_')} = [</div>
-                <div className="ml-4 flex flex-wrap gap-2">
-                  {skills.map((skill, index) => (
-                    <span key={index} className="text-green-300">
-                      &quot;{skill}&quot;{index < skills.length - 1 ? ',' : ''}
-                    </span>
-                  ))}
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-slate-800 mb-2 flex items-center">
+            <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-2">
+              <div className="w-3 h-3 bg-white rounded-sm"></div>
+            </div>
+            CORE COMPETENCIES
+          </h2>
+          <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-lg p-4 border border-slate-200">
+            <div className="space-y-3">
+              {Object.entries(skillsByCategory).map(([category, skills]) => (
+                <div key={category} className="flex items-start gap-4">
+                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide min-w-[120px] mt-1 flex-shrink-0">
+                    {category}:
+                  </h3>
+                  <div className="flex flex-wrap gap-1 flex-1 max-w-[calc(100%-140px)]">
+                    {skills.map((skill, index) => (
+                      <span key={index} className="bg-white text-slate-700 px-2 py-1 rounded-md text-xs font-medium border border-slate-300 shadow-sm whitespace-nowrap">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className="text-yellow-400 text-sm">];</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Experience as commit history */}
+      {/* Experience with timeline design */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-cyan-400 mb-3 font-mono">&#35; Work Experience</h2>
-          <div className="space-y-6">
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-slate-800 mb-2 flex items-center">
+            <div className="w-6 h-6 bg-gradient-to-r from-teal-600 to-blue-600 rounded-lg flex items-center justify-center mr-2">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+            PROFESSIONAL EXPERIENCE
+          </h2>
+          <div className="space-y-4">
             {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
-              <div key={company} className="bg-gray-800 rounded-lg p-4 border border-green-500">
-                {/* Company Header - Git repo style */}
-                <div className="mb-4 pb-3 border-b border-gray-700">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-green-400 font-mono">$</span>
-                    <span className="text-cyan-400 font-mono">cd</span>
-                    <h3 className="text-lg font-bold text-white font-mono">{company.toLowerCase().replace(/\s+/g, '-')}/</h3>
+              <div key={company} className="relative bg-white rounded-lg border border-slate-200 shadow-sm">
+                {/* Company Header */}
+                <div className="bg-gradient-to-r from-slate-100 to-gray-100 rounded-t-lg p-3 border-b border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-800">{company}</h3>
+                      <p className="text-sm text-slate-600">{experiences[0].location}</p>
+                      {experiences.length > 1 && (
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                          {experiences.length} positions • Career progression
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-sm font-mono ml-4">📍 {experiences[0].location}</p>
-                  {experiences.length > 1 && (
-                    <p className="text-green-400 text-xs font-mono ml-4">
-                      # {experiences.length} commits (career progression)
-                    </p>
-                  )}
                 </div>
                 
-                {/* Git log style for positions */}
-                <div className="space-y-3">
+                {/* Positions within the company */}
+                <div className="p-3 space-y-3">
                   {experiences.map((exp, index) => (
-                    <div key={exp.id} className="relative">
-                      {/* Commit hash and timeline */}
-                      <div className="flex items-start gap-3 mb-2">
-                        {experiences.length > 1 && (
-                          <div className="flex-shrink-0">
-                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-bold text-black">{experiences.length - index}</span>
-                            </div>
-                            {index < experiences.length - 1 && (
-                              <div className="w-0.5 h-8 bg-green-500 mx-auto mt-1"></div>
-                            )}
+                    <div key={exp.id} className="relative pl-8">
+                      {/* Timeline for multiple roles */}
+                      {experiences.length > 1 && (
+                        <div className="absolute -left-2 top-1">
+                          <div className="w-5 h-5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                            <span className="text-white text-xs font-bold">{experiences.length - index}</span>
                           </div>
-                        )}
-                        
-                        <div className="flex-1">
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <h4 className="text-base font-bold text-white font-mono">{exp.position}</h4>
-                              {experiences.length > 1 && (
-                                <span className={`text-xs px-2 py-1 rounded font-mono ${
-                                  index === 0 
-                                    ? 'bg-green-900 text-green-300' 
-                                    : 'bg-gray-700 text-gray-300'
-                                }`}>
-                                  {index === 0 ? 'HEAD' : `~${index}`}
+                          {index < experiences.length - 1 && (
+                            <div className="absolute left-1/2 top-full w-0.5 h-6 bg-gradient-to-b from-teal-300 to-blue-300 transform -translate-x-1/2"></div>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="text-base font-bold text-slate-800">{exp.position}</h4>
+                          {experiences.length > 1 && (
+                            <div className="flex gap-1 mt-1">
+                              {index === 0 && (
+                                <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                                  Current Role
+                                </span>
+                              )}
+                              {index > 0 && (
+                                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-medium">
+                                  Previous Role
                                 </span>
                               )}
                             </div>
-                            <div className="text-right text-xs text-gray-400 bg-gray-900 px-2 py-1 rounded font-mono">
-                              <p>{exp.startDate} → {exp.current ? 'HEAD' : exp.endDate}</p>
-                            </div>
-                          </div>
-                          
-                          {exp.description && (
-                            <div className="mb-2">
-                              <span className="text-green-400 font-mono text-xs">&#35; </span>
-                              <span className="text-gray-300 text-sm bg-gray-900 p-2 rounded font-mono">{exp.description}</span>
-                            </div>
-                          )}
-                          
-                          {exp.achievements.length > 0 && (
-                            <div className="space-y-1">
-                              <div className="text-green-400 font-mono text-xs">&#47;&#47; Key contributions:</div>
-                              {exp.achievements.map((achievement: string, achievementIndex: number) => (
-                                <div key={achievementIndex} className="flex items-start text-sm">
-                                  <span className="text-green-400 mr-2 font-mono">+</span>
-                                  <span className="text-gray-300">{achievement}</span>
-                                </div>
-                              ))}
-                            </div>
                           )}
                         </div>
+                        <div className="text-right text-xs bg-slate-100 px-2 py-1 rounded-lg">
+                          <p className="font-semibold text-slate-700">{exp.startDate} → {exp.current ? 'Present' : exp.endDate}</p>
+                        </div>
                       </div>
+                      
+                      {exp.description && (
+                        <p className="text-sm text-slate-700 mb-2 italic bg-slate-50 p-2 rounded-lg border border-slate-200">{exp.description}</p>
+                      )}
+                      
+                      {exp.achievements.length > 0 && (
+                        <ul className="space-y-1 text-sm text-slate-700">
+                          {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                            <li key={achievementIndex} className="flex items-start">
+                              <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                              <span>{achievement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -941,30 +950,65 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         </div>
       )}
 
-      {/* Projects and Education in grid */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        {/* Projects as repositories */}
+      {/* Education and Projects in grid */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {/* Education */}
+        {resumeData.education.length > 0 && (
+          <div>
+            <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+              <div className="w-5 h-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center mr-2">
+                <div className="w-2.5 h-2.5 bg-white rounded-sm"></div>
+              </div>
+              EDUCATION
+            </h2>
+            <div className="space-y-2">
+              {resumeData.education.map((edu) => (
+                <div key={edu.id} className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-800">{edu.degree}</h3>
+                      <p className="text-xs text-slate-600">{edu.field}</p>
+                      <p className="text-sm text-emerald-700 font-medium">{edu.institution}</p>
+                      {edu.honors && <p className="text-xs text-slate-600 italic">{edu.honors}</p>}
+                    </div>
+                    <div className="text-right text-xs text-slate-600">
+                      <p className="font-medium">{edu.graduationDate}</p>
+                      {edu.gpa && <p>GPA: {edu.gpa}</p>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Projects */}
         {resumeData.projects.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Projects</h2>
-            <div className="space-y-3">
+            <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+              <div className="w-5 h-5 bg-gradient-to-r from-orange-600 to-red-600 rounded-lg flex items-center justify-center mr-2">
+                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+              </div>
+              KEY PROJECTS
+            </h2>
+            <div className="space-y-2">
               {resumeData.projects.map((project) => (
-                <div key={project.id} className="bg-gray-800 rounded-lg p-3 border border-purple-500">
-                  <h3 className="text-sm font-bold text-white mb-1 font-mono">{project.name}</h3>
-                  <p className="text-xs text-gray-300 mb-2">{project.description}</p>
+                <div key={project.id} className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+                  <h3 className="text-sm font-bold text-slate-800 mb-1">{project.name}</h3>
+                  <p className="text-xs text-slate-700 mb-2">{project.description}</p>
                   {project.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
                       {project.technologies.map((tech, index) => (
-                        <span key={index} className="bg-purple-900 text-purple-300 px-2 py-0.5 rounded text-xs font-mono">
+                        <span key={index} className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md text-xs font-medium">
                           {tech}
                         </span>
                       ))}
                     </div>
                   )}
                   {(project.url || project.github) && (
-                    <div className="text-xs space-x-2 font-mono">
-                      {project.url && <span className="text-cyan-400">🔗 {project.url}</span>}
-                      {project.github && <span className="text-gray-400">📂 {project.github}</span>}
+                    <div className="text-xs space-x-2">
+                      {project.url && <span className="text-blue-600">🌐 {project.url}</span>}
+                      {project.github && <span className="text-slate-600">📂 {project.github}</span>}
                     </div>
                   )}
                 </div>
@@ -972,43 +1016,31 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
             </div>
           </div>
         )}
-
-        {/* Education */}
-        {resumeData.education.length > 0 && (
-          <div>
-            <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Education</h2>
-            <div className="space-y-3">
-              {resumeData.education.map((edu) => (
-                <div key={edu.id} className="bg-gray-800 rounded-lg p-3 border border-blue-500">
-                  <h3 className="text-sm font-bold text-white">{edu.degree}</h3>
-                  <p className="text-xs text-gray-300">{edu.field}</p>
-                  <p className="text-sm text-blue-400 font-mono">{edu.institution}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-400 mt-1">
-                    <span>{edu.graduationDate}</span>
-                    {edu.gpa && <span className="bg-gray-700 px-2 py-0.5 rounded">GPA: {edu.gpa}</span>}
-                  </div>
-                  {edu.honors && <p className="text-xs text-yellow-400 mt-1">{edu.honors}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Additional Info */}
+      {/* Additional Information */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="bg-gray-800 rounded-lg p-4 border border-yellow-500">
-          <h2 className="text-lg font-bold text-cyan-400 mb-3 font-mono">&#35; Additional Info</h2>
+        <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+            <div className="w-5 h-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-2">
+              <div className="w-2.5 h-2.5 bg-white rounded-sm rotate-45"></div>
+            </div>
+            ADDITIONAL INFORMATION
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
-              <div key={section.id} className="font-mono">
-                <div className="text-yellow-400 text-sm">{section.title.toLowerCase().replace(/\s+/g, '_')}: [</div>
-                <div className="ml-4 text-gray-300 text-xs">
+              <div key={section.id}>
+                <h3 className="text-sm font-bold text-slate-700 mb-1 uppercase tracking-wide">
+                  {section.title}
+                </h3>
+                <div className="text-xs text-slate-700 space-y-0.5">
                   {section.items.map((item, index) => (
-                    <div key={index}>&quot;{item}&quot;{index < section.items.length - 1 ? ',' : ''}</div>
+                    <div key={index} className="flex items-start">
+                      <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2 mt-1 flex-shrink-0"></div>
+                      {item}
+                    </div>
                   ))}
                 </div>
-                <div className="text-yellow-400 text-sm">],</div>
               </div>
             ))}
           </div>
