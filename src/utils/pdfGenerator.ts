@@ -12,15 +12,35 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
   }
 
   try {
+    // Temporarily fix gradient text issues for PDF generation
+    const gradientTextElements = element.querySelectorAll('.bg-clip-text');
+    const originalStyles: Array<{ element: Element; originalClass: string }> = [];
+    
+    // Store original classes and temporarily replace gradient text with solid purple
+    gradientTextElements.forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      originalStyles.push({ element: el, originalClass: htmlEl.className });
+      htmlEl.className = htmlEl.className
+        .replace('bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent', 'text-purple-600')
+        .replace('text-transparent', 'text-purple-600');
+    });
+
     // Use html2canvas to capture the entire resume element as a single, high-quality image.
     // This ensures the PDF looks exactly like the web preview.
     const canvas = await html2canvas(element, {
       scale: 2, // Use a higher scale for better resolution in the PDF
       useCORS: true, // Allows rendering of cross-origin images
       backgroundColor: '#ffffff',
+      allowTaint: true, // Allow cross-origin content
+      foreignObjectRendering: false, // Disable foreign object rendering which can cause issues with gradients
       // Set canvas dimensions to match the full scrollable content of the element
       width: element.scrollWidth,
       height: element.scrollHeight,
+    });
+
+    // Restore original classes
+    originalStyles.forEach(({ element, originalClass }) => {
+      (element as HTMLElement).className = originalClass;
     });
 
     const pdf = new jsPDF('p', 'mm', 'a4'); // Create a standard A4 size PDF in portrait mode
