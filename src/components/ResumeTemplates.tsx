@@ -535,23 +535,23 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-6 mx-auto print:bg-white print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
+    <div className={`bg-gradient-to-br from-slate-50 to-gray-100 p-4 mx-auto print:bg-white print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with geometric design */}
-      <div className="relative mb-6">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10"></div>
-        <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20"></div>
+      <div className="relative mb-4">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10"></div>
+        <div className="absolute top-3 right-3 w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20"></div>
         
         {/* QR Code positioned absolutely in top right, with higher z-index */}
-        <div className="absolute top-2 right-2 z-20">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="minimal" />
+        <div className="absolute top-1 right-1 z-20">
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={75} theme="minimal" />
         </div>
         
-        <div className="relative z-10 bg-white rounded-lg p-6 shadow-lg pr-24">
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <div className="relative z-10 bg-white rounded-lg p-4 shadow-lg pr-20">
+          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
             {resumeData.personalInfo.fullName}
           </h1>
           {resumeData.personalInfo.professionTitle && (
-            <h2 className="text-lg font-medium text-gray-700 mb-4 tracking-wide">
+            <h2 className="text-base font-medium text-gray-700 mb-2 tracking-wide">
               {resumeData.personalInfo.professionTitle}
             </h2>
           )}
@@ -574,16 +574,16 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Skills Section with creative design */}
       {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-            <span className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm mr-3">💡</span>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+            <span className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs mr-2">💡</span>
             SKILLS
           </h2>
-          <div className="bg-white rounded-lg p-4 shadow-md">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg p-3 shadow-md">
+            <div className="grid grid-cols-2 gap-3">
               {Object.entries(skillsByCategory).map(([category, skills]) => (
-                <div key={category} className="space-y-2">
-                  <h3 className="text-sm font-bold text-purple-700 uppercase tracking-wide border-b border-purple-200 pb-1">
+                <div key={category} className="space-y-1">
+                  <h3 className="text-xs font-bold text-purple-700 uppercase tracking-wide border-b border-purple-200 pb-0.5">
                     {category}
                   </h3>
                   <div className="flex flex-wrap gap-1">
@@ -602,24 +602,24 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Experience Section */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-            <span className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-sm mr-3">💼</span>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+            <span className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs mr-2">💼</span>
             EXPERIENCE
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
-              <div key={company} className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+              <div key={company} className="bg-white rounded-lg p-4 shadow-lg border border-gray-200">
                 {/* Company Header */}
-                <div className="mb-4 pb-3 border-b border-gray-200">
-                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></span>
+                <div className="mb-2 pb-2 border-b border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></span>
                     {company}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">{experiences[0].location}</p>
+                  <p className="text-xs text-gray-600 mt-0.5">{experiences[0].location}</p>
                   {experiences.length > 1 && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1 rounded-full font-medium">
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-2 py-0.5 rounded-full font-medium">
                         Career Progression • {experiences.length} Roles
                       </span>
                     </div>
@@ -627,54 +627,54 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                 </div>
                 
                 {/* Positions within the company */}
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {experiences.map((exp, index) => (
                     <div key={exp.id} className="relative pl-8">
                       {/* Timeline for multiple roles */}
                       {experiences.length > 1 && (
-                        <div className="absolute -left-2 top-2">
-                          <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                        <div className="absolute -left-2 top-1">
+                          <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
                             <span className="text-white text-xs font-bold">{experiences.length - index}</span>
                           </div>
                           {index < experiences.length - 1 && (
-                            <div className="absolute left-1/2 top-full w-0.5 h-8 bg-gradient-to-b from-blue-300 to-cyan-300 transform -translate-x-1/2"></div>
+                            <div className="absolute left-1/2 top-full w-0.5 h-6 bg-gradient-to-b from-blue-300 to-cyan-300 transform -translate-x-1/2"></div>
                           )}
                         </div>
                       )}
                       
                       <div className={`${experiences.length > 1 ? '' : ''}`}>
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex justify-between items-start mb-1">
                           <div>
-                            <h4 className="text-lg font-bold text-gray-900">{exp.position}</h4>
+                            <h4 className="text-base font-bold text-gray-900">{exp.position}</h4>
                             {experiences.length > 1 && (
-                              <div className="flex gap-2 mt-1">
+                              <div className="flex gap-1 mt-0.5">
                                 {index === 0 && (
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
                                     Current Position
                                   </span>
                                 )}
                                 {index > 0 && (
-                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
                                     Previous Position
                                   </span>
                                 )}
                               </div>
                             )}
                           </div>
-                          <div className="text-right text-sm text-gray-600 bg-gradient-to-r from-gray-50 to-blue-50 px-3 py-1 rounded-lg font-mono">
+                          <div className="text-right text-xs text-gray-600 bg-gradient-to-r from-gray-50 to-blue-50 px-2 py-0.5 rounded-lg font-mono">
                             <p className="font-semibold">{exp.startDate} → {exp.current ? 'Present' : exp.endDate}</p>
                           </div>
                         </div>
                         
                         {exp.description && (
-                          <p className="text-sm text-gray-700 mb-3 italic bg-gray-50 p-3 rounded-lg">{exp.description}</p>
+                          <p className="text-xs text-gray-700 mb-2 italic bg-gray-50 p-2 rounded-lg">{exp.description}</p>
                         )}
                         
                         {exp.achievements.length > 0 && (
-                          <ul className="space-y-2 text-sm text-gray-700">
+                          <ul className="space-y-1 text-xs text-gray-700">
                             {exp.achievements.map((achievement: string, achievementIndex: number) => (
                               <li key={achievementIndex} className="flex items-start">
-                                <span className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
+                                <span className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-2 mt-1 flex-shrink-0"></span>
                                 <span>{achievement}</span>
                               </li>
                             ))}
@@ -691,17 +691,17 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
       )}
 
       {/* Education and Projects in two columns */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Education Section */}
         {resumeData.education.length > 0 && (
           <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
-              <span className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🎓</span>
+            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <span className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🎓</span>
               EDUCATION
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {resumeData.education.map((edu) => (
-                <div key={edu.id} className="bg-white rounded-lg p-3 shadow-md border-l-4 border-green-500">
+                <div key={edu.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-green-500">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
@@ -723,19 +723,19 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         {/* Projects Section */}
         {resumeData.projects.length > 0 && (
           <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
-              <span className="w-6 h-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🚀</span>
+            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🚀</span>
               PROJECTS
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {resumeData.projects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg p-3 shadow-md border-l-4 border-orange-500">
-                  <h3 className="text-sm font-bold text-gray-900 mb-1">{project.name}</h3>
-                  <p className="text-xs text-gray-700 mb-2">{project.description}</p>
+                <div key={project.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-orange-500">
+                  <h3 className="text-xs font-bold text-gray-900 mb-0.5">{project.name}</h3>
+                  <p className="text-xs text-gray-700 mb-1">{project.description}</p>
                   {project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
+                    <div className="flex flex-wrap gap-1 mb-1">
                       {project.technologies.map((tech, index) => (
-                        <span key={index} className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full text-xs">
+                        <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-full text-xs">
                           {tech}
                         </span>
                       ))}
@@ -756,18 +756,18 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
 
       {/* Additional Information */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="bg-white rounded-lg p-4 shadow-md">
-          <h2 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
-            <span className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs mr-2">✨</span>
+        <div className="bg-white rounded-lg p-3 shadow-md">
+          <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+            <span className="w-5 h-5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs mr-2">✨</span>
             ADDITIONAL INFO
           </h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id}>
-                <h3 className="text-sm font-bold text-indigo-700 mb-1 uppercase tracking-wide">
+                <h3 className="text-xs font-bold text-indigo-700 mb-0.5 uppercase tracking-wide">
                   {section.title}
                 </h3>
-                <div className="text-xs text-gray-700 space-y-1">
+                <div className="text-xs text-gray-700 space-y-0.5">
                   {section.items.map((item, index) => (
                     <div key={index} className="flex items-start">
                       <span className="w-1 h-1 bg-indigo-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
