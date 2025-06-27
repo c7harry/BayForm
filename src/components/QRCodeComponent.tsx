@@ -70,10 +70,10 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
         };
       case 'tech':
         return {
-          fgColor: '#10b981', // Green-500
-          bgColor: '#111827', // Gray-900
-          border: 'border border-green-500 rounded',
-          container: 'bg-gray-900 p-1 rounded border border-green-500'
+          fgColor: '#0f172a', // Slate-900
+          bgColor: '#e2e8f0', // Slate-200
+          border: 'border-2 border-slate-400 rounded-lg',
+          container: 'bg-gradient-to-br from-slate-100 to-slate-200 p-1.0 rounded-lg shadow-md border border-slate-300'
         };
       case 'elegant':
         return {

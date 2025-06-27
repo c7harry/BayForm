@@ -794,9 +794,9 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
   });
 
   return (
-    <div className={`bg-white p-4 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
+    <div className={`bg-white p-2 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Header with modern geometric design */}
-      <div className="relative bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-white rounded-lg p-4 mb-4">
+      <div className="relative bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-white rounded-lg p-2 mb-2">
         {/* Geometric accent elements */}
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-bl-full"></div>
         <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-teal-500/20 to-blue-500/20 rounded-tr-full"></div>
@@ -807,13 +807,13 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         </div>
         
         <div className="relative z-10 pr-20">
-          <h1 className="text-3xl font-bold mb-1 tracking-tight">{resumeData.personalInfo.fullName}</h1>
+          <h1 className="text-3xl font-bold mb-0.5 tracking-tight">{resumeData.personalInfo.fullName}</h1>
           {resumeData.personalInfo.professionTitle && (
-            <h2 className="text-lg font-medium text-blue-200 mb-3 tracking-wide">
+            <h2 className="text-lg font-medium text-blue-200 mb-1 tracking-wide">
               {resumeData.personalInfo.professionTitle}
             </h2>
           )}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
             {[
               resumeData.personalInfo.email && resumeData.personalInfo.email,
               resumeData.personalInfo.phone && formatPhoneNumber(resumeData.personalInfo.phone),
@@ -832,23 +832,23 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
 
       {/* Skills with modern card design */}
       {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 flex items-center">
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-slate-800 mb-1 flex items-center">
             <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-2">
               <div className="w-3 h-3 bg-white rounded-sm"></div>
             </div>
             CORE COMPETENCIES
           </h2>
-          <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-lg p-4 border border-slate-200">
-            <div className="space-y-3">
+          <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-lg p-2 border border-slate-200">
+            <div className="space-y-1">
               {Object.entries(skillsByCategory).map(([category, skills]) => (
-                <div key={category} className="flex items-start gap-4">
-                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide min-w-[120px] mt-1 flex-shrink-0">
-                    {category}:
+                <div key={category} className="flex items-start gap-2">
+                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide min-w-[110px] mt-0.5 flex-shrink-0 whitespace-pre-line">
+                    {category.replace('Technologies & Frameworks', 'Technologies &\nFrameworks')}:
                   </h3>
-                  <div className="flex flex-wrap gap-1 flex-1 max-w-[calc(100%-140px)]">
+                  <div className="flex flex-wrap gap-1 flex-1 max-w-[calc(100%-130px)]">
                     {skills.map((skill, index) => (
-                      <span key={index} className="bg-white text-slate-700 px-2 py-1 rounded-md text-xs font-medium border border-slate-300 shadow-sm whitespace-nowrap">
+                      <span key={index} className="bg-white text-slate-700 px-1.5 py-0.5 rounded-md text-xs font-medium border border-slate-300 shadow-sm whitespace-nowrap">
                         {skill}
                       </span>
                     ))}
@@ -862,19 +862,19 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
 
       {/* Experience with timeline design */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 flex items-center">
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-slate-800 mb-1 flex items-center">
             <div className="w-6 h-6 bg-gradient-to-r from-teal-600 to-blue-600 rounded-lg flex items-center justify-center mr-2">
               <div className="w-3 h-3 bg-white rounded-full"></div>
             </div>
             PROFESSIONAL EXPERIENCE
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
               <div key={company} className="relative bg-white rounded-lg border border-slate-200 shadow-sm">
                 {/* Company Header */}
-                <div className="bg-gradient-to-r from-slate-100 to-gray-100 rounded-t-lg p-3 border-b border-slate-200">
-                  <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-slate-100 to-gray-100 rounded-t-lg p-1.5 border-b border-slate-200">
+                  <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     <div>
                       <h3 className="text-lg font-bold text-slate-800">{company}</h3>
@@ -889,7 +889,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                 </div>
                 
                 {/* Positions within the company */}
-                <div className="p-3 space-y-3">
+                <div className="p-1.5 space-y-1.5">
                   {experiences.map((exp, index) => (
                     <div key={exp.id} className="relative pl-8">
                       {/* Timeline for multiple roles */}
@@ -904,11 +904,11 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                         </div>
                       )}
                       
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="flex justify-between items-start mb-0.5">
                         <div>
                           <h4 className="text-base font-bold text-slate-800">{exp.position}</h4>
                           {experiences.length > 1 && (
-                            <div className="flex gap-1 mt-1">
+                            <div className="flex gap-1 mt-0.5">
                               {index === 0 && (
                                 <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
                                   Current Role
@@ -928,11 +928,11 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                       </div>
                       
                       {exp.description && (
-                        <p className="text-sm text-slate-700 mb-2 italic bg-slate-50 p-2 rounded-lg border border-slate-200">{exp.description}</p>
+                        <p className="text-sm text-slate-700 mb-0.5 italic bg-slate-50 p-1 rounded-lg border border-slate-200">{exp.description}</p>
                       )}
                       
                       {exp.achievements.length > 0 && (
-                        <ul className="space-y-1 text-sm text-slate-700">
+                        <ul className="space-y-0.5 text-sm text-slate-700">
                           {exp.achievements.map((achievement: string, achievementIndex: number) => (
                             <li key={achievementIndex} className="flex items-start">
                               <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
@@ -951,19 +951,19 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
       )}
 
       {/* Education and Projects in grid */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-2 mb-2">
         {/* Education */}
         {resumeData.education.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+            <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
               <div className="w-5 h-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center mr-2">
                 <div className="w-2.5 h-2.5 bg-white rounded-sm"></div>
               </div>
               EDUCATION
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {resumeData.education.map((edu) => (
-                <div key={edu.id} className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+                <div key={edu.id} className="bg-white rounded-lg p-1.5 border border-slate-200 shadow-sm">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-slate-800">{edu.degree}</h3>
@@ -985,21 +985,21 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         {/* Projects */}
         {resumeData.projects.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+            <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
               <div className="w-5 h-5 bg-gradient-to-r from-orange-600 to-red-600 rounded-lg flex items-center justify-center mr-2">
                 <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
               </div>
               KEY PROJECTS
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {resumeData.projects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-slate-800 mb-1">{project.name}</h3>
-                  <p className="text-xs text-slate-700 mb-2">{project.description}</p>
+                <div key={project.id} className="bg-white rounded-lg p-1.5 border border-slate-200 shadow-sm">
+                  <h3 className="text-sm font-bold text-slate-800 mb-0.5">{project.name}</h3>
+                  <p className="text-xs text-slate-700 mb-0.5">{project.description}</p>
                   {project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
+                    <div className="flex flex-wrap gap-1 mb-0.5">
                       {project.technologies.map((tech, index) => (
-                        <span key={index} className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md text-xs font-medium">
+                        <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-md text-xs font-medium">
                           {tech}
                         </span>
                       ))}
@@ -1020,17 +1020,17 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
 
       {/* Additional Information */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+        <div className="bg-white rounded-lg p-2 border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
             <div className="w-5 h-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-2">
               <div className="w-2.5 h-2.5 bg-white rounded-sm rotate-45"></div>
             </div>
             ADDITIONAL INFORMATION
           </h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id}>
-                <h3 className="text-sm font-bold text-slate-700 mb-1 uppercase tracking-wide">
+                <h3 className="text-sm font-bold text-slate-700 mb-0.5 uppercase tracking-wide">
                   {section.title}
                 </h3>
                 <div className="text-xs text-slate-700 space-y-0.5">
