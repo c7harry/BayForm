@@ -86,7 +86,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
 
   return (
     <div className={`bg-white px-0 py-4 max-w-4xl mx-auto ${className}`} id="resume-preview">      {/* Header */}
-      <div className="mb-2 relative">
+      <div className="mb-1 relative">
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute -top-3 right-6">
           <QRCodeComponent 
@@ -130,9 +130,9 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
 
       {/* Skills Section */}
       {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">SKILLS</h2>
-          <div className="space-y-0 mt-4">
+        <div className="mb-1">
+          <h2 className="text-lg font-bold text-gray-900 mb-1 border-b-2 border-black pb-1 text-center">SKILLS</h2>
+          <div className="space-y-0 mt-2">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <div key={category} className="text-left">
                 <span className="text-sm font-semibold text-gray-900 capitalize">
@@ -145,14 +145,14 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
         </div>
       )}      {/* Experience Section */}
       {resumeData.experience.length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">EXPERIENCE</h2>
-          <div className="space-y-6 mt-4">
+        <div className="mb-1">
+          <h2 className="text-lg font-bold text-gray-900 mb-1 border-b-2 border-black pb-1 text-center">EXPERIENCE</h2>
+          <div className="space-y-3 mt-2">
             {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
               <div key={company} className="text-left">
                 {/* Company Header */}
-                <div className="border-l-4 border-blue-500 pl-4 mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{company}</h3>
+                <div className="border-l-4 border-blue-500 pl-4 mb-2">
+                  <h3 className="text-lg font-bold text-gray-900 mb-0">{company}</h3>
                   <p className="text-sm text-gray-600">{experiences[0].location}</p>
                   {experiences.length > 1 && (
                     <p className="text-xs text-blue-600 font-medium">
@@ -162,7 +162,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
                 </div>
                 
                 {/* Positions within the company */}
-                <div className="space-y-4 relative">
+                <div className="space-y-2 relative">
                   {experiences.map((exp, index) => (
                     <div key={exp.id} className="relative pl-8">
                       {/* Timeline for multiple roles */}
@@ -172,12 +172,12 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
                             <span className="text-white text-xs font-bold">{experiences.length - index}</span>
                           </div>
                           {index < experiences.length - 1 && (
-                            <div className="absolute left-1/2 top-full w-0.5 h-8 bg-blue-300 transform -translate-x-1/2"></div>
+                            <div className="absolute left-1/2 top-full w-0.5 h-6 bg-blue-300 transform -translate-x-1/2"></div>
                           )}
                         </div>
                       )}
                       
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="flex justify-between items-start mb-1">
                         <div>
                           <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
                           {experiences.length > 1 && index === 0 && (
@@ -197,11 +197,11 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
                       </div>
                       
                       {exp.description && (
-                        <p className="text-sm text-gray-700 mb-2 italic">{exp.description}</p>
+                        <p className="text-sm text-gray-700 mb-1 italic">{exp.description}</p>
                       )}
                       
                       {exp.achievements.length > 0 && (
-                        <ul className="space-y-1 text-sm text-gray-700">
+                        <ul className="space-y-0.5 text-sm text-gray-700">
                           {exp.achievements.map((achievement: string, achievementIndex: number) => (
                             <li key={achievementIndex} className="flex items-start">
                               <span className="mr-2 text-blue-500">•</span>
@@ -217,11 +217,11 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
             ))}
           </div>
         </div>
-      )}{/* Education Section */}
+      )}      {/* Education Section */}
       {resumeData.education.length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">EDUCATION</h2>
-          <div className="space-y-3 mt-4">
+        <div className="mb-1">
+          <h2 className="text-lg font-bold text-gray-900 mb-1 border-b-2 border-black pb-1 text-center">EDUCATION</h2>
+          <div className="space-y-2 mt-1">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-left">
                 <div className="flex justify-between items-start">
@@ -241,15 +241,15 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
         </div>
       )}      {/* Projects Section */}
       {resumeData.projects.length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 text-center">PROJECTS</h2>
-          <div className="space-y-3 mt-4">
+        <div className="mb-1">
+          <h2 className="text-lg font-bold text-gray-900 mb-1 border-b-2 border-black pb-1 text-center">PROJECTS</h2>
+          <div className="space-y-2 mt-2">
             {resumeData.projects.map((project) => (
               <div key={project.id} className="text-left">
                 <h3 className="text-base font-semibold text-gray-900">{project.name}</h3>
-                <p className="text-sm text-gray-700 mb-2">{project.description}</p>
+                <p className="text-sm text-gray-700 mb-1">{project.description}</p>
                 {project.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-2">
+                  <div className="flex flex-wrap gap-1 mb-1">
                     {project.technologies.map((tech, index) => (
                       <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
                         {tech}
@@ -271,12 +271,12 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
 
       {/* Additional Information Section */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mb-2">
-          <div className="mb-2">
-            <h2 className="text-lg font-bold text-gray-900 mb-2 border-b-2 border-black pb-1 uppercase text-center">Additional Information</h2>
-            <div className="text-sm text-gray-700 mt-4">
+        <div className="mb-1">
+          <div className="mb-1">
+            <h2 className="text-lg font-bold text-gray-900 mb-1 border-b-2 border-black pb-1 uppercase text-center">Additional Information</h2>
+            <div className="text-sm text-gray-700 mt-1">
               {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
-                <div key={section.id} className="mb-1">
+                <div key={section.id} className="mb-0">
                   <span className="font-bold text-gray-900 capitalize">{section.title}:</span>{' '}
                   <span className="text-gray-700">{section.items.join(', ')}</span>
                 </div>

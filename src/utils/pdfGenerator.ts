@@ -1,7 +1,10 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { ResumeData } from '@/types/resume';
+import { ResumeData } from '../types/resume';
 
+// This is a re-implementation of the PDF generation logic.
+// It aims to create a PDF that looks identical to the preview
+// and handles multi-page resumes by avoiding cutting through elements.
 export const generatePDF = async (resumeData: ResumeData, elementId: string): Promise<void> => {
   const element = document.getElementById(elementId);
   if (!element) {
@@ -9,65 +12,97 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
   }
 
   try {
+    // Use html2canvas to capture the entire resume element as a single, high-quality image.
+    // This ensures the PDF looks exactly like the web preview.
     const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
+      scale: 2, // Use a higher scale for better resolution in the PDF
+      useCORS: true, // Allows rendering of cross-origin images
       backgroundColor: '#ffffff',
+      // Set canvas dimensions to match the full scrollable content of the element
+      width: element.scrollWidth,
       height: element.scrollHeight,
-      width: element.scrollWidth
     });
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Create a standard A4 size PDF in portrait mode
     
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
     
-    // Calculate scaling to fit width properly
-    const widthRatio = pdfWidth / imgWidth;
-    const scaledHeight = imgHeight * widthRatio;
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
     
-    // If content fits on one page, use original logic
-    if (scaledHeight <= pdfHeight) {
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 0;
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    // Calculate the ratio to fit the canvas width to the PDF width
+    const widthRatio = pdfWidth / canvasWidth;
+    const scaledCanvasHeight = canvasHeight * widthRatio;
+
+    // If the entire resume fits on a single page, add it and save the PDF.
+    if (scaledCanvasHeight <= pdfHeight) {
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, scaledCanvasHeight);
     } else {
-      // Content needs multiple pages
-      const pageHeight = pdfHeight;
-      const scaledWidth = pdfWidth;
-      let remainingHeight = scaledHeight;
-      let currentY = 0;
-      let pageNumber = 0;
-      
-      while (remainingHeight > 0) {
-        if (pageNumber > 0) {
+      // For resumes that need multiple pages, implement intelligent page breaks.
+      let yPositionOnCanvas = 0; // Tracks the y-position on the source canvas for slicing
+
+      while (yPositionOnCanvas < canvasHeight) {
+        if (yPositionOnCanvas > 0) {
           pdf.addPage();
         }
+
+        // Determine the maximum possible content height for the current PDF page
+        const maxHeightOnCanvas = pdfHeight / widthRatio;
+        let pageContentHeight = maxHeightOnCanvas;
+
+        // Find the best position to break the page to avoid cutting elements in half.
+        // We do this by checking the positions of the direct children of the resume container.
+        let bestBreakPoint = yPositionOnCanvas + maxHeightOnCanvas;
         
-        // Calculate the portion of the image for this page
-        const pageContentHeight = Math.min(pageHeight, remainingHeight);
-        const sourceY = (currentY / widthRatio);
-        const sourceHeight = (pageContentHeight / widthRatio);
-        
-        // Create a temporary canvas for this page's content
-        const pageCanvas = document.createElement('canvas');
-        const pageCtx = pageCanvas.getContext('2d');
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = sourceHeight;
-        
-        if (pageCtx) {
-          pageCtx.drawImage(canvas, 0, sourceY, canvas.width, sourceHeight, 0, 0, canvas.width, sourceHeight);
-          const pageImgData = pageCanvas.toDataURL('image/png');
-          pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageContentHeight);
+        const childElements = Array.from(element.children) as HTMLElement[];
+        let lastFittingElementBottom = yPositionOnCanvas;
+
+        for (const child of childElements) {
+          const childTop = child.offsetTop * 2; // Multiply by scale to match canvas coordinates
+          const childBottom = (child.offsetTop + child.offsetHeight) * 2;
+
+          // If the bottom of the element is within the current page, it's a potential break point.
+          if (childBottom <= bestBreakPoint) {
+            lastFittingElementBottom = childBottom;
+          } else {
+            // This element is cut by the page break.
+            // If we found at least one element that fits, we break after the last fitting one.
+            if (lastFittingElementBottom > yPositionOnCanvas) {
+              bestBreakPoint = lastFittingElementBottom;
+            }
+            // Once we find an element that gets cut, we stop and use the best break point found so far.
+            break;
+          }
         }
         
-        remainingHeight -= pageContentHeight;
-        currentY += pageContentHeight;
-        pageNumber++;
+        // If a good break point was found, use it. Otherwise, a hard cut is necessary (e.g., for a single element taller than a page).
+        pageContentHeight = bestBreakPoint - yPositionOnCanvas;
+        
+        // Ensure the final slice does not exceed the canvas height
+        if (yPositionOnCanvas + pageContentHeight > canvasHeight) {
+            pageContentHeight = canvasHeight - yPositionOnCanvas;
+        }
+
+        // Create a temporary canvas for the current page's content slice
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvasWidth;
+        pageCanvas.height = pageContentHeight;
+        const pageCtx = pageCanvas.getContext('2d');
+
+        if (pageCtx) {
+          // Copy the calculated slice from the main canvas to the page-specific canvas
+          pageCtx.drawImage(canvas, 0, yPositionOnCanvas, canvasWidth, pageContentHeight, 0, 0, canvasWidth, pageContentHeight);
+          
+          const pageImgData = pageCanvas.toDataURL('image/png');
+          const pageImgHeight = (pageCanvas.height / canvasWidth) * pdfWidth;
+          
+          // Add the slice as an image to the current PDF page
+          pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageImgHeight);
+        }
+
+        // Move to the next slice of the canvas
+        yPositionOnCanvas += pageContentHeight;
       }
     }
 
