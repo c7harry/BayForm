@@ -269,8 +269,7 @@ export default function Home() {
                 </span>
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-xl lg:text-2xl text-slate-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+              {/* Subtitle */}                <p className="text-xl lg:text-2xl text-slate-600 mb-12 max-w-4xl mx-auto leading-relaxed">
                 Build professional, ATS-friendly resumes with our easy-to-use builder. 
                 Choose from stunning templates designed by experts and land your dream job. 
                 <span className="block mt-2 font-semibold text-green-600">
@@ -483,7 +482,7 @@ export default function Home() {
                     Start Immediately
                   </h3>
                   <p className="text-slate-600 text-lg leading-relaxed mb-6">
-                    No setup, no waiting, no hassle. Click start and begin building your resume right away. Download as PDF when you're done.
+                    No setup, no waiting, no hassle. Click start and begin building your resume right away. Download as PDF when you&apos;re done.
                   </p>
                   <ul className="space-y-3">
                     <li className="flex items-center text-slate-600">
@@ -525,7 +524,7 @@ export default function Home() {
                   }}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-10 py-4 rounded-2xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
                 >
-                  Start Building Now - It's Free
+                  Start Building Now - It&apos;s Free
                 </button>
               </div>
             </div>

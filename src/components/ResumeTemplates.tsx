@@ -843,7 +843,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                 <div className="ml-4 flex flex-wrap gap-2">
                   {skills.map((skill, index) => (
                     <span key={index} className="text-green-300">
-                      "{skill}"{index < skills.length - 1 ? ',' : ''}
+                      &quot;{skill}&quot;{index < skills.length - 1 ? ',' : ''}
                     </span>
                   ))}
                 </div>
@@ -1005,7 +1005,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                 <div className="text-yellow-400 text-sm">{section.title.toLowerCase().replace(/\s+/g, '_')}: [</div>
                 <div className="ml-4 text-gray-300 text-xs">
                   {section.items.map((item, index) => (
-                    <div key={index}>"{item}"{index < section.items.length - 1 ? ',' : ''}</div>
+                    <div key={index}>&quot;{item}&quot;{index < section.items.length - 1 ? ',' : ''}</div>
                   ))}
                 </div>
                 <div className="text-yellow-400 text-sm">],</div>

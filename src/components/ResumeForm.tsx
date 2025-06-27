@@ -1106,7 +1106,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                       <BriefcaseIcon className="mx-auto w-12 h-12 sm:w-16 sm:h-16 mb-4 text-gray-300" />
                                     </motion.div>
                                     <p className="text-base sm:text-lg">No work experience added yet</p>
-                                    <p className="text-sm mt-2">Click "Add Experience" to get started ✨</p>
+                                    <p className="text-sm mt-2">Click &quot;Add Experience&quot; to get started ✨</p>
                                   </motion.div>
                                 )}
                               </div>
@@ -1468,7 +1468,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                     <InformationCircleIcon className="mx-auto w-12 h-12 sm:w-16 sm:h-16 mb-4 text-gray-300" />
                                   </motion.div>
                                   <p className="text-base sm:text-lg">No additional sections added yet</p>
-                                  <p className="text-sm mt-2">Click "Add Section" to get started ✨</p>
+                                  <p className="text-sm mt-2">Click &quot;Add Section&quot; to get started ✨</p>
                                 </motion.div>
                               )}
                             </motion.div>
@@ -1621,9 +1621,11 @@ const PersonalInfoSection: React.FC<{
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
           {resumeData.personalInfo.profilePicture ? (
             <div className="relative flex-shrink-0">
-              <img
+              <Image
                 src={resumeData.personalInfo.profilePicture}
                 alt="Profile"
+                width={80}
+                height={80}
                 className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border-2 border-gray-200"
               />
               <button

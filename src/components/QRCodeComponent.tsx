@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { QRCodeSettings } from '@/types/resume';
 
@@ -108,11 +109,12 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
       </div>
       {personalInfo.profilePicture && (
         <div className={style.container}>
-          <img
+          <Image
             src={personalInfo.profilePicture}
             alt="Profile"
+            width={size - 8}
+            height={size - 8}
             className={`${style.border} object-cover`}
-            style={{ width: size - 8, height: size - 8 }}
           />
         </div>
       )}
