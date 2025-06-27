@@ -26,8 +26,9 @@ export default function Home() {
   const handleSaveResume = (resume: ResumeData) => {
     saveResume(resume);
     setResumes(getResumes());
-    setCurrentView('list');
-    setSelectedResume(null);
+    setSelectedResume(resume);
+    setSelectedTemplate(resume.template);
+    setCurrentView('preview');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -369,7 +370,7 @@ export default function Home() {
           </div>
         </div>
         {/* Features Section - Completely Redesigned */}
-        <div className="py-20 lg:py-32 bg-gradient-to-b from-white to-slate-50">
+        <div className="py-8 lg:py-8 bg-gradient-to-b from-white to-slate-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <div className="text-center mb-20">
@@ -531,7 +532,7 @@ export default function Home() {
           </div>
         </div>
         {/* Resume Grid Section - Completely Redesigned */}
-        <div id="resumes-section" className="py-20 lg:py-32 bg-white">
+        <div id="resumes-section" className="py-8 lg:py-8 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {resumes.length === 0 ? (
               <div className="text-center py-20">
