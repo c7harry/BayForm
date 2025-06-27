@@ -1028,25 +1028,25 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
   });
 
   return (
-    <div className={`bg-white p-8 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
+    <div className={`bg-white p-5 mx-auto print:max-w-none print:mx-0 ${className}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '12px' }}>
       {/* Elegant Header */}
-      <div className="text-center mb-8 relative">
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+      <div className="text-center mb-5 relative">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
         
         {/* QR Code positioned absolutely in top right */}
         <div className="absolute top-0 right-0">
-          <QRCodeComponent personalInfo={resumeData.personalInfo} size={80} theme="elegant" />
+          <QRCodeComponent personalInfo={resumeData.personalInfo} size={70} theme="elegant" />
         </div>
         
-        <h1 className="text-4xl font-serif text-gray-900 mb-3 tracking-wide">
+        <h1 className="text-3xl font-serif text-gray-900 mb-2 tracking-wide">
           {resumeData.personalInfo.fullName}
         </h1>
         {resumeData.personalInfo.professionTitle && (
-          <h2 className="text-lg font-light text-gray-700 mb-4 tracking-widest uppercase">
+          <h2 className="text-base font-light text-gray-700 mb-3 tracking-widest uppercase">
             {resumeData.personalInfo.professionTitle}
           </h2>
         )}
-        <div className="flex justify-center items-center space-x-6 text-sm text-gray-600">
+        <div className="flex justify-center items-center space-x-4 text-xs text-gray-600">
           {[
             resumeData.personalInfo.email && resumeData.personalInfo.email,
             resumeData.personalInfo.phone && formatPhoneNumber(resumeData.personalInfo.phone),
@@ -1060,28 +1060,28 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             </React.Fragment>
           ))}
         </div>
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
       </div>
 
       {/* Two-column layout */}
-      <div className="grid grid-cols-4 gap-8">
+      <div className="grid grid-cols-4 gap-5">
         {/* Left sidebar */}
-        <div className="col-span-1 space-y-6">
+        <div className="col-span-1 space-y-4">
           {/* Skills */}
           {Object.keys(skillsByCategory).length > 0 && (
             <div>
-              <h2 className="text-lg font-serif text-gray-900 mb-4 border-b border-gray-300 pb-2">
+              <h2 className="text-base font-serif text-gray-900 mb-2 border-b border-gray-300 pb-1">
                 EXPERTISE
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {Object.entries(skillsByCategory).map(([category, skills]) => (
                   <div key={category}>
-                    <h3 className="text-sm font-semibold text-gray-800 mb-2 uppercase tracking-wide">
+                    <h3 className="text-xs font-semibold text-gray-800 mb-1 uppercase tracking-wide">
                       {category}
                     </h3>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {skills.map((skill, index) => (
-                        <div key={index} className="text-xs text-gray-700 py-1 px-2 bg-gray-50 rounded">
+                        <div key={index} className="text-xs text-gray-700 py-0.5 px-1.5 bg-gray-50 rounded">
                           {skill}
                         </div>
                       ))}
@@ -1095,19 +1095,19 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           {/* Additional Information */}
           {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
             <div>
-              <h2 className="text-lg font-serif text-gray-900 mb-4 border-b border-gray-300 pb-2">
+              <h2 className="text-base font-serif text-gray-900 mb-2 border-b border-gray-300 pb-1">
                 ADDITIONAL
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
                   <div key={section.id}>
-                    <h3 className="text-sm font-semibold text-gray-800 mb-2 uppercase tracking-wide">
+                    <h3 className="text-xs font-semibold text-gray-800 mb-1 uppercase tracking-wide">
                       {section.title}
                     </h3>
-                    <ul className="space-y-1">
+                    <ul className="space-y-0.5">
                       {section.items.map((item, index) => (
                         <li key={index} className="text-xs text-gray-700 flex items-start">
-                          <span className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                          <span className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1 flex-shrink-0"></span>
                           {item}
                         </li>
                       ))}
@@ -1120,50 +1120,50 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         </div>
 
         {/* Main content */}
-        <div className="col-span-3 space-y-6">
+        <div className="col-span-3 space-y-4">
           {/* Experience */}
           {resumeData.experience.length > 0 && (
             <div>
-              <h2 className="text-xl font-serif text-gray-900 mb-6 border-b border-gray-300 pb-2">
+              <h2 className="text-lg font-serif text-gray-900 mb-3 border-b border-gray-300 pb-1">
                 PROFESSIONAL EXPERIENCE
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
                   <div key={company} className="relative">
                     {/* Company Header */}
-                    <div className="mb-4">
-                      <h3 className="text-lg font-serif text-gray-900 font-semibold border-l-4 border-yellow-500 pl-3">
+                    <div className="mb-2">
+                      <h3 className="text-base font-serif text-gray-900 font-semibold border-l-4 border-yellow-500 pl-2">
                         {company}
                       </h3>
-                      <p className="text-sm text-gray-600 font-light pl-3 mt-1">{experiences[0].location}</p>
+                      <p className="text-xs text-gray-600 font-light pl-2 mt-0.5">{experiences[0].location}</p>
                       {experiences.length > 1 && (
-                        <p className="text-xs text-yellow-600 font-light pl-3 uppercase tracking-wide">
+                        <p className="text-xs text-yellow-600 font-light pl-2 uppercase tracking-wide">
                           Career Progression • {experiences.length} Positions
                         </p>
                       )}
                     </div>
                     
                     {/* Positions within the company */}
-                    <div className="space-y-4 relative">
+                    <div className="space-y-2 relative">
                       {experiences.map((exp, index) => (
-                        <div key={exp.id} className="relative pl-8">
+                        <div key={exp.id} className="relative pl-6">
                           {/* Timeline for multiple roles */}
                           {experiences.length > 1 && (
-                            <div className="absolute -left-2 top-1">
-                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center border-2 border-white">
+                            <div className="absolute -left-1.5 top-0.5">
+                              <div className="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center border-2 border-white">
                                 <span className="text-white text-xs font-bold">{experiences.length - index}</span>
                               </div>
                               {index < experiences.length - 1 && (
-                                <div className="absolute left-1/2 top-full w-0.5 h-8 bg-yellow-300 transform -translate-x-1/2"></div>
+                                <div className="absolute left-1/2 top-full w-0.5 h-6 bg-yellow-300 transform -translate-x-1/2"></div>
                               )}
                             </div>
                           )}
                           
-                          <div className="flex justify-between items-start mb-2">
+                          <div className="flex justify-between items-start mb-1">
                             <div>
-                              <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
+                              <h4 className="text-sm font-semibold text-gray-900">{exp.position}</h4>
                               {experiences.length > 1 && (
-                                <span className={`text-xs px-2 py-1 rounded-full font-light uppercase tracking-wide ${
+                                <span className={`text-xs px-1.5 py-0.5 rounded-full font-light uppercase tracking-wide ${
                                   index === 0 
                                     ? 'bg-green-100 text-green-700' 
                                     : 'bg-gray-100 text-gray-700'
@@ -1172,20 +1172,20 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                                 </span>
                               )}
                             </div>
-                            <div className="text-right text-sm text-gray-600">
+                            <div className="text-right text-xs text-gray-600">
                               <p className="font-light">{exp.startDate} – {exp.current ? 'Present' : exp.endDate}</p>
                             </div>
                           </div>
                           
                           {exp.description && (
-                            <p className="text-sm text-gray-700 mb-3 italic font-light">{exp.description}</p>
+                            <p className="text-xs text-gray-700 mb-1 italic font-light">{exp.description}</p>
                           )}
                           
                           {exp.achievements.length > 0 && (
-                            <ul className="space-y-2 text-sm text-gray-700">
+                            <ul className="space-y-1 text-xs text-gray-700">
                               {exp.achievements.map((achievement: string, achievementIndex: number) => (
                                 <li key={achievementIndex} className="flex items-start font-light">
-                                  <span className="w-1 h-1 bg-yellow-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                                  <span className="w-1 h-1 bg-yellow-500 rounded-full mr-2 mt-1 flex-shrink-0"></span>
                                   <span>{achievement}</span>
                                 </li>
                               ))}
@@ -1201,24 +1201,24 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
           )}
 
           {/* Education and Projects */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
             {/* Education */}
             {resumeData.education.length > 0 && (
               <div>
-                <h2 className="text-lg font-serif text-gray-900 mb-4 border-b border-gray-300 pb-2">
+                <h2 className="text-base font-serif text-gray-900 mb-2 border-b border-gray-300 pb-1">
                   EDUCATION
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {resumeData.education.map((edu) => (
                     <div key={edu.id}>
-                      <h3 className="text-base font-semibold text-gray-900">{edu.degree}</h3>
-                      <p className="text-sm text-gray-700 font-light">{edu.field}</p>
-                      <p className="text-sm text-gray-700 italic">{edu.institution}</p>
-                      <div className="flex justify-between items-center text-xs text-gray-600 mt-1">
+                      <h3 className="text-sm font-semibold text-gray-900">{edu.degree}</h3>
+                      <p className="text-xs text-gray-700 font-light">{edu.field}</p>
+                      <p className="text-xs text-gray-700 italic">{edu.institution}</p>
+                      <div className="flex justify-between items-center text-xs text-gray-600 mt-0.5">
                         <span className="font-light">{edu.graduationDate}</span>
                         {edu.gpa && <span className="font-light">GPA: {edu.gpa}</span>}
                       </div>
-                      {edu.honors && <p className="text-xs text-gray-600 italic mt-1">{edu.honors}</p>}
+                      {edu.honors && <p className="text-xs text-gray-600 italic mt-0.5">{edu.honors}</p>}
                     </div>
                   ))}
                 </div>
@@ -1228,18 +1228,18 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
             {/* Projects */}
             {resumeData.projects.length > 0 && (
               <div>
-                <h2 className="text-lg font-serif text-gray-900 mb-4 border-b border-gray-300 pb-2">
+                <h2 className="text-base font-serif text-gray-900 mb-2 border-b border-gray-300 pb-1">
                   PROJECTS
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {resumeData.projects.map((project) => (
                     <div key={project.id}>
-                      <h3 className="text-base font-semibold text-gray-900">{project.name}</h3>
-                      <p className="text-sm text-gray-700 mb-2 font-light">{project.description}</p>
+                      <h3 className="text-sm font-semibold text-gray-900">{project.name}</h3>
+                      <p className="text-xs text-gray-700 mb-1 font-light">{project.description}</p>
                       {project.technologies.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-2">
+                        <div className="flex flex-wrap gap-1 mb-1">
                           {project.technologies.map((tech, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs font-light">
+                            <span key={index} className="bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded text-xs font-light">
                               {tech}
                             </span>
                           ))}
