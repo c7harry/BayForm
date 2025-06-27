@@ -555,7 +555,7 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               {resumeData.personalInfo.professionTitle}
             </h2>
           )}
-          <div className="grid grid-cols-5 gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
             {[
               resumeData.personalInfo.location && { icon: "📍", text: resumeData.personalInfo.location },
               resumeData.personalInfo.email && { icon: "✉️", text: resumeData.personalInfo.email },
@@ -564,8 +564,8 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
               resumeData.personalInfo.linkedIn && { icon: "💼", text: resumeData.personalInfo.linkedIn }
             ].filter((item): item is { icon: string; text: string } => Boolean(item)).map((item, idx) => (
               <div key={idx} className="flex items-center space-x-1">
-                <span className="text-xs">{item.icon}</span>
-                <span className="text-xs">{item.text}</span>
+                <span className="flex-shrink-0">{item.icon}</span>
+                <span className="whitespace-nowrap">{item.text}</span>
               </div>
             ))}
           </div>
