@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProgressStep {
@@ -369,6 +369,10 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [hoveredStep, setHoveredStep] = useState<string | null>(null);
+  
+  // Refs to track timeouts for cleanup
+  const bubbleLeaveTimeout = useRef<NodeJS.Timeout | null>(null);
+  const progressBarLeaveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Helper function to get the appropriate gradient for each step
   const getStepGradient = (stepId: string) => {
@@ -419,28 +423,68 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   }, 0);
 
   const handleBubbleHover = () => {
+    // Clear any pending close timeout
+    if (bubbleLeaveTimeout.current) {
+      clearTimeout(bubbleLeaveTimeout.current);
+      bubbleLeaveTimeout.current = null;
+    }
+    if (progressBarLeaveTimeout.current) {
+      clearTimeout(progressBarLeaveTimeout.current);
+      progressBarLeaveTimeout.current = null;
+    }
     setShowProgressBar(true);
   };
 
   const handleBubbleLeave = () => {
-    // Longer delay to allow mouse to move to progress bar
-    setTimeout(() => {
-      if (!hoveredStep && !showProgressBar) {
-        setShowProgressBar(false);
-      }
+    // Clear any existing timeout
+    if (bubbleLeaveTimeout.current) {
+      clearTimeout(bubbleLeaveTimeout.current);
+    }
+    
+    // Set a timeout to close the progress bar
+    bubbleLeaveTimeout.current = setTimeout(() => {
+      setShowProgressBar(false);
+      bubbleLeaveTimeout.current = null;
     }, 500);
   };
 
   const handleProgressBarEnter = () => {
+    // Clear any pending close timeouts
+    if (bubbleLeaveTimeout.current) {
+      clearTimeout(bubbleLeaveTimeout.current);
+      bubbleLeaveTimeout.current = null;
+    }
+    if (progressBarLeaveTimeout.current) {
+      clearTimeout(progressBarLeaveTimeout.current);
+      progressBarLeaveTimeout.current = null;
+    }
     setShowProgressBar(true);
   };
 
   const handleProgressBarLeave = () => {
-    // Shorter delay when leaving progress bar
-    setTimeout(() => {
+    // Clear any existing timeout
+    if (progressBarLeaveTimeout.current) {
+      clearTimeout(progressBarLeaveTimeout.current);
+    }
+    
+    // Set a shorter timeout when leaving progress bar
+    progressBarLeaveTimeout.current = setTimeout(() => {
       setShowProgressBar(false);
+      progressBarLeaveTimeout.current = null;
     }, 200);
   };
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (bubbleLeaveTimeout.current) {
+        clearTimeout(bubbleLeaveTimeout.current);
+      }
+      if (progressBarLeaveTimeout.current) {
+        clearTimeout(progressBarLeaveTimeout.current);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -576,45 +620,65 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   onClick={() => onStepClick(step.id)}
                   onMouseEnter={() => {
                     setHoveredStep(step.id);
-                    setShowProgressBar(true); // Keep progress bar open when hovering steps
+                    // Clear any pending close timeouts when hovering steps
+                    if (bubbleLeaveTimeout.current) {
+                      clearTimeout(bubbleLeaveTimeout.current);
+                      bubbleLeaveTimeout.current = null;
+                    }
+                    if (progressBarLeaveTimeout.current) {
+                      clearTimeout(progressBarLeaveTimeout.current);
+                      progressBarLeaveTimeout.current = null;
+                    }
+                    setShowProgressBar(true);
                   }}
                   onMouseLeave={() => {
                     setHoveredStep(null);
-                    // Don't immediately close on step hover leave
+                    // Don't immediately close when leaving a step
                   }}
                   disabled={!isClickable}
                   className={`
-                    w-full p-3 rounded-xl text-left transition-all duration-300 group
+                    w-full p-3 rounded-xl text-left transition-all duration-500 ease-out group
                     ${isActive 
-                      ? `bg-gradient-to-r ${getStepGradient(step.id)}/25 border-2 border-orange-400/60 shadow-lg` 
+                      ? `bg-gradient-to-r ${getStepGradient(step.id)}/30 border-2 border-orange-400/70 shadow-lg transform scale-[1.02]` 
                       : isCompleted 
                         ? `bg-gradient-to-r ${getStepGradient(step.id)}/15 border border-gray-300/50 hover:bg-gradient-to-r hover:${getStepGradient(step.id)}/25 hover:border-gray-400/70` 
                         : 'bg-gray-50/70 border border-gray-200/50 hover:bg-gray-100/80 hover:border-gray-300/70'
                     }
-                    ${hoveredStep === step.id ? 'transform scale-105 shadow-xl border-orange-400/80' : ''}
+                    ${hoveredStep === step.id ? 'transform scale-105 shadow-xl border-orange-400/80 bg-gradient-to-r bg-orange-50/30' : ''}
                     ${!isClickable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
                   `}
-                  whileHover={isClickable ? { scale: 1.02, y: -3 } : {}}
-                  whileTap={isClickable ? { scale: 0.98 } : {}}
+                  whileHover={isClickable ? { 
+                    scale: 1.03, 
+                    y: -2,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  } : {}}
+                  whileTap={isClickable ? { 
+                    scale: 0.98,
+                    transition: { duration: 0.1, ease: "easeInOut" }
+                  } : {}}
+                  style={{
+                    transformOrigin: "center",
+                  }}
                 >
                   <div className="flex items-center gap-2">
                     {/* Status Indicator */}
                     <motion.div
                       animate={{
-                        scale: isActive ? [1, 1.2, 1] : 1,
+                        scale: isActive ? [1, 1.15, 1] : 1,
                         rotate: isActive ? [0, 360] : 0
                       }}
                       transition={{
-                        duration: isActive ? 2 : 0,
+                        duration: isActive ? 3 : 0,
                         repeat: isActive ? Infinity : 0,
-                        ease: "easeInOut"
+                        ease: "easeInOut",
+                        scale: { duration: 2, ease: "easeInOut" }
                       }}
                       className={`
-                        w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold
+                        w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ease-out
                         ${isCompleted 
-                          ? `bg-gradient-to-r ${getStepGradient(step.id)} text-white` 
+                          ? `bg-gradient-to-r ${getStepGradient(step.id)} text-white shadow-md` 
                           : isActive 
-                            ? 'bg-orange-500 text-white' 
+                            ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' 
                             : 'bg-gray-300 text-gray-600'
                         }
                       `}
@@ -637,25 +701,38 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                       {/* Progress indicator for current step */}
                       {isActive && (
                         <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: '100%' }}
-                          transition={{ duration: 0.5, delay: 0.2 }}
-                          className={`mt-1 h-1 bg-gradient-to-r ${getStepGradient(step.id)} rounded-full`}
+                          initial={{ width: 0, opacity: 0 }}
+                          animate={{ width: '100%', opacity: 1 }}
+                          transition={{ 
+                            duration: 0.8, 
+                            delay: 0.2,
+                            ease: "easeOut"
+                          }}
+                          className={`mt-1 h-1 bg-gradient-to-r ${getStepGradient(step.id)} rounded-full shadow-sm`}
                         />
                       )}
                     </div>
 
                     {/* Arrow indicator */}
-                    {hoveredStep === step.id && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        className="text-orange-500"
-                      >
-                        →
-                      </motion.div>
-                    )}
+                    <AnimatePresence>
+                      {hoveredStep === step.id && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                          animate={{ opacity: 1, x: 0, scale: 1 }}
+                          exit={{ opacity: 0, x: -10, scale: 0.8 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            ease: "easeOut",
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20
+                          }}
+                          className="text-orange-500 font-bold text-sm"
+                        >
+                          →
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </motion.button>
               );
