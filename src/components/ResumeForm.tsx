@@ -14,7 +14,6 @@ import {
   CodeBracketIcon,
   CubeIcon,
   InformationCircleIcon,
-  EllipsisVerticalIcon,
   HeartIcon
 } from '@heroicons/react/24/outline';
 import { 
@@ -565,60 +564,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }
   }, [additionalSectionsInitialized, resumeData.additionalSections]);
 
-  // --- Section Order and Renaming ---
-  const [sections, setSections] = useState(
-    DEFAULT_SECTIONS
-  );
-
-  const moveSection = (idx: number, dir: 'up' | 'down') => {
-    setSections(prev => {
-      const arr = [...prev];
-      const t = dir === 'up' ? idx - 1 : idx + 1;
-      if (t < 0 || t >= arr.length) return arr;
-      [arr[idx], arr[t]] = [arr[t], arr[idx]];
-      return arr;
-    });
-  };
-  const [menuOpenIdx, setMenuOpenIdx] = useState<number | null>(null);
-  const [renameModal, setRenameModal] = useState<{ open: boolean, idx: number | null }>({ open: false, idx: null });
-  const [renameValue, setRenameValue] = useState('');
-  const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const threeDotRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  // Close menu on outside click or re-click
-  useEffect(() => {
-    if (menuOpenIdx === null) return;
-    function handleClick(e: MouseEvent) {
-      if (menuOpenIdx === null) return;
-      const menu = menuRefs.current[menuOpenIdx!];
-      const btn = threeDotRefs.current[menuOpenIdx!];
-      if (menu && btn && !menu.contains(e.target as Node) && !btn.contains(e.target as Node)) {
-        setMenuOpenIdx(null);
-      }
-      // If click is on the three-dot button, close menu
-      if (btn && btn.contains(e.target as Node)) {
-        setMenuOpenIdx(null);
-      }
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [menuOpenIdx]);
-
-  const openMenu = (idx: number) => setMenuOpenIdx(idx);
-  const closeMenu = () => setMenuOpenIdx(null);
-
-  const handleRename = (idx: number) => {
-    setRenameValue(sections[idx].label);
-    setRenameModal({ open: true, idx });
-    closeMenu();
-  };
-  const handleRenameSubmit = () => {
-    if (renameModal.idx !== null && renameValue.trim()) {
-      setSections(prev => prev.map((s, i) => i === renameModal.idx ? { ...s, label: renameValue.trim() } : s));
-    }
-    setRenameModal({ open: false, idx: null });
-  };
-  const handleRenameCancel = () => setRenameModal({ open: false, idx: null });
+  // --- Sections ---
+  const sections = DEFAULT_SECTIONS;
 
   // --- Form Submission ---
   const handleSubmit = (e: React.FormEvent) => {
@@ -853,77 +800,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover/button:text-gray-700 transition-colors" />
                       </motion.div>
                     </motion.button>
-                    
-                    {section.key !== 'personal' && (
-                      <div className="relative pr-2 sm:pr-4" ref={el => { menuRefs.current[idx] = el; }}>
-                        <motion.button
-                          type="button"
-                          ref={el => { threeDotRefs.current[idx] = el; }}
-                          onClick={() => {
-                            setMenuOpenIdx(menuOpenIdx === idx ? null : idx);
-                            if (menuOpenIdx !== idx) {
-                              toast.success('Section menu opened', { icon: '⚙️' });
-                            }
-                          }}
-                          whileHover={{ scale: 1.1, rotate: 90 }}
-                          whileTap={{ scale: 0.9 }}
-                          className="p-2 sm:p-3 text-gray-500 hover:text-gray-800 focus:outline-none rounded-xl hover:bg-white/50 transition-all duration-300 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
-                        >
-                          <EllipsisVerticalIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </motion.button>
-                        
-                        <AnimatePresence>
-                          {menuOpenIdx === idx && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                              animate={{ opacity: 1, scale: 1, y: 0 }}
-                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              transition={{ duration: 0.2 }}
-                              className={`absolute right-0 top-full mt-2 w-44 sm:w-48 ${section.bgColor} border border-white/30 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-lg`}
-                            >
-                              <motion.button
-                                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className={`block w-full text-left px-3 sm:px-4 py-3 text-sm transition-all duration-200 ${idx === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'} touch-manipulation min-h-[44px] flex items-center`}
-                                onClick={() => { 
-                                  if (idx > 0) { 
-                                    moveSection(idx, 'up'); 
-                                    closeMenu(); 
-                                    toast.success('Section moved up!', { icon: '⬆️' });
-                                  } 
-                                }}
-                                disabled={idx === 0}
-                              >
-                                ⬆️ Move Up
-                              </motion.button>
-                              <motion.button
-                                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className={`block w-full text-left px-3 sm:px-4 py-3 text-sm transition-all duration-200 ${idx === sections.length - 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-gray-900'} touch-manipulation min-h-[44px] flex items-center`}
-                                onClick={() => { 
-                                  if (idx < sections.length - 1) { 
-                                    moveSection(idx, 'down'); 
-                                    closeMenu(); 
-                                    toast.success('Section moved down!', { icon: '⬇️' });
-                                  } 
-                                }}
-                                disabled={idx === sections.length - 1}
-                              >
-                                ⬇️ Move Down
-                              </motion.button>
-                              <motion.button
-                                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', x: 4 }}
-                                className="block w-full text-left px-3 sm:px-4 py-3 text-sm text-gray-700 hover:text-gray-900 transition-all duration-200 touch-manipulation min-h-[44px] flex items-center"
-                                onClick={() => {
-                                  handleRename(idx);
-                                  toast.success('Rename dialog opened', { icon: '✏️' });
-                                }}
-                              >
-                                ✏️ Rename
-                              </motion.button>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
                   </div>
                   
                   <AnimatePresence>
@@ -1510,67 +1386,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
 
             {/* Action Buttons */}
           </form>
-
-          {/* Enhanced Rename Modal - Mobile Optimized */}
-          <AnimatePresence>
-            {renameModal.open && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-              >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm sm:max-w-md border border-white/20"
-                >
-                  <motion.h2 
-                    initial={{ y: -10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-900 flex items-center gap-2"
-                  >
-                    ✏️ Rename Section
-                  </motion.h2>
-                  <motion.input
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    type="text"
-                    value={renameValue}
-                    onChange={e => setRenameValue(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-3 border-2 border-gray-200 rounded-xl mb-4 sm:mb-6 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base touch-manipulation"
-                    autoFocus
-                    placeholder="Enter new section name..."
-                  />
-                 
-                  <motion.div 
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4"
-                  >
-                    <motion.button 
-                      onClick={handleRenameCancel} 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-300 font-medium touch-manipulation min-h-[44px]"
-                    >
-                      Cancel
-                    </motion.button>
-                    <motion.button 
-                      onClick={handleRenameSubmit} 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-[#0F2D52] text-white hover:from-orange-600 hover:to-[#0a1f3d] transition-all duration-300 font-medium shadow-lg touch-manipulation min-h-[44px]"
-                    >
-                      Save
-                    </motion.button>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
     </>
