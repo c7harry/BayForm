@@ -606,7 +606,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       <Toaster 
         position="top-right"
         containerStyle={{
-          top: 80, // Account for fixed header
+          top: 90, // Account for enhanced header
         }}
         toastOptions={{
           duration: 3500,
@@ -671,31 +671,58 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         onTooltipDismiss={handleProgressTooltipDismiss}
       />
       
-      {/* Fixed Header - Mobile Optimized */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-md">
+      {/* Enhanced Header Bar - Modern & Clean */}
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-lg">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-purple-50/20 to-orange-50/30 opacity-60" />
+        
         {/* Mobile Layout */}
-        <div className="sm:hidden">
+        <div className="sm:hidden relative">
           <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <Image src="/images/header.png" alt="Bayform Logo" width={80} height={26} className="h-6 w-auto object-contain rounded-md flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <h1 className="text-sm font-bold text-gray-900 leading-tight truncate">Resume Builder</h1>
+            {/* Logo with improved spacing */}
+            <div className="flex items-center gap-3">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative"
+              >
+                <Image 
+                  src="/images/header.png" 
+                  alt="BayForm - Professional Resume Builder" 
+                  width={90} 
+                  height={30} 
+                  className="h-7 w-auto object-contain drop-shadow-sm" 
+                />
+              </motion.div>
+              {/* Separator and status indicator */}
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-6 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full opacity-60" />
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-gray-600 leading-tight">Editing</span>
+                  <span className="text-xs text-orange-600 font-semibold leading-tight truncate max-w-20">
+                    {resumeData.name || 'New Resume'}
+                  </span>
+                </div>
               </div>
             </div>
+            
+            {/* Action buttons with enhanced styling */}
             <div className="flex gap-2 flex-shrink-0">
               <motion.button
                 type="button"
                 onClick={onCancel}
-                whileTap={{ scale: 0.95 }}
-                className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium touch-manipulation min-h-[44px] min-w-[60px]"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium touch-manipulation min-h-[44px] min-w-[60px] transition-all duration-200 shadow-sm"
               >
                 Cancel
               </motion.button>
               <motion.button
                 type="submit"
                 form="resume-form"
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium shadow-lg touch-manipulation min-h-[44px]"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg text-sm font-semibold shadow-md hover:shadow-lg touch-manipulation min-h-[44px] transition-all duration-200"
               >
                 Save
               </motion.button>
@@ -704,42 +731,84 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden sm:flex items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <Image src="/images/header.png" alt="Bayform Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
-            <div>
-              <h1 className="text-xl font-bold text-gray-900 leading-tight">Resume Builder</h1>
-              <p className="text-sm text-gray-600 font-medium">Create your professional resume with style</p>
+        <div className="hidden sm:flex items-center justify-between px-6 py-4 relative">
+          {/* Left section with logo and context */}
+          <div className="flex items-center gap-6">
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative group"
+            >
+              <Image 
+                src="/images/header.png" 
+                alt="BayForm - Professional Resume Builder" 
+                width={140} 
+                height={45} 
+                className="h-11 w-auto object-contain drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300" 
+              />
+            </motion.div>
+            
+            {/* Context information with better design */}
+            <div className="flex items-center gap-4">
+              <div className="w-px h-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent" />
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-sm font-medium text-gray-700">Currently Editing</span>
+                </div>
+                <h1 className="text-lg font-bold text-gray-900 leading-tight max-w-64 truncate">
+                  {resumeData.name || 'Untitled Resume'}
+                </h1>
+              </div>
             </div>
           </div>
-          <div className="flex gap-4 ml-auto">
-            <motion.button
-              type="button"
-              onClick={onCancel}
-              whileHover={{ scale: 1.05, backgroundColor: '#f3f4f6' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold"
-            >
-              Cancel
-            </motion.button>
-            <motion.button
-              type="submit"
-              form="resume-form"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-            >
-               Save Resume
-            </motion.button>
+
+          {/* Right section with enhanced action buttons */}
+          <div className="flex items-center gap-4">
+            {/* Auto-save indicator */}
+            <div className="hidden xl:flex items-center gap-2 text-xs text-gray-500">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              <span>Auto-saving</span>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-3">
+              <motion.button
+                type="button"
+                onClick={onCancel}
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 py-2.5 bg-white hover:bg-gray-50 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 font-semibold shadow-sm hover:shadow-md"
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                type="submit"
+                form="resume-form"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl relative overflow-hidden"
+              >
+                {/* Button background animation */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-500 opacity-0 hover:opacity-100 transition-opacity duration-300"
+                  whileHover={{ scale: 1.05 }}
+                />
+                <span className="relative z-10 flex items-center gap-2">
+                  <span>💾</span>
+                  Save Resume
+                </span>
+              </motion.button>
+            </div>
           </div>
         </div>
       </header>
-      {/* Main Content with mobile-optimized padding */}
+      {/* Main Content with optimized padding for new header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 pt-20 sm:pt-24"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 pt-24 sm:pt-28"
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           {/* Header - Mobile Optimized */}
