@@ -58,6 +58,7 @@ const FloatingProgressBubble: React.FC<{
         delay: 2 // Appear after 2 seconds
       }}
       className="fixed top-24 right-6 z-50 cursor-pointer"
+      data-progress-bubble="true"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       onClick={handleClick}
@@ -189,8 +190,15 @@ const ProgressNode: React.FC<{
     <motion.div
       onClick={onClick}
       className="relative cursor-pointer group"
-      whileHover={{ scale: 1.2, rotateY: 180 }}
-      whileTap={{ scale: 0.9 }}
+      whileHover={{ 
+        scale: 1.15, 
+        rotateY: 180,
+        transition: { duration: 0.4, ease: "easeOut" }
+      }}
+      whileTap={{ 
+        scale: 0.95,
+        transition: { duration: 0.1, ease: "easeInOut" }
+      }}
       style={{ transformStyle: 'preserve-3d' }}
     >
       {/* Main Node */}
@@ -204,23 +212,54 @@ const ProgressNode: React.FC<{
               : 'bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-400/50'
           }
         `}
+        initial={false}
         animate={{
+          scale: active ? [1, 1.1, 1] : completed ? 1.02 : 1,
           boxShadow: active 
-            ? ['0 0 20px rgba(249, 115, 22, 0.5)', '0 0 30px rgba(15, 45, 82, 0.8)', '0 0 20px rgba(249, 115, 22, 0.5)']
+            ? ['0 0 20px rgba(249, 115, 22, 0.5)', '0 0 30px rgba(249, 115, 22, 0.8)', '0 0 20px rgba(249, 115, 22, 0.5)']
             : completed
               ? ['0 0 15px rgba(34, 197, 94, 0.5)', '0 0 25px rgba(34, 197, 94, 0.7)', '0 0 15px rgba(34, 197, 94, 0.5)']
               : '0 0 0px rgba(0, 0, 0, 0)',
-          rotate: active ? [0, 360] : 0
+          backgroundColor: completed 
+            ? '#10b981'
+            : active 
+              ? '#f97316'
+              : '#9ca3af'
         }}
         transition={{
-          boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-          rotate: { duration: 3, repeat: Infinity, ease: "linear" }
+          scale: { 
+            duration: active ? 2 : 0.6, 
+            repeat: active ? Infinity : 0, 
+            ease: "easeInOut" 
+          },
+          boxShadow: { 
+            duration: 2, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          },
+          backgroundColor: { 
+            duration: 0.6, 
+            ease: "easeInOut" 
+          }
         }}
         style={{
           transform: 'translateZ(10px)'
         }}
       >
-        {completed ? '✓' : icon}
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: completed || active ? 1 : 0.8,
+            scale: active ? [1, 1.2, 1] : 1
+          }}
+          transition={{
+            duration: 0.5,
+            ease: "easeInOut",
+            scale: { duration: 2, repeat: active ? Infinity : 0 }
+          }}
+        >
+          {completed ? '✓' : icon}
+        </motion.div>
         
         {/* Floating particles for active state */}
         {active && (
@@ -251,11 +290,13 @@ const ProgressNode: React.FC<{
       {active && (
         <motion.div
           className="absolute inset-0 rounded-full border-2 border-orange-400"
+          initial={{ scale: 0, opacity: 0 }}
           animate={{
             scale: [1, 1.5, 1],
             opacity: [0.8, 0.2, 0.8],
             rotate: [0, 360]
           }}
+          exit={{ scale: 0, opacity: 0 }}
           transition={{
             duration: 2,
             repeat: Infinity,
@@ -273,10 +314,12 @@ const ProgressNode: React.FC<{
           className="absolute inset-0"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: [0, 2, 0], opacity: [0, 0.6, 0] }}
+          exit={{ scale: 0, opacity: 0 }}
           transition={{
-            duration: 1,
+            duration: 1.5,
             repeat: Infinity,
-            delay: Math.random() * 2
+            delay: Math.random() * 2,
+            ease: "easeOut"
           }}
         >
           <div className="w-full h-full rounded-full bg-green-400/30" />
@@ -308,19 +351,25 @@ const ProgressLine: React.FC<{
                 ? 'bg-gradient-to-b from-orange-400 to-orange-600'
                 : 'bg-gray-300'
           }`}
-          initial={{ height: completed ? '100%' : '0%', y: completed ? '0%' : '100%' }}
+          initial={{ height: '0%', y: '100%' }}
           animate={{ 
             height: completed ? '100%' : isNext ? '50%' : '0%',
             y: completed ? '0%' : isNext ? '50%' : '100%'
           }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ 
+            duration: 0.8, 
+            ease: "easeInOut",
+            delay: completed ? 0.2 : 0
+          }}
         />
         
         {/* Animated progress dots */}
-        {(completed || isNext) && (        <motion.div
-          className={`absolute w-1 h-1 rounded-full ${
-            completed ? 'bg-green-300' : 'bg-orange-300'
-          }`}
+        {(completed || isNext) && (
+          <motion.div
+            className={`absolute w-1 h-1 rounded-full ${
+              completed ? 'bg-green-300' : 'bg-orange-300'
+            }`}
+            initial={{ y: '0%', opacity: 0 }}
             animate={{
               y: ['0%', '100%'],
               opacity: [1, 0.3, 1]
@@ -328,7 +377,8 @@ const ProgressLine: React.FC<{
             transition={{
               duration: 1.5,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
+              delay: 0.5
             }}
           />
         )}
@@ -358,7 +408,12 @@ const ProgressScene: React.FC<{
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                delay: index * 0.1,
+                duration: 0.6,
+                ease: "easeOut"
+              }}
               className="flex items-center justify-center"
             >
               <ProgressNode
@@ -371,11 +426,22 @@ const ProgressScene: React.FC<{
             </motion.div>
             
             {index < steps.length - 1 && (
-              <ProgressLine
-                completed={step.completed}
-                isNext={isNext}
-                gradient={getStepGradient(step.id)}
-              />
+              <motion.div
+                initial={{ opacity: 0, scaleY: 0 }}
+                animate={{ opacity: 1, scaleY: 1 }}
+                exit={{ opacity: 0, scaleY: 0 }}
+                transition={{
+                  delay: index * 0.1 + 0.3,
+                  duration: 0.5,
+                  ease: "easeOut"
+                }}
+              >
+                <ProgressLine
+                  completed={step.completed}
+                  isNext={isNext}
+                  gradient={getStepGradient(step.id)}
+                />
+              </motion.div>
             )}
           </React.Fragment>
         );
@@ -481,11 +547,11 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       clearTimeout(bubbleLeaveTimeout.current);
     }
     
-    // Set a timeout to close the progress bar
+    // Set a shorter timeout to close the progress bar
     bubbleLeaveTimeout.current = setTimeout(() => {
       setShowProgressBar(false);
       bubbleLeaveTimeout.current = null;
-    }, 500);
+    }, 300);
   };
 
   const handleProgressBarEnter = () => {
@@ -507,16 +573,27 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       clearTimeout(progressBarLeaveTimeout.current);
     }
     
-    // Set a shorter timeout when leaving progress bar
+    // Set a very short timeout when leaving progress bar
     progressBarLeaveTimeout.current = setTimeout(() => {
       setShowProgressBar(false);
       progressBarLeaveTimeout.current = null;
-    }, 200);
+    }, 150);
   };
 
   // Cleanup timeouts on unmount
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      // Check if click is outside the progress bar area
+      if (showProgressBar && !target.closest('[data-progress-menu]') && !target.closest('[data-progress-bubble]')) {
+        setShowProgressBar(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       if (bubbleLeaveTimeout.current) {
         clearTimeout(bubbleLeaveTimeout.current);
       }
@@ -524,7 +601,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
         clearTimeout(progressBarLeaveTimeout.current);
       }
     };
-  }, []);
+  }, [showProgressBar]);
 
   return (
     <>
@@ -550,21 +627,9 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       <AnimatePresence>
         {showProgressBar && (
           <>
-            {/* Mobile-friendly backdrop for closing menu */}
+            {/* Smaller buffer zone only around the progress bar */}
             <div 
-              className="fixed inset-0 z-30"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowProgressBar(false);
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                setShowProgressBar(false);
-              }}
-            />
-            {/* Invisible buffer zone to help with mouse movement */}
-            <div 
-              className="fixed top-40 right-0 w-60 h-96 z-30"
+              className="fixed top-36 right-0 w-64 h-80 z-30"
               onMouseEnter={handleProgressBarEnter}
               onMouseLeave={handleProgressBarLeave}
             />
@@ -577,7 +642,8 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                 stiffness: 260,
                 damping: 20
               }}
-              className="fixed top-40 right-4 z-40 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 shadow-2xl p-4 w-52"
+              className="fixed top-40 right-4 z-40 bg-white/95 backdrop-blur-xl rounded-xl border border-gray-300 shadow-2xl p-4 w-52"
+              data-progress-menu="true"
               onMouseLeave={handleProgressBarLeave}
               onMouseEnter={handleProgressBarEnter}
             >
@@ -608,8 +674,15 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
           </motion.div>
 
           {/* Enhanced 3D-style Visual Progress Display */}
-          <div 
+          <motion.div 
             className="relative h-56 mb-3 rounded-lg overflow-hidden bg-gradient-to-br from-orange-50/50 to-orange-100/20 border border-white/30"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+              delay: 0.2
+            }}
             style={{ 
               perspective: '1000px',
               transformStyle: 'preserve-3d'
@@ -648,7 +721,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                 }}
               />
             ))}
-          </div>
+          </motion.div>
 
           {/* Step Labels */}
           <div className="space-y-1">
@@ -662,8 +735,17 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   key={step.id}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
-                  onClick={() => onStepClick(step.id)}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ 
+                    delay: 0.8 + index * 0.1,
+                    duration: 0.5,
+                    ease: "easeOut"
+                  }}
+                  onClick={() => {
+                    onStepClick(step.id);
+                    // Auto-close menu after navigation
+                    setTimeout(() => setShowProgressBar(false), 500);
+                  }}
                   onMouseEnter={() => {
                     setHoveredStep(step.id);
                     // Clear any pending close timeouts when hovering steps
@@ -709,15 +791,31 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   <div className="flex items-center gap-2">
                     {/* Status Indicator */}
                     <motion.div
+                      initial={false}
                       animate={{
                         scale: isActive ? [1, 1.15, 1] : 1,
-                        rotate: isActive ? [0, 360] : 0
+                        rotate: isActive ? [0, 360] : 0,
+                        backgroundColor: isCompleted 
+                          ? '#10b981' 
+                          : isActive 
+                            ? '#f97316' 
+                            : '#9ca3af'
                       }}
                       transition={{
-                        duration: isActive ? 3 : 0,
-                        repeat: isActive ? Infinity : 0,
-                        ease: "easeInOut",
-                        scale: { duration: 2, ease: "easeInOut" }
+                        scale: { 
+                          duration: isActive ? 3 : 0.5, 
+                          repeat: isActive ? Infinity : 0, 
+                          ease: "easeInOut" 
+                        },
+                        rotate: { 
+                          duration: isActive ? 3 : 0.5, 
+                          repeat: isActive ? Infinity : 0, 
+                          ease: "easeInOut" 
+                        },
+                        backgroundColor: { 
+                          duration: 0.5, 
+                          ease: "easeInOut" 
+                        }
                       }}
                       className={`
                         w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ease-out
@@ -729,34 +827,60 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                         }
                       `}
                     >
-                      {isCompleted ? '✓' : index + 1}
+                      <motion.span
+                        initial={false}
+                        animate={{
+                          opacity: 1,
+                          scale: isActive ? [1, 1.2, 1] : 1
+                        }}
+                        transition={{
+                          duration: 0.3,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        {isCompleted ? '✓' : index + 1}
+                      </motion.span>
                     </motion.div>
 
                     {/* Step Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
-                        <span className="text-sm">{step.icon}</span>
-                        <span className={`
-                          font-semibold text-xs truncate
-                          ${isActive ? 'text-orange-700' : isCompleted ? getStepTextColor(step.id) : 'text-gray-600'}
-                        `}>
-                          {step.label}
-                        </span>
-                      </div>
-                      
-                      {/* Progress indicator for current step */}
-                      {isActive && (
-                        <motion.div
-                          initial={{ width: 0, opacity: 0 }}
-                          animate={{ width: '100%', opacity: 1 }}
-                          transition={{ 
-                            duration: 0.8, 
-                            delay: 0.2,
-                            ease: "easeOut"
+                        <motion.span 
+                          className="text-sm"
+                          initial={false}
+                          animate={{
+                            scale: isActive ? [1, 1.1, 1] : 1,
+                            rotate: isActive ? [0, 5, -5, 0] : 0
                           }}
-                          className={`mt-1 h-1 bg-gradient-to-r ${getStepGradient(step.id)} rounded-full shadow-sm`}
-                        />
-                      )}
+                          transition={{
+                            duration: isActive ? 2 : 0.3,
+                            repeat: isActive ? Infinity : 0,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          {step.icon}
+                        </motion.span>
+                        <motion.span 
+                          className={`
+                            font-semibold text-xs truncate
+                            ${isActive ? 'text-orange-800' : isCompleted ? getStepTextColor(step.id) : 'text-gray-600'}
+                          `}
+                          initial={false}
+                          animate={{
+                            color: isActive 
+                              ? '#000000FF' 
+                              : isCompleted 
+                                ? step.color 
+                                : '#4b5563'
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          {step.label}
+                        </motion.span>
+                      </div>
                     </div>
 
                     {/* Arrow indicator */}
@@ -764,14 +888,24 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                       {hoveredStep === step.id && (
                         <motion.div
                           initial={{ opacity: 0, x: -10, scale: 0.8 }}
-                          animate={{ opacity: 1, x: 0, scale: 1 }}
+                          animate={{ 
+                            opacity: 1, 
+                            x: 0, 
+                            scale: 1,
+                            rotate: [0, 10, -10, 0]
+                          }}
                           exit={{ opacity: 0, x: -10, scale: 0.8 }}
                           transition={{ 
                             duration: 0.3, 
                             ease: "easeOut",
                             type: "spring",
                             stiffness: 300,
-                            damping: 20
+                            damping: 20,
+                            rotate: {
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }
                           }}
                           className="text-orange-500 font-bold text-sm"
                         >
