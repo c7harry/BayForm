@@ -1944,52 +1944,190 @@ const SkillsSection: React.FC<{
   updateSkill: (id: string, value: string) => void;
   removeSkill: (id: string) => void;
   DEFAULT_SKILL_CATEGORIES: string[];
-}> = ({ resumeData, skillCategories, addSkill, updateSkill, removeSkill }) => {
+}> = ({ resumeData, skillCategories, addSkillCategory, addSkill, updateSkill, removeSkill }) => {
+  const [editingSkill, setEditingSkill] = useState<string | null>(null);
+  const [newSkillValue, setNewSkillValue] = useState('');
+
+  const handleSkillEdit = (skillId: string, currentValue: string) => {
+    setEditingSkill(skillId);
+    setNewSkillValue(currentValue);
+  };
+
+  const handleSkillSave = (skillId: string) => {
+    if (newSkillValue.trim()) {
+      updateSkill(skillId, newSkillValue.trim());
+    }
+    setEditingSkill(null);
+    setNewSkillValue('');
+  };
+
+  const handleSkillCancel = () => {
+    setEditingSkill(null);
+    setNewSkillValue('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent, skillId: string) => {
+    if (e.key === 'Enter') {
+      handleSkillSave(skillId);
+    } else if (e.key === 'Escape') {
+      handleSkillCancel();
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4 sm:space-y-6"
     >
-      <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
-        <CodeBracketIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
-        Add your technical and soft skills organized by category.
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+          <CodeBracketIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
+          Add your technical and soft skills organized by category.
+        </p>
+      </div>
       
-      {skillCategories.map((category) => (
-        <div key={category} className="bg-white/70 rounded-xl p-3 sm:p-4 border border-emerald-200">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">{category}</h4>
-          <div className="space-y-2 sm:space-y-3">
-            {resumeData.skills
-              .filter(skill => skill.category === category)
-              .map((skill) => (
-                <div key={skill.id} className="flex items-center gap-2 sm:gap-3">
-                  <input
-                    type="text"
-                    value={skill.name}
-                    onChange={(e) => updateSkill(skill.id, e.target.value)}
-                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base touch-manipulation"
-                    placeholder="Enter skill"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeSkill(skill.id)}
-                    className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
+      {skillCategories.map((category) => {
+        const categorySkills = resumeData.skills.filter(skill => skill.category === category);
+        
+        return (
+          <motion.div 
+            key={category} 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-xl p-4 sm:p-6 border border-emerald-200 relative overflow-hidden group"
+          >
+            {/* Animated background accent */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-200/20 to-teal-200/20 rounded-full blur-xl -translate-y-4 translate-x-4 group-hover:scale-110 transition-transform duration-500" />
+            
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-bold text-gray-900 text-base sm:text-lg flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+                  {category}
+                  <span className="text-xs font-normal bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
+                    {categorySkills.length} skill{categorySkills.length !== 1 ? 's' : ''}
+                  </span>
+                </h4>
+                <motion.button
+                  type="button"
+                  onClick={() => addSkill(category)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 touch-manipulation"
+                >
+                  <PlusIcon className="w-3 h-3" />
+                  Add Skill
+                </motion.button>
+              </div>
+              
+              {/* Skills Display */}
+              <div className="space-y-3">
+                {categorySkills.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    <AnimatePresence>
+                      {categorySkills.map((skill) => (
+                        <motion.div
+                          key={skill.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                          className="group/skill relative"
+                        >
+                          {editingSkill === skill.id ? (
+                            /* Edit Mode */
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                value={newSkillValue}
+                                onChange={(e) => setNewSkillValue(e.target.value)}
+                                onKeyDown={(e) => handleKeyPress(e, skill.id)}
+                                onBlur={() => handleSkillSave(skill.id)}
+                                className="px-3 py-1.5 text-sm border-2 border-emerald-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white min-w-[120px]"
+                                placeholder="Enter skill name"
+                                autoFocus
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleSkillSave(skill.id)}
+                                className="w-6 h-6 bg-emerald-500 text-white rounded-full text-xs hover:bg-emerald-600 transition-colors flex items-center justify-center"
+                              >
+                                ✓
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleSkillCancel}
+                                className="w-6 h-6 bg-gray-400 text-white rounded-full text-xs hover:bg-gray-500 transition-colors flex items-center justify-center"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            /* Display Mode */
+                            <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg px-3 py-2 shadow-sm hover:shadow-md transition-all duration-200 group-hover/skill:border-emerald-300">
+                              <span 
+                                className="text-sm font-medium text-gray-800 cursor-pointer hover:text-emerald-600 transition-colors"
+                                onClick={() => handleSkillEdit(skill.id, skill.name)}
+                                title="Click to edit"
+                              >
+                                {skill.name || 'Untitled Skill'}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeSkill(skill.id)}
+                                className="ml-1 w-4 h-4 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover/skill:opacity-100 flex items-center justify-center touch-manipulation"
+                                title="Remove skill"
+                              >
+                                <XMarkIcon className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  /* Empty State */
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center py-6 border-2 border-dashed border-emerald-200 rounded-lg bg-white/40"
                   >
-                    <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
-              ))}
-            <button
-              type="button"
-              onClick={() => addSkill(category)}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium py-2 px-3 rounded-lg hover:bg-emerald-50 transition-colors touch-manipulation min-h-[44px] flex items-center justify-center w-full sm:w-auto"
-            >
-              + Add {category} Skill
-            </button>
-          </div>
-        </div>
-      ))}
+                    <div className="text-emerald-400 text-2xl mb-2">🎯</div>
+                    <p className="text-sm text-gray-600 mb-2">No skills in this category yet</p>
+                    <button
+                      type="button"
+                      onClick={() => addSkill(category)}
+                      className="text-emerald-600 hover:text-emerald-700 text-sm font-medium underline decoration-dotted underline-offset-2 hover:decoration-solid transition-all"
+                    >
+                      Add your first {category.toLowerCase()} skill
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        );
+      })}
+      
+      {/* Add New Category */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-center pt-4"
+      >
+        <motion.button
+          type="button"
+          onClick={addSkillCategory}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-emerald-100 hover:to-teal-100 text-gray-700 hover:text-emerald-700 rounded-xl border border-gray-300 hover:border-emerald-300 shadow-sm hover:shadow-md transition-all duration-300 font-medium text-sm"
+        >
+          <PlusIcon className="w-4 h-4" />
+          Add New Category
+        </motion.button>
+      </motion.div>
     </motion.div>
   );
 };
