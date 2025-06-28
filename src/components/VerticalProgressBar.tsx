@@ -37,7 +37,7 @@ const FloatingProgressBubble: React.FC<{
         damping: 20,
         delay: 2 // Appear after 2 seconds
       }}
-      className="fixed top-20 right-6 z-50 cursor-pointer"
+      className="fixed top-24 right-6 z-50 cursor-pointer"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
@@ -518,7 +518,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             />
             {/* Invisible buffer zone to help with mouse movement */}
             <div 
-              className="fixed top-20 right-0 w-60 h-96 z-30"
+              className="fixed top-40 right-0 w-60 h-96 z-30"
               onMouseEnter={handleProgressBarEnter}
               onMouseLeave={handleProgressBarLeave}
             />
@@ -531,7 +531,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                 stiffness: 260,
                 damping: 20
               }}
-              className="fixed top-32 right-4 z-40 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 shadow-2xl p-4 w-52"
+              className="fixed top-40 right-4 z-40 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 shadow-2xl p-4 w-52"
               onMouseLeave={handleProgressBarLeave}
               onMouseEnter={handleProgressBarEnter}
             >
@@ -782,7 +782,7 @@ const ProgressTooltip: React.FC<{
           stiffness: 300,
           damping: 25
         }}
-        className="fixed top-24 right-24 z-50 max-w-xs"
+        className="fixed top-32 right-24 z-50 max-w-xs"
       >
         {/* Arrow pointing to the bubble */}
         <motion.div
