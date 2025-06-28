@@ -395,7 +395,7 @@ export default function Home() {
               {/* Feature 1: Privacy First */}
               <div className="group relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full">
+                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col items-center text-center">
                   <div className="bg-gradient-to-br from-green-500 to-emerald-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -407,7 +407,7 @@ export default function Home() {
                   <p className="text-slate-600 text-lg leading-relaxed mb-6">
                     No sign-up required! Your personal information and resume data never leaves your device. Everything is stored locally in your browser.
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-3 text-left">
                     <li className="flex items-center text-slate-600">
                       <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -433,7 +433,7 @@ export default function Home() {
               {/* Feature 2: Professional Templates */}
               <div className="group relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full">
+                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col items-center text-center">
                   <div className="bg-gradient-to-br from-blue-500 to-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -445,7 +445,7 @@ export default function Home() {
                   <p className="text-slate-600 text-lg leading-relaxed mb-6">
                     Choose from professionally designed templates that are optimized for different industries and career levels.
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-3 text-left">
                     <li className="flex items-center text-slate-600">
                       <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -471,7 +471,7 @@ export default function Home() {
               {/* Feature 3: Instant & Ready */}
               <div className="group relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full">
+                <div className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col items-center text-center">
                   <div className="bg-gradient-to-br from-orange-500 to-orange-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -483,7 +483,7 @@ export default function Home() {
                   <p className="text-slate-600 text-lg leading-relaxed mb-6">
                     No setup, no waiting, no hassle. Click start and begin building your resume right away. Download as PDF when you&apos;re done.
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-3 text-left">
                     <li className="flex items-center text-slate-600">
                       <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
