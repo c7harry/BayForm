@@ -1730,86 +1730,143 @@ const PersonalInfoSection: React.FC<{
         className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6 pt-6 border-t border-gray-200"
       >
         {/* Profile Picture Section */}
-        <div className="bg-gradient-to-r from-orange-50 to-pink-50 rounded-xl p-4 border border-orange-200">
-          <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            📸 Profile Picture (Optional)
-          </label>
-          <div className="flex items-center gap-4">
-            {resumeData.personalInfo.profilePicture ? (
-              <div className="relative flex-shrink-0">
-                <Image
-                  src={resumeData.personalInfo.profilePicture}
-                  alt="Profile"
-                  width={96}
-                  height={96}
-                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
+        <div className="bg-gradient-to-br from-orange-50 via-orange-25 to-pink-50 rounded-xl p-4 border border-orange-200 relative overflow-hidden group">
+          {/* Animated background accent */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-200/30 to-pink-200/30 rounded-full blur-2xl -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-500" />
+          
+          <div className="relative">
+            <label className="block text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-400 to-pink-500 flex items-center justify-center">
+                <span className="text-white text-xs">📸</span>
+              </div>
+              Profile Picture
+              <span className="text-xs font-normal bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Optional</span>
+            </label>
+            
+            <div className="flex flex-col items-center space-y-4">
+              {/* Profile Picture Display */}
+              <div className="relative group/pic">
+                {resumeData.personalInfo.profilePicture ? (
+                  <div className="relative">
+                    <Image
+                      src={resumeData.personalInfo.profilePicture}
+                      alt="Profile"
+                      width={96}
+                      height={96}
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border-3 border-white shadow-lg ring-2 ring-orange-200 group-hover/pic:ring-orange-300 transition-all duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover/pic:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="text-white text-xs font-medium">Edit</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeProfilePicture}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 hover:scale-110 transition-all duration-200 touch-manipulation flex items-center justify-center shadow-lg ring-2 ring-white"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center text-orange-400 bg-orange-50/50 hover:bg-orange-100/50 hover:border-orange-400 transition-all duration-300 group-hover/pic:scale-105">
+                    <span className="text-2xl mb-1">📸</span>
+                    <span className="text-xs font-medium">Add Photo</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Upload Controls */}
+              <div className="w-full space-y-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePictureUpload}
+                  className="hidden"
+                  id="profile-picture-upload"
                 />
-                <button
-                  type="button"
-                  onClick={removeProfilePicture}
-                  className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm hover:bg-red-600 transition-colors touch-manipulation flex items-center justify-center shadow-lg"
+                <label
+                  htmlFor="profile-picture-upload"
+                  className="cursor-pointer flex items-center justify-center w-full px-4 py-2.5 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 touch-manipulation"
                 >
-                  ×
-                </button>
+                  <span className="mr-2">
+                    {resumeData.personalInfo.profilePicture ? '🔄' : '📤'}
+                  </span>
+                  {resumeData.personalInfo.profilePicture ? 'Replace Photo' : 'Upload Photo'}
+                </label>
+                <p className="text-xs text-gray-600 text-center">
+                  <span className="font-medium">Tip:</span> Square images (1:1 ratio) work best
+                </p>
               </div>
-            ) : (
-              <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0 text-2xl">
-                📸
-              </div>
-            )}
-            <div className="flex-1">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePictureUpload}
-                className="hidden"
-                id="profile-picture-upload"
-              />
-              <label
-                htmlFor="profile-picture-upload"
-                className="cursor-pointer inline-flex items-center justify-center w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors touch-manipulation"
-              >
-                {resumeData.personalInfo.profilePicture ? 'Change' : 'Upload'}
-              </label>
-              <p className="text-xs text-gray-500 mt-1">Square images work best</p>
             </div>
           </div>
         </div>
 
         {/* QR Code Settings Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
-          <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            📱 QR Code Settings (Optional)
-          </label>
-          <p className="text-xs text-gray-600 mb-3">Add a QR code to your resume header</p>
+        <div className="bg-gradient-to-br from-blue-50 via-blue-25 to-purple-50 rounded-xl p-4 border border-blue-200 relative overflow-hidden group">
+          {/* Animated background accent */}
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 rounded-full blur-xl translate-y-6 -translate-x-6 group-hover:scale-110 transition-transform duration-500" />
           
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id="qr-enabled"
-                checked={resumeData.personalInfo.qrCode?.enabled || false}
-                onChange={(e) => updateQRCodeSettings(
-                  e.target.checked, 
-                  resumeData.personalInfo.qrCode?.type || 'linkedin'
-                )}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
-              />
-              <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700 flex-1">
-                Include QR code
-              </label>
-            </div>
+          <div className="relative">
+            <label className="block text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                <span className="text-white text-xs">📱</span>
+              </div>
+              QR Code Settings
+              <span className="text-xs font-normal bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Optional</span>
+            </label>
             
-            {resumeData.personalInfo.qrCode?.enabled && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-2"
-              >
-                <p className="text-xs text-gray-600">Link to:</p>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+            <p className="text-xs text-gray-600 mb-4 bg-white/60 rounded-lg p-2 border border-blue-100">
+              <span className="font-medium text-blue-600">💡 Pro Tip:</span> Add a QR code to make your digital profiles easily accessible
+            </p>
+            
+            <div className="space-y-4">
+              {/* Main Toggle */}
+              <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-blue-100 hover:bg-white/90 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-6 rounded-full transition-all duration-300 relative ${
+                    resumeData.personalInfo.qrCode?.enabled 
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
+                      : 'bg-gray-300'
+                  }`}>
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all duration-300 shadow-md ${
+                      resumeData.personalInfo.qrCode?.enabled ? 'left-5' : 'left-1'
+                    }`} />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-800">Include QR Code</span>
+                </div>
+                <input
+                  type="checkbox"
+                  id="qr-enabled"
+                  checked={resumeData.personalInfo.qrCode?.enabled || false}
+                  onChange={(e) => updateQRCodeSettings(
+                    e.target.checked, 
+                    resumeData.personalInfo.qrCode?.type || 'linkedin'
+                  )}
+                  className="sr-only"
+                />
+                <label htmlFor="qr-enabled" className="cursor-pointer">
+                  <span className="sr-only">Toggle QR Code</span>
+                </label>
+              </div>
+              
+              {/* QR Code Options */}
+              {resumeData.personalInfo.qrCode?.enabled && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-3 pl-4 border-l-2 border-blue-200"
+                >
+                  <p className="text-xs font-semibold text-gray-700 mb-2">Link to:</p>
+                  
+                  {/* LinkedIn Option */}
+                  <label className={`flex items-center space-x-3 p-2 rounded-lg cursor-pointer transition-all ${
+                    resumeData.personalInfo.qrCode?.type === 'linkedin' && resumeData.personalInfo.linkedIn
+                      ? 'bg-blue-100 border border-blue-300' 
+                      : resumeData.personalInfo.linkedIn
+                      ? 'bg-white/50 hover:bg-blue-50 border border-gray-200' 
+                      : 'bg-gray-50 border border-gray-200 cursor-not-allowed opacity-60'
+                  }`}>
                     <input
                       type="radio"
                       id="qr-linkedin"
@@ -1818,13 +1875,31 @@ const PersonalInfoSection: React.FC<{
                       checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
                       onChange={() => updateQRCodeSettings(true, 'linkedin')}
                       disabled={!resumeData.personalInfo.linkedIn}
-                      className="h-3 w-3 text-blue-600 focus:ring-blue-500 touch-manipulation"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
-                    <label htmlFor="qr-linkedin" className={`text-xs flex-1 ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
-                      LinkedIn {!resumeData.personalInfo.linkedIn && '(add URL first)'}
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-1">
+                      <span className="text-sm">💼</span>
+                      <span className={`text-xs font-medium ${
+                        resumeData.personalInfo.linkedIn ? 'text-gray-700' : 'text-gray-400'
+                      }`}>
+                        LinkedIn Profile
+                      </span>
+                      {!resumeData.personalInfo.linkedIn && (
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">
+                          Add URL first
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                  
+                  {/* Website Option */}
+                  <label className={`flex items-center space-x-3 p-2 rounded-lg cursor-pointer transition-all ${
+                    resumeData.personalInfo.qrCode?.type === 'website' && resumeData.personalInfo.website
+                      ? 'bg-blue-100 border border-blue-300' 
+                      : resumeData.personalInfo.website
+                      ? 'bg-white/50 hover:bg-blue-50 border border-gray-200' 
+                      : 'bg-gray-50 border border-gray-200 cursor-not-allowed opacity-60'
+                  }`}>
                     <input
                       type="radio"
                       id="qr-website"
@@ -1833,15 +1908,25 @@ const PersonalInfoSection: React.FC<{
                       checked={resumeData.personalInfo.qrCode?.type === 'website'}
                       onChange={() => updateQRCodeSettings(true, 'website')}
                       disabled={!resumeData.personalInfo.website}
-                      className="h-3 w-3 text-blue-600 focus:ring-blue-500 touch-manipulation"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
-                    <label htmlFor="qr-website" className={`text-xs flex-1 ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
-                      Website {!resumeData.personalInfo.website && '(add URL first)'}
-                    </label>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+                    <div className="flex items-center space-x-2 flex-1">
+                      <span className="text-sm">🌐</span>
+                      <span className={`text-xs font-medium ${
+                        resumeData.personalInfo.website ? 'text-gray-700' : 'text-gray-400'
+                      }`}>
+                        Website/Portfolio
+                      </span>
+                      {!resumeData.personalInfo.website && (
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">
+                          Add URL first
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       </motion.div>
