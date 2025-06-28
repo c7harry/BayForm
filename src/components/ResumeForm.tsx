@@ -947,186 +947,13 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                             />
                           )}
                           {section.key === 'experience' && (
-                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              {/* Mobile-optimized header */}
-                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
-                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
-                                  <BriefcaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-                                  Add your work experience in reverse chronological order.
-                                </p>
-                                <motion.button
-                                  type="button"
-                                  onClick={() => {
-                                    addExperience();
-                                    toast.success('Experience added', { 
-                                      icon: '💼',
-                                      duration: 2000,
-                                    });
-                                  }}
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-semibold w-full sm:w-auto touch-manipulation min-h-[44px]"
-                                >
-                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                                  Add Experience
-                                </motion.button>
-                              </motion.div>
-                              <div className="space-y-4 sm:space-y-6">
-                                <AnimatePresence>
-                                  {resumeData.experience.map((exp, index) => (
-                                    <motion.div
-                                      key={exp.id}
-                                      layout
-                                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                                      exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                                      transition={{ delay: index * 0.1 }}
-                                      className="bg-gradient-to-br from-white/80 to-blue-50/50 border-2 border-blue-100 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
-                                    >
-                                      <div className="flex justify-between items-start mb-4 sm:mb-6">
-                                        <motion.h4 className="font-bold text-gray-900 text-base sm:text-lg flex items-center gap-2 flex-1 min-w-0">
-                                          <span className="text-blue-500">🏢</span>
-                                          <span className="truncate">Experience #{index + 1}</span>
-                                        </motion.h4>
-                                        <motion.button
-                                          type="button"
-                                          onClick={() => {
-                                            removeExperience(exp.id);
-                                            toast.success('Experience removed', { 
-                                              icon: '🗑️',
-                                              duration: 1500,
-                                            });
-                                          }}
-                                          whileHover={{ scale: 1.1, rotate: 90 }}
-                                          whileTap={{ scale: 0.9 }}
-                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center ml-2"
-                                        >
-                                          <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                                        </motion.button>
-                                      </div>
-                                      {/* Experience form fields - Mobile optimized */}
-                                      <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4">
-                                        {[
-                                          { field: 'position', label: 'Job Title', placeholder: 'Software Engineer' },
-                                          { field: 'company', label: 'Company', placeholder: 'Tech Company Inc.' },
-                                          { field: 'location', label: 'Location', placeholder: 'New York, NY' },
-                                        ].map((fieldConfig) => (
-                                          <div key={fieldConfig.field} className="relative group">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                              {fieldConfig.label}
-                                            </label>
-                                            <input
-                                              type="text"
-                                              value={exp[fieldConfig.field as keyof Experience] as string}
-                                              onChange={(e) => updateExperience(exp.id, fieldConfig.field as keyof Experience, e.target.value)}
-                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation"
-                                              placeholder={fieldConfig.placeholder}
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                          </div>
-                                        ))}
-
-                                        {/* Date fields - Mobile stacked */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                          <div className="relative group">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                              Start Date
-                                            </label>
-                                            <input
-                                              type="text"
-                                              value={exp.startDate}
-                                              onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
-                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation"
-                                              placeholder="MM/YYYY"
-                                              inputMode="numeric"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                          </div>
-                                          <div className="relative group">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                              End Date
-                                            </label>
-                                            <input
-                                              type="text"
-                                              value={exp.endDate}
-                                              onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
-                                              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm disabled:bg-gray-100 text-base touch-manipulation"
-                                              placeholder="MM/YYYY"
-                                              disabled={exp.current}
-                                              inputMode="numeric"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                          </div>
-                                        </div>
-
-                                        {/* Current job checkbox */}
-                                        <div className="flex items-center space-x-3">
-                                          <input
-                                            type="checkbox"
-                                            checked={exp.current}
-                                            onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
-                                          />
-                                          <label className="text-sm font-medium text-gray-700">Currently work here</label>
-                                        </div>
-
-                                        {/* Job description */}
-                                        <div className="relative group">
-                                          <label className="block text-sm font-semibold text-gray-700 mb-2">Job Description</label>
-                                          <textarea
-                                            value={exp.description}
-                                            onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
-                                            rows={3}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation resize-y"
-                                            placeholder="Describe your role and responsibilities..."
-                                          />
-                                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                        </div>
-
-                                        {/* Key achievements */}
-                                        <div className="relative group">
-                                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Key Achievements
-                                            <span className="text-xs text-gray-500 ml-1">(one per line)</span>
-                                          </label>
-                                          <textarea
-                                            value={exp.achievements.join('\n')}
-                                            onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
-                                            rows={4}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm text-base touch-manipulation resize-y"
-                                            placeholder="• Increased sales by 25%&#10;• Led a team of 5 developers&#10;• Implemented new process that saved 10 hours/week"
-                                          />
-                                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                        </div>
-                                      </div>
-                                    </motion.div>
-                                  ))}
-                                </AnimatePresence>
-                                {resumeData.experience.length === 0 && (
-                                  <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="text-center py-8 sm:py-12 text-gray-500"
-                                  >
-                                    <motion.div
-                                      animate={{ 
-                                        y: [0, -10, 0],
-                                        scale: [1, 1.1, 1]
-                                      }}
-                                      transition={{ 
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        ease: "easeInOut"
-                                      }}
-                                    >
-                                      <BriefcaseIcon className="mx-auto w-12 h-12 sm:w-16 sm:h-16 mb-4 text-gray-300" />
-                                    </motion.div>
-                                    <p className="text-base sm:text-lg">No work experience added yet</p>
-                                    <p className="text-sm mt-2">Click &quot;Add Experience&quot; to get started ✨</p>
-                                  </motion.div>
-                                )}
-                              </div>
-                            </motion.div>                          )}
+                            <ExperienceSection 
+                              resumeData={resumeData}
+                              addExperience={addExperience}
+                              updateExperience={updateExperience}
+                              removeExperience={removeExperience}
+                            />
+                          )}
                           {section.key === 'education' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                               <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
@@ -1981,7 +1808,7 @@ const SkillsSection: React.FC<{
       className="space-y-4 sm:space-y-6"
     >
       <div className="flex items-center justify-between">
-        <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+        <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base mb-2">
           <CodeBracketIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
           Add your technical and soft skills organized by category.
         </p>
@@ -1995,17 +1822,17 @@ const SkillsSection: React.FC<{
             key={category} 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-xl p-4 sm:p-6 border border-emerald-200 relative overflow-hidden group"
+            className="bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-xl border border-emerald-200 overflow-hidden relative group hover:shadow-lg transition-all duration-300"
           >
             {/* Animated background accent */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-200/20 to-teal-200/20 rounded-full blur-xl -translate-y-4 translate-x-4 group-hover:scale-110 transition-transform duration-500" />
             
-            <div className="relative">
-              <div className="flex items-center justify-between mb-4">
+            <div className="relative p-4 sm:p-4">
+              <div className="flex items-center justify-between mb-4"> 
                 <h4 className="font-bold text-gray-900 text-base sm:text-lg flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
                   {category}
-                  <span className="text-xs font-normal bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
+                  <span className="text-xs font-normal bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
                     {categorySkills.length} skill{categorySkills.length !== 1 ? 's' : ''}
                   </span>
                 </h4>
@@ -2128,6 +1955,348 @@ const SkillsSection: React.FC<{
           Add New Category
         </motion.button>
       </motion.div>
+    </motion.div>
+  );
+};
+
+// Enhanced Experience Section Component - Modern Design
+const ExperienceSection: React.FC<{
+  resumeData: ResumeData;
+  addExperience: () => void;
+  updateExperience: (id: string, field: keyof Experience, value: any) => void;
+  removeExperience: (id: string) => void;
+}> = ({ resumeData, addExperience, updateExperience, removeExperience }) => {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+
+  const toggleCard = (expId: string) => {
+    setExpandedCard(expandedCard === expId ? null : expId);
+  };
+
+  const formatDateRange = (startDate: string, endDate: string, current: boolean) => {
+    if (!startDate) return 'Start Date Not Set';
+    if (current) return `${startDate} - Present`;
+    if (!endDate) return `${startDate} - End Date Not Set`;
+    return `${startDate} - ${endDate}`;
+  };
+
+  const getExperiencePreview = (exp: Experience) => {
+    const title = exp.position || 'Position Not Set';
+    const company = exp.company || 'Company Not Set';
+    const dateRange = formatDateRange(exp.startDate, exp.endDate, exp.current);
+    return { title, company, dateRange };
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4 sm:space-y-6"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base mb-2">
+            <BriefcaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+            Add your work experience in reverse chronological order.
+          </p>
+          <p className="text-xs text-gray-500">
+            Start with your most recent position first
+          </p>
+        </div>
+        <motion.button
+          type="button"
+          onClick={() => {
+            addExperience();
+            toast.success('New experience added', { 
+              icon: '💼',
+              duration: 2000,
+            });
+          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm touch-manipulation"
+        >
+          <PlusIcon className="w-4 h-4" />
+          Add Experience
+        </motion.button>
+      </div>
+
+      {/* Experience Cards */}
+      <div className="space-y-4">
+        <AnimatePresence>
+          {resumeData.experience.map((exp, index) => {
+            const { title, company, dateRange } = getExperiencePreview(exp);
+            const isExpanded = expandedCard === exp.id;
+            
+            return (
+              <motion.div
+                key={exp.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ delay: index * 0.1, layout: { duration: 0.3 } }}
+                className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-xl border border-blue-200 overflow-hidden relative group hover:shadow-lg transition-all duration-300"
+              >
+                {/* Animated background accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-indigo-200/20 rounded-full blur-2xl -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-500" />
+                
+                <div className="relative">
+                  {/* Card Header - Always Visible */}
+                  <div 
+                    className="p-4 cursor-pointer hover:bg-white/30 transition-colors duration-200"
+                    onClick={() => toggleCard(exp.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold text-sm">#{index + 1}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 text-lg truncate">
+                              {title}
+                            </h3>
+                            <p className="text-sm text-gray-600 truncate">
+                              {company} • {dateRange}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Quick preview */}
+                        {!isExpanded && (
+                          <div className="ml-13">
+                            {exp.description && (
+                              <p className="text-sm text-gray-600 line-clamp-2">
+                                {exp.description}
+                              </p>
+                            )}
+                            {exp.achievements.length > 0 && (
+                              <p className="text-xs text-blue-600 mt-1">
+                                {exp.achievements.length} achievement{exp.achievements.length !== 1 ? 's' : ''} added
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 ml-4">
+                        <motion.button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeExperience(exp.id);
+                            toast.success('Experience removed', { 
+                              icon: '🗑️',
+                              duration: 1500,
+                            });
+                          }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center justify-center touch-manipulation"
+                        >
+                          <XMarkIcon className="w-4 h-4" />
+                        </motion.button>
+                        
+                        <motion.div
+                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="w-8 h-8 text-gray-400 flex items-center justify-center"
+                        >
+                          <ChevronDownIcon className="w-5 h-5" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Content */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4 border-t border-blue-200/50">
+                          <div className="pt-4 space-y-4">
+                            {/* Primary Info Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Job Title *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={exp.position}
+                                    onChange={(e) => updateExperience(exp.id, 'position', e.target.value)}
+                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
+                                    placeholder="Software Engineer"
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Company *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={exp.company}
+                                    onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
+                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
+                                    placeholder="Tech Company Inc."
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Location
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={exp.location}
+                                    onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
+                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
+                                    placeholder="New York, NY"
+                                  />
+                                </div>
+                                
+                                {/* Date Range */}
+                                <div className="grid grid-cols-2 gap-3">
+                                  <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                      Start Date *
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={exp.startDate}
+                                      onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
+                                      className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
+                                      placeholder="MM/YYYY"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                      End Date
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={exp.endDate}
+                                      onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
+                                      className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 disabled:bg-gray-100 text-base"
+                                      placeholder="MM/YYYY"
+                                      disabled={exp.current}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Current Position Toggle */}
+                            <div className="flex items-center p-3 bg-white/60 rounded-lg border border-blue-100">
+                              <input
+                                type="checkbox"
+                                id={`current-${exp.id}`}
+                                checked={exp.current}
+                                onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              />
+                              <label htmlFor={`current-${exp.id}`} className="ml-3 text-sm font-medium text-gray-700">
+                                I currently work here
+                              </label>
+                              {exp.current && (
+                                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                                  Current Position
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Job Description
+                                <span className="text-xs text-gray-500 ml-1">(Optional)</span>
+                              </label>
+                              <textarea
+                                value={exp.description}
+                                onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
+                                rows={3}
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base resize-y"
+                                placeholder="Describe your role, responsibilities, and main duties..."
+                              />
+                            </div>
+
+                            {/* Achievements */}
+                            <div>
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Key Achievements & Accomplishments
+                                <span className="text-xs text-gray-500 ml-1">(One per line)</span>
+                              </label>
+                              <textarea
+                                value={exp.achievements.join('\n')}
+                                onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
+                                rows={4}
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base resize-y"
+                                placeholder="• Increased sales by 25% through strategic initiatives&#10;• Led a cross-functional team of 8 developers&#10;• Implemented new process that reduced costs by $50K annually&#10;• Received Employee of the Year award"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
+
+      {/* Empty State */}
+      {resumeData.experience.length === 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12 border-2 border-dashed border-blue-200 rounded-xl bg-blue-50/30"
+        >
+          <motion.div
+            animate={{ 
+              y: [0, -5, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="inline-block"
+          >
+            <BriefcaseIcon className="w-16 h-16 text-blue-300 mb-4" />
+          </motion.div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No work experience added yet</h3>
+          <p className="text-gray-600 mb-4">Start building your professional history</p>
+          <motion.button
+            type="button"
+            onClick={() => {
+              addExperience();
+              toast.success('First experience added! 🎉', { 
+                icon: '💼',
+                duration: 2000,
+              });
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Add Your First Experience
+          </motion.button>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
