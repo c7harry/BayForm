@@ -350,7 +350,7 @@ const ProgressScene: React.FC<{
     <div className="relative h-full flex flex-col justify-center items-center py-2 space-y-1">
       {steps.map((step, index) => {
         const isActive = step.id === currentStep;
-        const isCompleted = index < currentIndex || step.completed;
+        const isCompleted = step.completed; // Only mark as completed if actually completed
         const isNext = index === currentIndex + 1;
         
         return (
@@ -372,7 +372,7 @@ const ProgressScene: React.FC<{
             
             {index < steps.length - 1 && (
               <ProgressLine
-                completed={isCompleted}
+                completed={step.completed}
                 isNext={isNext}
                 gradient={getStepGradient(step.id)}
               />
@@ -654,7 +654,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
           <div className="space-y-1">
             {steps.map((step, index) => {
               const isActive = step.id === currentStep;
-              const isCompleted = index < currentIndex || step.completed;
+              const isCompleted = step.completed; // Only mark as completed if actually completed
               const isClickable = true; // All steps are clickable for navigation
 
               return (
