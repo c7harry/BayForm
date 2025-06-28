@@ -466,6 +466,12 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       <AnimatePresence>
         {showProgressBar && (
           <>
+            {/* Mobile-friendly backdrop for closing menu */}
+            <div 
+              className="fixed inset-0 z-30"
+              onClick={() => setShowProgressBar(false)}
+              onTouchEnd={() => setShowProgressBar(false)}
+            />
             {/* Invisible buffer zone to help with mouse movement */}
             <div 
               className="fixed top-20 right-0 w-60 h-96 z-30"
