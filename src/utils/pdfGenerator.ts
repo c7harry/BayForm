@@ -28,7 +28,7 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
     // Use html2canvas to capture the entire resume element as a single, high-quality image.
     // This ensures the PDF looks exactly like the web preview.
     const canvas = await html2canvas(element, {
-      scale: 2, // Use a higher scale for better resolution in the PDF
+      scale: 2, // Increased scale for higher quality
       useCORS: true, // Allows rendering of cross-origin images
       backgroundColor: '#ffffff',
       allowTaint: true, // Allow cross-origin content
@@ -36,6 +36,9 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
       // Set canvas dimensions to match the full scrollable content of the element
       width: element.scrollWidth,
       height: element.scrollHeight,
+      // Additional optimization settings
+      logging: false, // Disable logging for better performance
+      imageTimeout: 15000, // Set image timeout
     });
 
     // Restore original classes
@@ -43,7 +46,12 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
       (element as HTMLElement).className = originalClass;
     });
 
-    const pdf = new jsPDF('p', 'mm', 'a4'); // Create a standard A4 size PDF in portrait mode
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: 'a4',
+      compress: true // Enable PDF compression to reduce file size
+    });
     
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -57,7 +65,8 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
 
     // If the entire resume fits on a single page, add it and save the PDF.
     if (scaledCanvasHeight <= pdfHeight) {
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, scaledCanvasHeight);
+      // Use JPEG with high quality for crisp, professional results
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, scaledCanvasHeight);
     } else {
       // For resumes that need multiple pages, implement intelligent page breaks.
       let yPositionOnCanvas = 0; // Tracks the y-position on the source canvas for slicing
@@ -79,8 +88,8 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
         let lastFittingElementBottom = yPositionOnCanvas;
 
         for (const child of childElements) {
-          const childTop = child.offsetTop * 2; // Multiply by scale to match canvas coordinates
-          const childBottom = (child.offsetTop + child.offsetHeight) * 2;
+          const childTop = child.offsetTop * 1.8; // Account for updated scale factor
+          const childBottom = (child.offsetTop + child.offsetHeight) * 1.8;
 
           // If the bottom of the element is within the current page, it's a potential break point.
           if (childBottom <= bestBreakPoint) {
@@ -114,11 +123,12 @@ export const generatePDF = async (resumeData: ResumeData, elementId: string): Pr
           // Copy the calculated slice from the main canvas to the page-specific canvas
           pageCtx.drawImage(canvas, 0, yPositionOnCanvas, canvasWidth, pageContentHeight, 0, 0, canvasWidth, pageContentHeight);
           
-          const pageImgData = pageCanvas.toDataURL('image/png');
+          // Use JPEG with high quality for crisp, professional results
+          const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
           const pageImgHeight = (pageCanvas.height / canvasWidth) * pdfWidth;
           
           // Add the slice as an image to the current PDF page
-          pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageImgHeight);
+          pdf.addImage(pageImgData, 'JPEG', 0, 0, pdfWidth, pageImgHeight);
         }
 
         // Move to the next slice of the canvas
