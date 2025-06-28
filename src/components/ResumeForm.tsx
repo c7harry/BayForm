@@ -340,11 +340,33 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
 
   // --- QR Code Settings Helper ---
   const updateQRCodeSettings = (enabled: boolean, type: 'linkedin' | 'website' | 'none') => {
+    // If enabling QR code, make sure we have a valid type based on available data
+    let finalType = type;
+    if (enabled) {
+      if (type === 'linkedin' && !resumeData.personalInfo.linkedIn) {
+        // If trying to enable LinkedIn but no LinkedIn URL, try website
+        if (resumeData.personalInfo.website) {
+          finalType = 'website';
+        } else {
+          // No valid URLs available, don't enable
+          return;
+        }
+      } else if (type === 'website' && !resumeData.personalInfo.website) {
+        // If trying to enable website but no website URL, try LinkedIn
+        if (resumeData.personalInfo.linkedIn) {
+          finalType = 'linkedin';
+        } else {
+          // No valid URLs available, don't enable
+          return;
+        }
+      }
+    }
+
     setResumeData(prev => ({
       ...prev,
       personalInfo: {
         ...prev.personalInfo,
-        qrCode: { enabled, type }
+        qrCode: { enabled, type: finalType }
       }
     }));
   };
@@ -1614,7 +1636,14 @@ const PersonalInfoSection: React.FC<{
             
             <div className="space-y-4">
               {/* Main Toggle */}
-              <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-blue-100 hover:bg-white/90 transition-colors">
+              <label 
+                htmlFor="qr-enabled" 
+                className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                  resumeData.personalInfo.linkedIn || resumeData.personalInfo.website
+                    ? 'bg-white/70 border-blue-100 hover:bg-white/90 cursor-pointer'
+                    : 'bg-gray-50 border-gray-200 cursor-not-allowed opacity-60'
+                }`}
+              >
                 <div className="flex items-center space-x-3">
                   <div className={`w-10 h-6 rounded-full transition-all duration-300 relative ${
                     resumeData.personalInfo.qrCode?.enabled 
@@ -1626,21 +1655,28 @@ const PersonalInfoSection: React.FC<{
                     }`} />
                   </div>
                   <span className="text-sm font-semibold text-gray-800">Include QR Code</span>
+                  {!resumeData.personalInfo.linkedIn && !resumeData.personalInfo.website && (
+                    <span className="text-xs text-gray-500 ml-2">(Add URLs first)</span>
+                  )}
                 </div>
                 <input
                   type="checkbox"
                   id="qr-enabled"
                   checked={resumeData.personalInfo.qrCode?.enabled || false}
-                  onChange={(e) => updateQRCodeSettings(
-                    e.target.checked, 
-                    resumeData.personalInfo.qrCode?.type || 'linkedin'
-                  )}
+                  disabled={!resumeData.personalInfo.linkedIn && !resumeData.personalInfo.website}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      // When enabling, choose the best available option
+                      const currentType = resumeData.personalInfo.qrCode?.type || 'linkedin';
+                      updateQRCodeSettings(true, currentType);
+                    } else {
+                      // When disabling, keep the current type but disable
+                      updateQRCodeSettings(false, resumeData.personalInfo.qrCode?.type || 'linkedin');
+                    }
+                  }}
                   className="sr-only"
                 />
-                <label htmlFor="qr-enabled" className="cursor-pointer">
-                  <span className="sr-only">Toggle QR Code</span>
-                </label>
-              </div>
+              </label>
               
               {/* QR Code Options */}
               {resumeData.personalInfo.qrCode?.enabled && (
@@ -1718,6 +1754,18 @@ const PersonalInfoSection: React.FC<{
                       )}
                     </div>
                   </label>
+                  
+                  {/* No URLs Available Message */}
+                  {!resumeData.personalInfo.linkedIn && !resumeData.personalInfo.website && (
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-amber-500">⚠️</span>
+                        <span className="text-xs font-medium text-amber-700">
+                          Add a LinkedIn profile or website URL above to enable QR codes
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </div>
