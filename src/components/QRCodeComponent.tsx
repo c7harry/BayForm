@@ -21,28 +21,31 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
   className = '',
   theme = 'default'
 }) => {
-  // Don't render if QR code is disabled or no valid URL exists
-  if (!personalInfo.qrCode?.enabled || personalInfo.qrCode.type === 'none') {
-    return null;
-  }
-
+  // Check if we should show QR code
+  const shouldShowQR = personalInfo.qrCode?.enabled && personalInfo.qrCode.type !== 'none';
+  
   let qrValue = '';
   
-  // Determine which URL to use for the QR code
-  if (personalInfo.qrCode.type === 'linkedin' && personalInfo.linkedIn) {
-    qrValue = personalInfo.linkedIn.startsWith('http') 
-      ? personalInfo.linkedIn 
-      : `https://linkedin.com/in/${personalInfo.linkedIn}`;
-  } else if (personalInfo.qrCode.type === 'website' && personalInfo.website) {
-    qrValue = personalInfo.website.startsWith('http') 
-      ? personalInfo.website 
-      : `https://${personalInfo.website}`;
+  // Determine which URL to use for the QR code if enabled
+  if (shouldShowQR) {
+    if (personalInfo.qrCode!.type === 'linkedin' && personalInfo.linkedIn) {
+      qrValue = personalInfo.linkedIn.startsWith('http') 
+        ? personalInfo.linkedIn 
+        : `https://linkedin.com/in/${personalInfo.linkedIn}`;
+    } else if (personalInfo.qrCode!.type === 'website' && personalInfo.website) {
+      qrValue = personalInfo.website.startsWith('http') 
+        ? personalInfo.website 
+        : `https://${personalInfo.website}`;
+    }
   }
 
-  // Don't render if no valid URL
-  if (!qrValue) {
+  // Don't render anything if no QR code and no profile picture
+  if (!shouldShowQR && !personalInfo.profilePicture) {
     return null;
   }
+
+  // Don't render QR if enabled but no valid URL (but still show profile picture if available)
+  const showQRCode = shouldShowQR && qrValue;
 
   // Theme-based styling
   const getQRStyle = () => {
@@ -96,17 +99,19 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
 
   return (
     <div className={`flex items-center gap-3 flex-shrink-0 ${className}`}>
-      <div className={style.container}>
-        <QRCodeSVG
-          value={qrValue}
-          size={size - 8} // Slightly smaller to account for container padding
-          level="M"
-          includeMargin={false}
-          fgColor={style.fgColor}
-          bgColor={style.bgColor}
-          className={style.border}
-        />
-      </div>
+      {showQRCode && (
+        <div className={style.container}>
+          <QRCodeSVG
+            value={qrValue}
+            size={size - 8} // Slightly smaller to account for container padding
+            level="M"
+            includeMargin={false}
+            fgColor={style.fgColor}
+            bgColor={style.bgColor}
+            className={style.border}
+          />
+        </div>
+      )}
       {personalInfo.profilePicture && (
         <div className={style.container}>
           <Image
