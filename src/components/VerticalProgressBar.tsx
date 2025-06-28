@@ -16,6 +16,8 @@ interface VerticalProgressBarProps {
   steps: ProgressStep[];
   currentStep: string;
   onStepClick: (stepId: string) => void;
+  showTooltip?: boolean;
+  onTooltipDismiss?: () => void;
 }
 
 // Floating Progress Bubble Component
@@ -23,7 +25,8 @@ const FloatingProgressBubble: React.FC<{
   progress: number;
   onHover: () => void;
   onLeave: () => void;
-}> = ({ progress, onHover, onLeave }) => {
+  onClick?: () => void;
+}> = ({ progress, onHover, onLeave, onClick }) => {
   return (
     <motion.div
       initial={{ scale: 0, opacity: 0 }}
@@ -58,6 +61,7 @@ const FloatingProgressBubble: React.FC<{
           style={{
             transformStyle: 'preserve-3d'
           }}
+          onClick={onClick}
         >
           {/* Glowing effect */}
           <motion.div
@@ -138,7 +142,7 @@ const FloatingProgressBubble: React.FC<{
         <motion.div
           initial={{ opacity: 0, y: 10, scale: 0.8 }}
           whileHover={{ opacity: 1, y: -5, scale: 1 }}
-          className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap"
+          className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"
         >
           Resume Progress
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900" />
@@ -358,7 +362,9 @@ const ProgressScene: React.FC<{
 export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   steps,
   currentStep,
-  onStepClick
+  onStepClick,
+  showTooltip = false,
+  onTooltipDismiss
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
@@ -445,9 +451,16 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             progress={enhancedProgress}
             onHover={handleBubbleHover}
             onLeave={handleBubbleLeave}
+            onClick={onTooltipDismiss}
           />
         )}
       </AnimatePresence>
+
+      {/* Tooltip Guide */}
+      <ProgressTooltip 
+        show={showTooltip} 
+        onDismiss={onTooltipDismiss}
+      />
 
       {/* Main Progress Bar with buffer zone */}
       <AnimatePresence>
@@ -658,7 +671,100 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
           </>
         )}
       </AnimatePresence>
+
+      {/* Tooltip Component to guide users */}
+      <ProgressTooltip
+        show={showTooltip}
+        onDismiss={onTooltipDismiss}
+      />
     </>
+  );
+};
+
+// Tooltip Component to guide users
+const ProgressTooltip: React.FC<{
+  show: boolean;
+  onDismiss?: () => void;
+}> = ({ show, onDismiss }) => {
+  if (!show) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 25
+        }}
+        className="fixed top-24 right-24 z-50 max-w-xs"
+      >
+        {/* Arrow pointing to the bubble */}
+        <motion.div
+          animate={{
+            x: [0, -5, 0],
+            rotate: [0, 15, 0]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute -right-3 top-4 w-0 h-0 border-l-8 border-l-indigo-600 border-t-4 border-t-transparent border-b-4 border-b-transparent"
+        />
+        
+        <motion.div 
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-2xl border border-white/20"
+          animate={{
+            boxShadow: [
+              "0 25px 50px -12px rgba(99, 102, 241, 0.4)",
+              "0 25px 50px -12px rgba(99, 102, 241, 0.6)",
+              "0 25px 50px -12px rgba(99, 102, 241, 0.4)"
+            ]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.2, 1]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="text-2xl"
+            >
+              🎯
+            </motion.div>
+            <div className="flex-1">
+              <h3 className="font-bold text-sm mb-1">Quick Navigation</h3>
+              <p className="text-xs text-indigo-100 leading-relaxed">
+                Click the progress bubble to see your completion status and jump between sections instantly!
+              </p>
+            </div>
+            {onDismiss && (
+              <motion.button
+                onClick={onDismiss}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                className="text-white/70 hover:text-white text-lg leading-none p-1"
+              >
+                ×
+              </motion.button>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

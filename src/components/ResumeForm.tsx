@@ -135,6 +135,31 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const [currentProgressStep, setCurrentProgressStep] = useState('personal');
 
+  // --- Progress Bar Tooltip Guide ---
+  const [showProgressTooltip, setShowProgressTooltip] = useState(false);
+
+  // Show progress bar tooltip after a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowProgressTooltip(true);
+      
+      // Auto-hide the tooltip after 8 seconds
+      const hideTimer = setTimeout(() => {
+        setShowProgressTooltip(false);
+      }, 8000);
+
+      // Cleanup function will clear the hide timer if component unmounts
+      return () => clearTimeout(hideTimer);
+    }, 3000); // Show after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide tooltip when user clicks on progress bar
+  const handleProgressTooltipDismiss = () => {
+    setShowProgressTooltip(false);
+  };
+
   // Reset current step to 'personal' when starting with new resume data
   useEffect(() => {
     if (!initialData) {
@@ -621,6 +646,8 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         steps={progressSteps}
         currentStep={currentProgressStep}
         onStepClick={handleProgressStepClick}
+        showTooltip={showProgressTooltip}
+        onTooltipDismiss={handleProgressTooltipDismiss}
       />
       
       {/* Fixed Header - Mobile Optimized */}
@@ -1517,6 +1544,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                     autoFocus
                     placeholder="Enter new section name..."
                   />
+                 
                   <motion.div 
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
