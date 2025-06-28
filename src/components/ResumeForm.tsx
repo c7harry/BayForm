@@ -955,114 +955,12 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                             />
                           )}
                           {section.key === 'education' && (
-                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                              <motion.div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
-                                <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base">
-                                  <AcademicCapIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
-                                  Add your educational background.
-                                </p>
-                                <motion.button
-                                  type="button"
-                                  onClick={() => {
-                                    addEducation();
-                                    toast.success('Education added', { 
-                                      icon: '🎓',
-                                      duration: 2000,
-                                    });
-                                  }}
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl hover:from-purple-600 hover:to-violet-700 focus:outline-none focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 font-semibold shadow-lg w-full sm:w-auto touch-manipulation min-h-[44px]"
-                                >
-                                  <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                                  Add Education
-                                </motion.button>
-                              </motion.div>
-                              <div className="space-y-6">
-                                <AnimatePresence>
-                                  {resumeData.education.map((edu, index) => (
-                                    <motion.div
-                                      key={edu.id}
-                                      layout
-                                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                                      exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                                      transition={{ delay: index * 0.1 }}
-                                      className="bg-gradient-to-br from-white/80 to-purple-50/50 border-2 border-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
-                                    >
-                                      <div className="flex justify-between items-start mb-6">
-                                        <motion.h4 className="font-bold text-gray-900 text-lg flex items-center gap-2">
-                                          <span className="text-purple-500">🎓</span>
-                                          Education #{index + 1}
-                                        </motion.h4>
-                                        <motion.button
-                                          type="button"
-                                          onClick={() => {
-                                            removeEducation(edu.id);
-                                            toast.success('Education removed', { 
-                                              icon: '🗑️',
-                                              duration: 1500,
-                                            });
-                                          }}
-                                          whileHover={{ scale: 1.1, rotate: 90 }}
-                                          whileTap={{ scale: 0.9 }}
-                                          className="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50"
-                                        >
-                                          <XMarkIcon className="w-5 h-5" />
-                                        </motion.button>
-                                      </div>
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {[
-                                          { field: 'institution', label: 'Institution', placeholder: 'University Name' },
-                                          { field: 'degree', label: 'Degree', placeholder: "Bachelor's, Master's, etc." },
-                                          { field: 'field', label: 'Field of Study', placeholder: 'Computer Science' },
-                                          { field: 'graduationDate', label: 'Graduation Date', placeholder: 'MM/YYYY' },
-                                          { field: 'gpa', label: 'GPA (optional)', placeholder: '3.8' },
-                                          { field: 'honors', label: 'Honors (optional)', placeholder: 'Magna Cum Laude, Dean\'s List, etc.' },
-                                        ].map((fieldConfig) => (
-                                          <div key={fieldConfig.field} className="relative group">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                              {fieldConfig.label}
-                                            </label>
-                                            <input
-                                              type="text"
-                                              value={edu[fieldConfig.field as keyof Education] as string}
-                                              onChange={(e) => updateEducation(edu.id, fieldConfig.field as keyof Education, e.target.value)}
-                                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
-                                              placeholder={fieldConfig.placeholder}
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </motion.div>
-                                  ))}
-                                </AnimatePresence>
-                                {resumeData.education.length === 0 && (
-                                  <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="text-center py-12 text-gray-500"
-                                  >
-                                    <motion.div
-                                      animate={{ 
-                                        y: [0, -10, 0],
-                                        scale: [1, 1.1, 1]
-                                      }}
-                                      transition={{ 
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        ease: "easeInOut"
-                                      }}
-                                    >
-                                      <AcademicCapIcon className="mx-auto w-16 h-16 mb-4 text-gray-300" />
-                                    </motion.div>
-                                    <p className="text-lg">No education added yet</p>
-                                    <p className="text-sm mt-2">Click &quot;Add Education&quot; to get started ✨</p>
-                                  </motion.div>
-                                )}
-                              </div>
-                            </motion.div>
+                            <EducationSection 
+                              resumeData={resumeData}
+                              addEducation={addEducation}
+                              updateEducation={updateEducation}
+                              removeEducation={removeEducation}
+                            />
                           )}
                           {section.key === 'projects' && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -2294,6 +2192,269 @@ const ExperienceSection: React.FC<{
           >
             <PlusIcon className="w-5 h-5" />
             Add Your First Experience
+          </motion.button>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+// Enhanced Education Section Component - Modern Design
+const EducationSection: React.FC<{
+  resumeData: ResumeData;
+  addEducation: () => void;
+  updateEducation: (id: string, field: keyof Education, value: any) => void;
+  removeEducation: (id: string) => void;
+}> = ({ resumeData, addEducation, updateEducation, removeEducation }) => {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+
+  const toggleCard = (eduId: string) => {
+    setExpandedCard(expandedCard === eduId ? null : eduId);
+  };
+
+  const formatGraduationDate = (date: string) => {
+    if (!date) return 'Graduation Date Not Set';
+    return date;
+  };
+
+  const getEducationPreview = (edu: Education) => {
+    const degree = edu.degree || 'Degree Not Set';
+    const institution = edu.institution || 'Institution Not Set';
+    const field = edu.field || 'Field Not Set';
+    const graduationDate = formatGraduationDate(edu.graduationDate);
+    return { degree, institution, field, graduationDate };
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4 sm:space-y-6"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-600 flex items-center gap-2 text-sm sm:text-base mb-2">
+            <AcademicCapIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
+            Add your educational background in reverse chronological order.
+          </p>
+          <p className="text-xs text-gray-500">
+            Start with your most recent education first
+          </p>
+        </div>
+        <motion.button
+          type="button"
+          onClick={() => {
+            addEducation();
+            toast.success('New education added', { 
+              icon: '🎓',
+              duration: 2000,
+            });
+          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm touch-manipulation"
+        >
+          <PlusIcon className="w-4 h-4" />
+          Add Education
+        </motion.button>
+      </div>
+
+      {/* Education Cards */}
+      <div className="space-y-4">
+        <AnimatePresence>
+          {resumeData.education.map((edu, index) => {
+            const { degree, institution, field, graduationDate } = getEducationPreview(edu);
+            const isExpanded = expandedCard === edu.id;
+            
+            return (
+              <motion.div
+                key={edu.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ delay: index * 0.1, layout: { duration: 0.3 } }}
+                className="bg-gradient-to-br from-purple-50/80 to-violet-50/80 rounded-xl border border-purple-200 overflow-hidden relative group hover:shadow-lg transition-all duration-300"
+              >
+                {/* Animated background accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200/20 to-violet-200/20 rounded-full blur-2xl -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-500" />
+                
+                <div className="relative">
+                  {/* Card Header - Always Visible */}
+                  <div 
+                    className="p-4 cursor-pointer hover:bg-white/30 transition-colors duration-200"
+                    onClick={() => toggleCard(edu.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold text-sm">#{index + 1}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 text-lg truncate">
+                              {degree}
+                            </h3>
+                            <p className="text-sm text-gray-600 truncate">
+                              {institution} • {field}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Quick preview */}
+                        {!isExpanded && (
+                          <div className="ml-13">
+                            <p className="text-sm text-gray-600">
+                              Graduation: {graduationDate}
+                            </p>
+                            {(edu.gpa || edu.honors) && (
+                              <div className="flex items-center gap-2 mt-1">
+                                {edu.gpa && (
+                                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                                    GPA: {edu.gpa}
+                                  </span>
+                                )}
+                                {edu.honors && (
+                                  <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
+                                    {edu.honors}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 ml-4">
+                        <motion.button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeEducation(edu.id);
+                            toast.success('Education removed', { 
+                              icon: '🗑️',
+                              duration: 1500,
+                            });
+                          }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center justify-center touch-manipulation"
+                        >
+                          <XMarkIcon className="w-4 h-4" />
+                        </motion.button>
+                        
+                        <motion.div
+                          animate={{ 
+                            rotate: isExpanded ? 180 : 0 
+                          }}
+                          transition={{ duration: 0.3 }}
+                          className="w-8 h-8 flex items-center justify-center"
+                        >
+                          <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Content */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="border-t border-purple-200 bg-white/40"
+                      >
+                        <div className="p-4 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                              { field: 'institution', label: 'Institution', placeholder: 'University Name', required: true },
+                              { field: 'degree', label: 'Degree', placeholder: "Bachelor's, Master's, etc.", required: true },
+                              { field: 'field', label: 'Field of Study', placeholder: 'Computer Science', required: true },
+                              { field: 'graduationDate', label: 'Graduation Date', placeholder: 'MM/YYYY', required: true },
+                              { field: 'gpa', label: 'GPA', placeholder: '3.8', required: false },
+                              { field: 'honors', label: 'Honors', placeholder: 'Magna Cum Laude, Dean\'s List', required: false },
+                            ].map((fieldConfig) => (
+                              <div key={fieldConfig.field} className="relative group">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {fieldConfig.label}
+                                  {fieldConfig.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={edu[fieldConfig.field as keyof Education] as string || ''}
+                                  onChange={(e) => updateEducation(edu.id, fieldConfig.field as keyof Education, e.target.value)}
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                                  placeholder={fieldConfig.placeholder}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Action buttons */}
+                          <div className="flex justify-end pt-2">
+                            <motion.button
+                              type="button"
+                              onClick={() => setExpandedCard(null)}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                            >
+                              Collapse
+                            </motion.button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
+
+      {/* Empty State */}
+      {resumeData.education.length === 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12 border-2 border-dashed border-purple-200 rounded-xl bg-purple-50/30"
+        >
+          <motion.div
+            animate={{ 
+              y: [0, -5, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="inline-block"
+          >
+            <AcademicCapIcon className="w-16 h-16 text-purple-300 mb-4" />
+          </motion.div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No education added yet</h3>
+          <p className="text-gray-600 mb-4">Start building your educational background</p>
+          <motion.button
+            type="button"
+            onClick={() => {
+              addEducation();
+              toast.success('First education added! 🎉', { 
+                icon: '🎓',
+                duration: 2000,
+              });
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Add Your First Education
           </motion.button>
         </motion.div>
       )}
