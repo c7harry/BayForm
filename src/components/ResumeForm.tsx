@@ -6,6 +6,7 @@ import { VerticalProgressBar } from './VerticalProgressBar';
 
 import { 
   ChevronDownIcon, 
+  ChevronUpIcon,
   PlusIcon, 
   XMarkIcon,
   UserIcon,
@@ -299,6 +300,33 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
+  // --- Collapse/Expand All Functionality ---
+  const areAllSectionsCollapsed = () => {
+    return Object.values(collapsedSections).every(collapsed => collapsed);
+  };
+
+  const areAllSectionsExpanded = () => {
+    return Object.values(collapsedSections).every(collapsed => !collapsed);
+  };
+
+  const toggleAllSections = () => {
+    const shouldCollapse = !areAllSectionsCollapsed();
+    setCollapsedSections({
+      personal: shouldCollapse,
+      skills: shouldCollapse,
+      experience: shouldCollapse,
+      education: shouldCollapse,
+      projects: shouldCollapse,
+      additional: shouldCollapse
+    });
+    
+    const action = shouldCollapse ? 'Collapsed' : 'Expanded';
+    toast.success(`${action} all sections`, {
+      icon: shouldCollapse ? '📁' : '📂',
+      duration: 2000,
+    });
+  };
+
   // --- Personal Info Helpers ---
   const updatePersonalInfo = (field: keyof PersonalInfo, value: string) => {
     setResumeData(prev => ({
@@ -577,13 +605,59 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     <>
       <Toaster 
         position="top-right"
+        containerStyle={{
+          top: 80, // Account for fixed header
+        }}
         toastOptions={{
-          duration: 3000,
+          duration: 3500,
           style: {
-            background: '#1f2937',
-            color: '#f9fafb',
-            borderRadius: '12px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            color: '#1e293b',
+            borderRadius: '16px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            fontSize: '14px',
+            fontWeight: '500',
+            padding: '12px 16px',
+            maxWidth: '350px',
+            minHeight: '60px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          },
+          success: {
+            style: {
+              background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(220, 252, 231, 0.95) 100%)',
+              border: '1px solid rgba(34, 197, 94, 0.3)',
+              color: '#15803d',
+            },
+            iconTheme: {
+              primary: '#22c55e',
+              secondary: '#dcfce7',
+            },
+          },
+          error: {
+            style: {
+              background: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(252, 231, 243, 0.95) 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#dc2626',
+            },
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fef2f2',
+            },
+          },
+          loading: {
+            style: {
+              background: 'linear-gradient(135deg, rgba(241, 245, 249, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%)',
+              border: '1px solid rgba(148, 163, 184, 0.3)',
+              color: '#475569',
+            },
+            iconTheme: {
+              primary: '#64748b',
+              secondary: '#f1f5f9',
+            },
           },
         }}
       />
@@ -704,6 +778,38 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             </div>
           </motion.div>
 
+          {/* Collapse/Expand All Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex justify-end mb-4 sm:mb-6"
+          >
+            <motion.button
+              type="button"
+              onClick={toggleAllSections}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-medium text-sm sm:text-base touch-manipulation"
+            >
+              <motion.div
+                animate={{ 
+                  rotate: areAllSectionsCollapsed() ? 180 : 0 
+                }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {areAllSectionsCollapsed() ? (
+                  <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                ) : (
+                  <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+              </motion.div>
+              <span>
+                {areAllSectionsCollapsed() ? 'Expand All' : 'Collapse All'}
+              </span>
+            </motion.button>
+          </motion.div>
+
           <form id="resume-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-8">
             <AnimatePresence>
               {sections.map((section, idx) => (
@@ -734,6 +840,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         toggleSection(section.key as any);
                         toast.success(`${collapsedSections[section.key as keyof typeof collapsedSections] ? 'Expanded' : 'Collapsed'} ${section.label}`, {
                           icon: collapsedSections[section.key as keyof typeof collapsedSections] ? '👁️' : '👀',
+                          duration: 1500,
                         });
                       }}
                       whileHover={{ scale: 1.01 }}
@@ -851,7 +958,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addExperience();
-                                    toast.success('New experience added!', { icon: '💼' });
+                                    toast.success('Experience added', { 
+                                      icon: '💼',
+                                      duration: 2000,
+                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -882,7 +992,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeExperience(exp.id);
-                                            toast.success('Experience removed!', { icon: '🗑️' });
+                                            toast.success('Experience removed', { 
+                                              icon: '🗑️',
+                                              duration: 1500,
+                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1025,7 +1138,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addEducation();
-                                    toast.success('New education added!', { icon: '🎓' });
+                                    toast.success('Education added', { 
+                                      icon: '🎓',
+                                      duration: 2000,
+                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -1056,7 +1172,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeEducation(edu.id);
-                                            toast.success('Education removed!', { icon: '🗑️' });
+                                            toast.success('Education removed', { 
+                                              icon: '🗑️',
+                                              duration: 1500,
+                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1129,7 +1248,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addProject();
-                                    toast.success('New project added!', { icon: '🚀' });
+                                    toast.success('Project added', { 
+                                      icon: '🚀',
+                                      duration: 2000,
+                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -1160,7 +1282,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeProject(proj.id);
-                                            toast.success('Project removed!', { icon: '🗑️' });
+                                            toast.success('Project removed', { 
+                                              icon: '🗑️',
+                                              duration: 1500,
+                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1249,7 +1374,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addAdditionalSection();
-                                    toast.success('New section added!', { icon: '📝' });
+                                    toast.success('Section added', { 
+                                      icon: '📝',
+                                      duration: 2000,
+                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -1285,7 +1413,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeAdditionalSection(additionalSection.id);
-                                            toast.success('Section removed!', { icon: '🗑️' });
+                                            toast.success('Section removed', { 
+                                              icon: '🗑️',
+                                              duration: 1500,
+                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1320,7 +1451,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                                 type="button"
                                                 onClick={() => {
                                                   removeAdditionalSectionItem(additionalSection.id, itemIndex);
-                                                  toast.success('Item removed!', { icon: '❌' });
+                                                  toast.success('Item removed', { 
+                                                    icon: '❌',
+                                                    duration: 1200,
+                                                  });
                                                 }}
                                                 whileHover={{ scale: 1.1, rotate: 90 }}
                                                 whileTap={{ scale: 0.9 }}
@@ -1337,7 +1471,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                         type="button"
                                         onClick={() => {
                                           addAdditionalSectionItem(additionalSection.id);
-                                          toast.success('New item added!', { icon: '➕' });
+                                          toast.success('Item added', { 
+                                            icon: '➕',
+                                            duration: 1500,
+                                          });
                                         }}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
@@ -1404,220 +1541,308 @@ const PersonalInfoSection: React.FC<{
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="grid grid-cols-1 gap-4 sm:gap-6"
+      className="space-y-4 sm:space-y-6"
     >
-      {/* Full Name */}
+      {/* Essential Information - 2 column layout on larger screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* Full Name */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <UserIcon className="w-4 h-4 text-orange-500" />
+            Full Name *
+          </label>
+          <div className="relative group">
+            <input
+              type="text"
+              value={resumeData.personalInfo.fullName}
+              onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="John Doe"
+              required
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
+        </motion.div>
+
+        {/* Profession Title */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <BriefcaseIcon className="w-4 h-4 text-blue-500" />
+            Profession Title *
+          </label>
+          <div className="relative group">
+            <input
+              type="text"
+              value={resumeData.personalInfo.professionTitle}
+              onChange={(e) => updatePersonalInfo('professionTitle', e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="Software Engineer"
+              required
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Contact Information - 2 column layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* Email */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <span>📧</span>
+            Email Address *
+          </label>
+          <div className="relative group">
+            <input
+              type="email"
+              value={resumeData.personalInfo.email || ''}
+              onChange={(e) => updatePersonalInfo('email', e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="john.doe@example.com"
+              required
+              inputMode="email"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
+        </motion.div>
+
+        {/* Phone */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.25 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <span>📱</span>
+            Phone Number
+          </label>
+          <div className="relative group">
+            <input
+              type="tel"
+              value={resumeData.personalInfo.phone || ''}
+              onChange={(e) => updatePersonalInfo('phone', e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="(555) 123-4567"
+              inputMode="tel"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Location - Full width */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.3 }}
       >
-        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-          <UserIcon className="w-4 h-4 text-orange-500" />
-          Full Name *
+        <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          <span>📍</span>
+          Location *
         </label>
         <div className="relative group">
           <input
             type="text"
-            value={resumeData.personalInfo.fullName}
-            onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
-            placeholder="John Doe"
+            value={resumeData.personalInfo.location || ''}
+            onChange={(e) => updatePersonalInfo('location', e.target.value)}
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+            placeholder="City, State"
             required
           />
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </motion.div>
 
-      {/* Profession Title */}
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.15 }}
-      >
-        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-          <BriefcaseIcon className="w-4 h-4 text-blue-500" />
-          Profession Title *
-        </label>
-        <div className="relative group">
-          <input
-            type="text"
-            value={resumeData.personalInfo.professionTitle}
-            onChange={(e) => updatePersonalInfo('professionTitle', e.target.value)}
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
-            placeholder="Software Engineer, Front End Developer, Data Scientist, etc."
-            required
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        </div>
-      </motion.div>
-
-      {/* Profile Picture Upload Section - Mobile Optimized */}
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-          📸 Profile Picture (Optional)
-        </label>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-          {resumeData.personalInfo.profilePicture ? (
-            <div className="relative flex-shrink-0">
-              <Image
-                src={resumeData.personalInfo.profilePicture}
-                alt="Profile"
-                width={80}
-                height={80}
-                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border-2 border-gray-200"
-              />
-              <button
-                type="button"
-                onClick={removeProfilePicture}
-                className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors touch-manipulation flex items-center justify-center"
-              >
-                ×
-              </button>
-            </div>
-          ) : (
-            <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0">
-              📸
-            </div>
-          )}
-          <div className="flex-1 w-full sm:w-auto">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleProfilePictureUpload}
-              className="hidden"
-              id="profile-picture-upload"
-            />
-            <label
-              htmlFor="profile-picture-upload"
-              className="cursor-pointer inline-flex items-center justify-center w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-500 touch-manipulation min-h-[44px]"
-            >
-              {resumeData.personalInfo.profilePicture ? 'Change Picture' : 'Upload Picture'}
-            </label>
-            <p className="text-xs text-gray-500 mt-1">Square images work best. Max 5MB.</p>
-          </div>
-        </div>
-      </motion.div>
-    
-      {/* Contact Information Fields */}
-      {[
-        { field: 'email', label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com', required: true, icon: '📧' },
-        { field: 'phone', label: 'Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: false, icon: '📱' },
-        { field: 'location', label: 'Location', type: 'text', placeholder: 'City, State', required: true, icon: '📍' },
-        { field: 'linkedIn', label: 'LinkedIn Profile', type: 'text', placeholder: 'linkedin.com/in/user-name', required: false, icon: '💼' },
-        { field: 'website', label: 'Website/Portfolio', type: 'text', placeholder: 'portfolio.com', required: false, icon: '🌐' },
-      ].map((fieldConfig, index) => (
+      {/* Professional Links - 2 column layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* LinkedIn */}
         <motion.div 
-          key={fieldConfig.field}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 + index * 0.05 }}
+          transition={{ delay: 0.35 }}
         >
-          <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-            <span>{fieldConfig.icon}</span>
-            {fieldConfig.label} {fieldConfig.required && '*'}
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <span>💼</span>
+            LinkedIn Profile
           </label>
           <div className="relative group">
             <input
-              type={fieldConfig.type}
-              value={(resumeData.personalInfo[fieldConfig.field as keyof PersonalInfo] as string) || ''}
+              type="text"
+              value={resumeData.personalInfo.linkedIn || ''}
               onChange={(e) => {
                 let value = e.target.value;
-                if (fieldConfig.field === 'linkedIn') {
-                  // Remove protocol and domain if user pastes full URL
-                  value = value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\//, 'linkedin.com/in/');
-                }
-                if (fieldConfig.field === 'website') {
-                  // Remove protocol if user pastes full URL
-                  value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
-                }
-                updatePersonalInfo(fieldConfig.field as keyof PersonalInfo, value);
+                // Remove protocol and domain if user pastes full URL
+                value = value.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\//, 'linkedin.com/in/');
+                updatePersonalInfo('linkedIn', value);
               }}
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
-              placeholder={fieldConfig.placeholder}
-              required={fieldConfig.required}
-              inputMode={fieldConfig.type === 'email' ? 'email' : fieldConfig.type === 'tel' ? 'tel' : 'text'}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="linkedin.com/in/user-name"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
           </div>
         </motion.div>
-      ))}
-      
-      {/* QR Code Settings Section - Mobile Optimized */}
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4 }}
-        className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200"
-      >
-        <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-          📱 QR Code Settings (Optional)
-        </label>
-        <p className="text-xs text-gray-600 mb-3 sm:mb-4">Add a QR code to your resume header for easy access to your LinkedIn or portfolio</p>
-        
-        <div className="space-y-3">
-          <div className="flex items-center space-x-3">
+
+        {/* Website */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <span>🌐</span>
+            Website/Portfolio
+          </label>
+          <div className="relative group">
             <input
-              type="checkbox"
-              id="qr-enabled"
-              checked={resumeData.personalInfo.qrCode?.enabled || false}
-              onChange={(e) => updateQRCodeSettings(
-                e.target.checked, 
-                resumeData.personalInfo.qrCode?.type || 'linkedin'
-              )}
-              className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
+              type="text"
+              value={resumeData.personalInfo.website || ''}
+              onChange={(e) => {
+                let value = e.target.value;
+                // Remove protocol if user pastes full URL
+                value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
+                updatePersonalInfo('website', value);
+              }}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm text-base touch-manipulation"
+              placeholder="portfolio.com"
             />
-            <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700 flex-1">
-              Include QR code in resume header
-            </label>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
           </div>
-          
-          {resumeData.personalInfo.qrCode?.enabled && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="ml-8 space-y-3"
-            >
-              <p className="text-xs text-gray-600 mb-2">QR code will link to:</p>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="radio"
-                    id="qr-linkedin"
-                    name="qr-type"
-                    value="linkedin"
-                    checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
-                    onChange={() => updateQRCodeSettings(true, 'linkedin')}
-                    disabled={!resumeData.personalInfo.linkedIn}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-1 touch-manipulation"
-                  />
-                  <label htmlFor="qr-linkedin" className={`text-xs flex-1 ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
-                    LinkedIn Profile {!resumeData.personalInfo.linkedIn && '(add LinkedIn URL first)'}
-                  </label>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="radio"
-                    id="qr-website"
-                    name="qr-type"
-                    value="website"
-                    checked={resumeData.personalInfo.qrCode?.type === 'website'}
-                    onChange={() => updateQRCodeSettings(true, 'website')}
-                    disabled={!resumeData.personalInfo.website}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-1 touch-manipulation"
-                  />
-                  <label htmlFor="qr-website" className={`text-xs flex-1 ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
-                    Website/Portfolio {!resumeData.personalInfo.website && '(add website URL first)'}
-                  </label>
-                </div>
+        </motion.div>
+      </div>
+
+      {/* Optional Features Row - Profile Picture and QR Code */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6 pt-6 border-t border-gray-200"
+      >
+        {/* Profile Picture Section */}
+        <div className="bg-gradient-to-r from-orange-50 to-pink-50 rounded-xl p-4 border border-orange-200">
+          <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            📸 Profile Picture (Optional)
+          </label>
+          <div className="flex items-center gap-4">
+            {resumeData.personalInfo.profilePicture ? (
+              <div className="relative flex-shrink-0">
+                <Image
+                  src={resumeData.personalInfo.profilePicture}
+                  alt="Profile"
+                  width={96}
+                  height={96}
+                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={removeProfilePicture}
+                  className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm hover:bg-red-600 transition-colors touch-manipulation flex items-center justify-center shadow-lg"
+                >
+                  ×
+                </button>
               </div>
-            </motion.div>
-          )}
+            ) : (
+              <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0 text-2xl">
+                📸
+              </div>
+            )}
+            <div className="flex-1">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePictureUpload}
+                className="hidden"
+                id="profile-picture-upload"
+              />
+              <label
+                htmlFor="profile-picture-upload"
+                className="cursor-pointer inline-flex items-center justify-center w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors touch-manipulation"
+              >
+                {resumeData.personalInfo.profilePicture ? 'Change' : 'Upload'}
+              </label>
+              <p className="text-xs text-gray-500 mt-1">Square images work best</p>
+            </div>
+          </div>
+        </div>
+
+        {/* QR Code Settings Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
+          <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            📱 QR Code Settings (Optional)
+          </label>
+          <p className="text-xs text-gray-600 mb-3">Add a QR code to your resume header</p>
+          
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id="qr-enabled"
+                checked={resumeData.personalInfo.qrCode?.enabled || false}
+                onChange={(e) => updateQRCodeSettings(
+                  e.target.checked, 
+                  resumeData.personalInfo.qrCode?.type || 'linkedin'
+                )}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded touch-manipulation"
+              />
+              <label htmlFor="qr-enabled" className="text-sm font-medium text-gray-700 flex-1">
+                Include QR code
+              </label>
+            </div>
+            
+            {resumeData.personalInfo.qrCode?.enabled && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-2"
+              >
+                <p className="text-xs text-gray-600">Link to:</p>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="qr-linkedin"
+                      name="qr-type"
+                      value="linkedin"
+                      checked={resumeData.personalInfo.qrCode?.type === 'linkedin'}
+                      onChange={() => updateQRCodeSettings(true, 'linkedin')}
+                      disabled={!resumeData.personalInfo.linkedIn}
+                      className="h-3 w-3 text-blue-600 focus:ring-blue-500 touch-manipulation"
+                    />
+                    <label htmlFor="qr-linkedin" className={`text-xs flex-1 ${!resumeData.personalInfo.linkedIn ? 'text-gray-400' : 'text-gray-700'}`}>
+                      LinkedIn {!resumeData.personalInfo.linkedIn && '(add URL first)'}
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="qr-website"
+                      name="qr-type"
+                      value="website"
+                      checked={resumeData.personalInfo.qrCode?.type === 'website'}
+                      onChange={() => updateQRCodeSettings(true, 'website')}
+                      disabled={!resumeData.personalInfo.website}
+                      className="h-3 w-3 text-blue-600 focus:ring-blue-500 touch-manipulation"
+                    />
+                    <label htmlFor="qr-website" className={`text-xs flex-1 ${!resumeData.personalInfo.website ? 'text-gray-400' : 'text-gray-700'}`}>
+                      Website {!resumeData.personalInfo.website && '(add URL first)'}
+                    </label>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
       </motion.div>
     </motion.div>
