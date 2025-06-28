@@ -27,6 +27,26 @@ const FloatingProgressBubble: React.FC<{
   onLeave: () => void;
   onClick?: () => void;
 }> = ({ progress, onHover, onLeave, onClick }) => {
+  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <motion.div
       initial={{ scale: 0, opacity: 0 }}
@@ -40,6 +60,9 @@ const FloatingProgressBubble: React.FC<{
       className="fixed top-24 right-6 z-50 cursor-pointer"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
+      onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <motion.div
         animate={{
@@ -61,7 +84,9 @@ const FloatingProgressBubble: React.FC<{
           style={{
             transformStyle: 'preserve-3d'
           }}
-          onClick={onClick}
+          onClick={handleClick}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
           {/* Glowing effect */}
           <motion.div
@@ -422,6 +447,21 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
     return acc;
   }, 0);
 
+  const handleBubbleClick = () => {
+    // Toggle the progress bar on mobile/click
+    setShowProgressBar(prev => !prev);
+    
+    // Clear any pending timeouts
+    if (bubbleLeaveTimeout.current) {
+      clearTimeout(bubbleLeaveTimeout.current);
+      bubbleLeaveTimeout.current = null;
+    }
+    if (progressBarLeaveTimeout.current) {
+      clearTimeout(progressBarLeaveTimeout.current);
+      progressBarLeaveTimeout.current = null;
+    }
+  };
+
   const handleBubbleHover = () => {
     // Clear any pending close timeout
     if (bubbleLeaveTimeout.current) {
@@ -495,7 +535,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             progress={enhancedProgress}
             onHover={handleBubbleHover}
             onLeave={handleBubbleLeave}
-            onClick={onTooltipDismiss}
+            onClick={handleBubbleClick}
           />
         )}
       </AnimatePresence>
@@ -513,8 +553,14 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             {/* Mobile-friendly backdrop for closing menu */}
             <div 
               className="fixed inset-0 z-30"
-              onClick={() => setShowProgressBar(false)}
-              onTouchEnd={() => setShowProgressBar(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowProgressBar(false);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                setShowProgressBar(false);
+              }}
             />
             {/* Invisible buffer zone to help with mouse movement */}
             <div 
