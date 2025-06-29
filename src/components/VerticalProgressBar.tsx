@@ -57,7 +57,7 @@ const FloatingProgressBubble: React.FC<{
         damping: 20,
         delay: 2 // Appear after 2 seconds
       }}
-      className="fixed top-24 right-6 z-50 cursor-pointer"
+      className="fixed top-24 right-2 z-50 cursor-pointer"
       data-progress-bubble="true"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
