@@ -978,7 +978,42 @@ const ProgressTooltip: React.FC<{
   show: boolean;
   onDismiss?: () => void;
 }> = ({ show, onDismiss }) => {
-  if (!show) return null;
+  const [hasSeenTooltip, setHasSeenTooltip] = useState(false);
+
+  // Check if user has already seen the tooltip
+  useEffect(() => {
+    const seen = localStorage.getItem('resume-progress-tooltip-seen');
+    if (seen === 'true') {
+      setHasSeenTooltip(true);
+    }
+  }, []);
+
+  // Mark tooltip as seen when it's dismissed or auto-hidden
+  useEffect(() => {
+    if (show && !hasSeenTooltip) {
+      // Auto-hide tooltip after 8 seconds
+      const timer = setTimeout(() => {
+        localStorage.setItem('resume-progress-tooltip-seen', 'true');
+        setHasSeenTooltip(true);
+        if (onDismiss) {
+          onDismiss();
+        }
+      }, 8000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [show, hasSeenTooltip, onDismiss]);
+
+  const handleDismiss = () => {
+    localStorage.setItem('resume-progress-tooltip-seen', 'true');
+    setHasSeenTooltip(true);
+    if (onDismiss) {
+      onDismiss();
+    }
+  };
+
+  // Don't show if user has already seen it
+  if (!show || hasSeenTooltip) return null;
 
   return (
     <AnimatePresence>
@@ -1045,7 +1080,7 @@ const ProgressTooltip: React.FC<{
             </div>
             {onDismiss && (
               <motion.button
-                onClick={onDismiss}
+                onClick={handleDismiss}
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 className="text-white/70 hover:text-white text-lg leading-none p-1"
