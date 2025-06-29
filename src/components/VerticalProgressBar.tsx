@@ -163,16 +163,6 @@ const FloatingProgressBubble: React.FC<{
             />
           ))}
         </motion.div>
-        
-        {/* Tooltip */}
-        <motion.div
-          initial={{ opacity: 0, y: 10, scale: 0.8 }}
-          whileHover={{ opacity: 1, y: -5, scale: 1 }}
-          className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"
-        >
-          Resume Progress
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900" />
-        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -529,7 +519,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
   };
 
   const handleBubbleHover = () => {
-    // Clear any pending close timeout
+    // Only show on hover, don't persist after click
     if (bubbleLeaveTimeout.current) {
       clearTimeout(bubbleLeaveTimeout.current);
       bubbleLeaveTimeout.current = null;
@@ -547,15 +537,15 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       clearTimeout(bubbleLeaveTimeout.current);
     }
     
-    // Set a shorter timeout to close the progress bar
+    // Set a timeout to close the progress bar
     bubbleLeaveTimeout.current = setTimeout(() => {
       setShowProgressBar(false);
       bubbleLeaveTimeout.current = null;
-    }, 300);
+    }, 200);
   };
 
   const handleProgressBarEnter = () => {
-    // Clear any pending close timeouts
+    // Only keep open if we're actually hovering over the progress bar
     if (bubbleLeaveTimeout.current) {
       clearTimeout(bubbleLeaveTimeout.current);
       bubbleLeaveTimeout.current = null;
@@ -564,36 +554,84 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
       clearTimeout(progressBarLeaveTimeout.current);
       progressBarLeaveTimeout.current = null;
     }
-    setShowProgressBar(true);
   };
 
   const handleProgressBarLeave = () => {
-    // Clear any existing timeout
+    // Immediately close when leaving progress bar
     if (progressBarLeaveTimeout.current) {
       clearTimeout(progressBarLeaveTimeout.current);
     }
     
-    // Set a very short timeout when leaving progress bar
     progressBarLeaveTimeout.current = setTimeout(() => {
       setShowProgressBar(false);
       progressBarLeaveTimeout.current = null;
-    }, 150);
+    }, 100);
   };
 
   // Cleanup timeouts on unmount
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      // Check if click is outside the progress bar area
+      // Check if click is outside the progress bar area - immediately close
       if (showProgressBar && !target.closest('[data-progress-menu]') && !target.closest('[data-progress-bubble]')) {
         setShowProgressBar(false);
+        // Clear any pending timeouts
+        if (bubbleLeaveTimeout.current) {
+          clearTimeout(bubbleLeaveTimeout.current);
+          bubbleLeaveTimeout.current = null;
+        }
+        if (progressBarLeaveTimeout.current) {
+          clearTimeout(progressBarLeaveTimeout.current);
+          progressBarLeaveTimeout.current = null;
+        }
+      }
+    };
+
+    // Also handle mouse movement to close when mouse is far from both bubble and progress bar
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!showProgressBar) return;
+      
+      const bubble = document.querySelector('[data-progress-bubble]');
+      const progressBar = document.querySelector('[data-progress-menu]');
+      
+      if (bubble && progressBar) {
+        const bubbleRect = bubble.getBoundingClientRect();
+        const progressBarRect = progressBar.getBoundingClientRect();
+        
+        const isNearBubble = (
+          event.clientX >= bubbleRect.left - 20 &&
+          event.clientX <= bubbleRect.right + 20 &&
+          event.clientY >= bubbleRect.top - 20 &&
+          event.clientY <= bubbleRect.bottom + 20
+        );
+        
+        const isNearProgressBar = (
+          event.clientX >= progressBarRect.left - 20 &&
+          event.clientX <= progressBarRect.right + 20 &&
+          event.clientY >= progressBarRect.top - 20 &&
+          event.clientY <= progressBarRect.bottom + 20
+        );
+        
+        if (!isNearBubble && !isNearProgressBar) {
+          setShowProgressBar(false);
+          if (bubbleLeaveTimeout.current) {
+            clearTimeout(bubbleLeaveTimeout.current);
+            bubbleLeaveTimeout.current = null;
+          }
+          if (progressBarLeaveTimeout.current) {
+            clearTimeout(progressBarLeaveTimeout.current);
+            progressBarLeaveTimeout.current = null;
+          }
+        }
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousemove', handleMouseMove);
       if (bubbleLeaveTimeout.current) {
         clearTimeout(bubbleLeaveTimeout.current);
       }
@@ -623,30 +661,23 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
         onDismiss={onTooltipDismiss}
       />
 
-      {/* Main Progress Bar with buffer zone */}
+      {/* Main Progress Bar */}
       <AnimatePresence>
         {showProgressBar && (
-          <>
-            {/* Smaller buffer zone only around the progress bar */}
-            <div 
-              className="fixed top-36 right-0 w-64 h-80 z-30"
-              onMouseEnter={handleProgressBarEnter}
-              onMouseLeave={handleProgressBarLeave}
-            />
-            <motion.div
-              initial={{ opacity: 0, x: 100, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 100, scale: 0.8 }}
-              transition={{
-                type: "spring",
-                stiffness: 260,
-                damping: 20
-              }}
-              className="fixed top-40 right-4 z-40 bg-white/95 backdrop-blur-xl rounded-xl border border-gray-300 shadow-2xl p-4 w-52"
-              data-progress-menu="true"
-              onMouseLeave={handleProgressBarLeave}
-              onMouseEnter={handleProgressBarEnter}
-            >
+          <motion.div
+            initial={{ opacity: 0, x: 100, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 100, scale: 0.8 }}
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 20
+            }}
+            className="fixed top-40 right-4 z-40 bg-white/95 backdrop-blur-xl rounded-xl border border-gray-300 shadow-2xl p-4 w-52"
+            data-progress-menu="true"
+            onMouseLeave={handleProgressBarLeave}
+            onMouseEnter={handleProgressBarEnter}
+          >
           {/* Header */}
           <motion.div
             initial={{ y: -20, opacity: 0 }}
@@ -748,7 +779,7 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                   }}
                   onMouseEnter={() => {
                     setHoveredStep(step.id);
-                    // Clear any pending close timeouts when hovering steps
+                    // Don't interfere with main hover logic, just prevent immediate closing
                     if (bubbleLeaveTimeout.current) {
                       clearTimeout(bubbleLeaveTimeout.current);
                       bubbleLeaveTimeout.current = null;
@@ -757,11 +788,10 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
                       clearTimeout(progressBarLeaveTimeout.current);
                       progressBarLeaveTimeout.current = null;
                     }
-                    setShowProgressBar(true);
                   }}
                   onMouseLeave={() => {
                     setHoveredStep(null);
-                    // Don't immediately close when leaving a step
+                    // Don't set any new timeouts here, let the main progress bar handle it
                   }}
                   disabled={!isClickable}
                   className={`
@@ -931,7 +961,6 @@ export const VerticalProgressBar: React.FC<VerticalProgressBarProps> = ({
             </p>
           </motion.div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 
