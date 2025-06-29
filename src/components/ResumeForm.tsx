@@ -371,6 +371,10 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }));
   };
 
+  // --- Profile Picture State ---
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+
   // --- Profile Picture Helper ---
   const handleProfilePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -390,10 +394,268 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64String = event.target?.result as string;
-        updatePersonalInfo('profilePicture', base64String);
+        
+        // Check if image is already square-ish (within 10% tolerance)
+        const img = document.createElement('img') as HTMLImageElement;
+        img.onload = () => {
+          const aspectRatio = img.width / img.height;
+          const isSquareish = aspectRatio >= 0.9 && aspectRatio <= 1.1;
+          
+          if (isSquareish) {
+            // Image is already square, use it directly
+            updatePersonalInfo('profilePicture', base64String);
+          } else {
+            // Image needs cropping
+            setImageToCrop(base64String);
+            setShowCropModal(true);
+          }
+        };
+        img.src = base64String;
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // --- Image Cropping Helper ---
+  const cropImageToSquare = (imageSrc: string, cropData: { x: number; y: number; size: number }): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = document.createElement('img') as HTMLImageElement;
+      
+      img.onload = () => {
+        // Set canvas to square dimensions (300x300 for good quality)
+        const outputSize = 300;
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+        
+        if (ctx) {
+          // Draw the cropped and resized image
+          ctx.drawImage(
+            img,
+            cropData.x, cropData.y, cropData.size, cropData.size,
+            0, 0, outputSize, outputSize
+          );
+          
+          // Convert to base64
+          resolve(canvas.toDataURL('image/jpeg', 0.9));
+        }
+      };
+      
+      img.src = imageSrc;
+    });
+  };
+
+  // --- Image Crop Component ---
+  const ImageCropModal = () => {
+    const [cropArea, setCropArea] = useState({ x: 0, y: 0, size: 0 });
+    const [imageElement, setImageElement] = useState<HTMLImageElement | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+      if (imageToCrop && canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const img = document.createElement('img') as HTMLImageElement;
+        
+        img.onload = () => {
+          setImageElement(img);
+          
+          // Calculate display size (max 400px for modal)
+          const maxDisplaySize = 400;
+          const scale = Math.min(maxDisplaySize / img.width, maxDisplaySize / img.height);
+          const displayWidth = img.width * scale;
+          const displayHeight = img.height * scale;
+          
+          canvas.width = displayWidth;
+          canvas.height = displayHeight;
+          
+          // Initialize crop area to center square
+          const minDimension = Math.min(displayWidth, displayHeight);
+          const initialSize = minDimension * 0.8;
+          setCropArea({
+            x: (displayWidth - initialSize) / 2,
+            y: (displayHeight - initialSize) / 2,
+            size: initialSize
+          });
+          
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+          }
+        };
+        
+        img.src = imageToCrop;
+      }
+    }, [imageToCrop]);
+
+    useEffect(() => {
+      if (canvasRef.current && imageElement && imageToCrop) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        
+        if (ctx) {
+          // Clear and redraw image
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
+          
+          // Draw crop overlay
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Clear the crop area
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillRect(cropArea.x, cropArea.y, cropArea.size, cropArea.size);
+          
+          // Draw crop border
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(cropArea.x, cropArea.y, cropArea.size, cropArea.size);
+          
+          // Draw corner handles
+          const handleSize = 12;
+          const handles = [
+            { x: cropArea.x - handleSize/2, y: cropArea.y - handleSize/2 },
+            { x: cropArea.x + cropArea.size - handleSize/2, y: cropArea.y - handleSize/2 },
+            { x: cropArea.x - handleSize/2, y: cropArea.y + cropArea.size - handleSize/2 },
+            { x: cropArea.x + cropArea.size - handleSize/2, y: cropArea.y + cropArea.size - handleSize/2 }
+          ];
+          
+          ctx.fillStyle = '#3b82f6';
+          handles.forEach(handle => {
+            ctx.fillRect(handle.x, handle.y, handleSize, handleSize);
+          });
+        }
+      }
+    }, [cropArea, imageElement, imageToCrop]);
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        setIsDragging(true);
+        setDragStart({ x: x - cropArea.x, y: y - cropArea.y });
+      }
+    };
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (isDragging && canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const newX = Math.max(0, Math.min(x - dragStart.x, canvasRef.current.width - cropArea.size));
+        const newY = Math.max(0, Math.min(y - dragStart.y, canvasRef.current.height - cropArea.size));
+        
+        setCropArea(prev => ({ ...prev, x: newX, y: newY }));
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    const handleSizeCrop = (delta: number) => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const maxSize = Math.min(canvas.width, canvas.height);
+        const newSize = Math.max(50, Math.min(cropArea.size + delta, maxSize));
+        
+        // Adjust position to keep crop area centered
+        const deltaSize = newSize - cropArea.size;
+        const newX = Math.max(0, Math.min(cropArea.x - deltaSize / 2, canvas.width - newSize));
+        const newY = Math.max(0, Math.min(cropArea.y - deltaSize / 2, canvas.height - newSize));
+        
+        setCropArea({ x: newX, y: newY, size: newSize });
+      }
+    };
+
+    const handleCropConfirm = async () => {
+      if (imageToCrop && imageElement && canvasRef.current) {
+        // Calculate actual crop coordinates relative to original image
+        const canvas = canvasRef.current;
+        const scaleX = imageElement.naturalWidth / canvas.width;
+        const scaleY = imageElement.naturalHeight / canvas.height;
+        
+        const actualCropData = {
+          x: cropArea.x * scaleX,
+          y: cropArea.y * scaleY,
+          size: cropArea.size * scaleX
+        };
+        
+        const croppedImage = await cropImageToSquare(imageToCrop, actualCropData);
+        updatePersonalInfo('profilePicture', croppedImage);
+        
+        setShowCropModal(false);
+        setImageToCrop(null);
+        toast.success('Profile picture updated!', { icon: '📸', duration: 2000 });
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Crop Profile Picture</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Drag to reposition the crop area. Use the buttons below to resize.
+          </p>
+          
+          <div className="relative mb-4">
+            <canvas
+              ref={canvasRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              className="border border-gray-300 rounded-lg cursor-move max-w-full"
+              style={{ maxHeight: '400px' }}
+            />
+          </div>
+          
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              type="button"
+              onClick={() => handleSizeCrop(-20)}
+              className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+            >
+              Smaller
+            </button>
+            <span className="text-sm text-gray-600">Resize</span>
+            <button
+              type="button"
+              onClick={() => handleSizeCrop(20)}
+              className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+            >
+              Larger
+            </button>
+          </div>
+          
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setShowCropModal(false);
+                setImageToCrop(null);
+              }}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleCropConfirm}
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Apply Crop
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const removeProfilePicture = () => {
@@ -625,6 +887,9 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   // --- Render ---
   return (
     <>
+      {/* Image Crop Modal */}
+      {showCropModal && <ImageCropModal />}
+      
       <Toaster 
         position="top-right"
         containerStyle={{
@@ -995,7 +1260,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="relative z-10 flex-shrink-0 ml-2"
                       >
-                        <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover/button:text-gray-700 transition-colors" />
+                        <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover/button:text-white transition-colors" />
                       </motion.div>
                     </motion.button>
                   </div>
@@ -1569,7 +1834,7 @@ const PersonalInfoSection: React.FC<{
                       alt="Profile"
                       width={96}
                       height={96}
-                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border-3 border-white shadow-lg ring-2 ring-orange-200 group-hover/pic:ring-orange-300 transition-all duration-300"
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border-3 border-white shadow-lg ring-2 ring-orange-200 group-hover/pic:ring-orange-300 transition-all duration-300 aspect-square"
                     />
                     <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover/pic:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <span className="text-white text-xs font-medium">Edit</span>
@@ -1583,7 +1848,7 @@ const PersonalInfoSection: React.FC<{
                     </button>
                   </div>
                 ) : (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center text-orange-400 bg-orange-50/50 hover:bg-orange-100/50 hover:border-orange-400 transition-all duration-300 group-hover/pic:scale-105">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center text-orange-400 bg-orange-50/50 hover:bg-orange-100/50 hover:border-orange-400 transition-all duration-300 group-hover/pic:scale-105 aspect-square">
                     <span className="text-2xl mb-1">📸</span>
                     <span className="text-xs font-medium">Add Photo</span>
                   </div>
