@@ -40,7 +40,7 @@ export interface Education {
   field: string;
   graduationDate: string;
   gpa?: string;
-  honors?: string;
+  honors?: string[]; // changed from string to string[]
 }
 
 // --- Skill ---

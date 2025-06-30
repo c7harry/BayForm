@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   name: {
-    fontSize: 24,
+    fontSize: 24.5,
     fontWeight: 'bold',
     color: '#000000',
     marginBottom: 2,
     textAlign: 'left',
   },
   title: {
-    fontSize: 14,
+    fontSize: 16, // position title
     color: '#000000',
     marginBottom: 4,
     fontWeight: 'bold',
@@ -61,14 +61,11 @@ const styles = StyleSheet.create({
   contactInfo: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    fontSize: 10,
+    fontSize: 11.11, // user info
     color: '#000000',
     justifyContent: 'center',
     alignItems: 'baseline',
     marginBottom: 4,
-  },
-  contactItem: {
-    color: '#000000',
   },
   separator: {
     color: '#000000',
@@ -77,14 +74,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 11.3, // section titles
     fontWeight: 'bold',
     color: '#000000',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-    paddingBottom: 1,
-    marginBottom: 2, 
+    borderTopWidth: 1,
+    borderTopColor: '#000000',
+    paddingTop: 1,
     marginTop: 6,
+    marginBottom: 2,
     textAlign: 'center',
   },
   sectionTitleContainer: {
@@ -95,14 +92,14 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   skillCategoryLabel: {
-    fontSize: 10,
+    fontSize: 10.3, // skills content
     fontWeight: 'bold',
     color: '#000000',
     textTransform: 'capitalize',
     marginRight: 5,
   },
   skillsList: {
-    fontSize: 10,
+    fontSize: 10.3, // skills content
     color: '#000000',
     flex: 1,
   },
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   companyName: {
-    fontSize: 15,
+    fontSize: 11, // company name
     fontWeight: 'bold',
     color: '#000000',
     marginBottom: 0,
@@ -124,7 +121,6 @@ const styles = StyleSheet.create({
   },
   positionContainer: {
     marginBottom: 4,
-    paddingLeft: 16,
   },
   positionHeader: {
     flexDirection: 'row',
@@ -132,17 +128,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   positionTitle: {
-    fontSize: 13,
+    fontSize: 11, // job title
     fontWeight: 'bold',
     color: '#000000',
   },
   dateRange: {
-    fontSize: 10,
+    fontSize: 10.3, // date
     color: '#000000',
     fontWeight: 'bold',
   },
   description: {
-    fontSize: 10,
+    fontSize: 10.5, // job description
     color: '#000000',
     fontStyle: 'italic',
     marginBottom: 2,
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   achievementText: {
-    fontSize: 10,
+    fontSize: 10.5, // key achievements
     color: '#000000',
     flex: 1,
   },
@@ -175,26 +171,26 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   degree: {
-    fontSize: 12,
+    fontSize: 10.3, // education contents
     fontWeight: 'bold',
     color: '#000000',
     marginBottom: 1,
   },
   institution: {
-    fontSize: 10,
+    fontSize: 10.3, // education contents
     color: '#000000',
-    fontWeight: 'bold',
+    fontStyle: 'italic',
   },
   honors: {
-    fontSize: 9,
+    fontSize: 10.3, // education contents
     color: '#000000',
   },
   graduationDate: {
-    fontSize: 9,
+    fontSize: 10.3, // education contents
     color: '#000000',
   },
   gpa: {
-    fontSize: 9,
+    fontSize: 10.3, // education contents
     color: '#000000',
   },
   projectItem: {
@@ -237,21 +233,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   additionalSectionLabel: {
-    fontSize: 10,
+    fontSize: 10.3, // additional information
     fontWeight: 'bold',
     color: '#000000',
     textTransform: 'capitalize',
     marginRight: 5,
   },
   additionalSectionContent: {
-    fontSize: 10,
+    fontSize: 10.3, // additional information
     color: '#000000',
   },
   experienceItem: {
-    marginBottom: 2, 
-    paddingBottom: 2,
-    borderBottomWidth: 1, 
-    borderBottomColor: '#E5E7EB',
+    marginBottom: 2,
+    paddingBottom: 2, 
   },
 });
 
@@ -445,26 +439,26 @@ export const ModernResumePDF: React.FC<{
                   companyIdx === companyArr.length - 1 && { borderBottomWidth: 0, paddingBottom: 0, marginBottom: 0 }
                 ]}
               >
-                <View style={styles.companyHeader}>
-                  <Text style={styles.companyName}>{company}</Text>
-                  <Text style={styles.companyLocation}>{experiences[0].location}</Text>
-                </View>
-                
+                {/* Company and Location in bold */}
+                <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 0 }}>
+                  {company} - {experiences[0].location}
+                </Text>
                 {experiences.map((exp) => (
-                  <View key={exp.id} style={styles.positionContainer}>
-                    <View style={styles.positionHeader}>
-                      <Text style={styles.positionTitle}>{exp.position}</Text>
+                  <View key={exp.id} style={{ marginBottom: 6 }}>
+                    {/* Position and Type in italic */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <Text style={{ fontStyle: 'italic', fontSize: 13 }}>
+                        {exp.position}{exp.type ? ` - ${exp.type}` : ''}
+                      </Text>
                       <Text style={styles.dateRange}>
                         {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
                       </Text>
                     </View>
-                    
                     {exp.description && (
-                      <Text style={styles.description}>{exp.description}</Text>
+                      <Text style={{ ...styles.description, marginBottom: 4 }}>{exp.description}</Text>
                     )}
-                    
                     {exp.achievements.length > 0 && (
-                      <View style={styles.achievementsList}>
+                      <View style={{ ...styles.achievementsList, marginBottom: 4 }}>
                         {exp.achievements.map((achievement: string, index: number) => (
                           <View key={index} style={styles.achievement}>
                             <Text style={styles.bullet}>•</Text>
@@ -491,7 +485,16 @@ export const ModernResumePDF: React.FC<{
                   <View style={styles.educationLeft}>
                     <Text style={styles.degree}>{edu.degree} in {edu.field}</Text>
                     <Text style={styles.institution}>{edu.institution}</Text>
-                    {edu.honors && <Text style={styles.honors}>{edu.honors}</Text>}
+                    {Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                      <View style={{ marginTop: 2 }}>
+                        {edu.honors.map((honor, idx) => (
+                          <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 1 }}>
+                            <Text style={{ color: '#000000', marginRight: 4, fontSize: 10.3 }}>•</Text>
+                            <Text style={styles.honors}>{honor}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
                   </View>
                   <View style={styles.educationRight}>
                     <Text style={styles.graduationDate}>{edu.graduationDate}</Text>

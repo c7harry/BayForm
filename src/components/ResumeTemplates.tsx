@@ -228,7 +228,13 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
                   <div>
                     <h3 className="text-base font-semibold text-gray-900">{edu.degree} in {edu.field}</h3>
                     <p className="text-sm text-gray-700 font-medium">{edu.institution}</p>
-                    {edu.honors && <p className="text-sm text-gray-600">{edu.honors}</p>}
+                    {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                      <ul className="text-xs text-gray-600 italic pl-4 list-disc mt-0.5">
+                        {edu.honors.map((honor, idx) => (
+                          <li key={idx}>{honor}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                   <div className="text-right text-sm text-gray-600">
                     <p>{edu.graduationDate}</p>
@@ -477,7 +483,13 @@ export const ClassicTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                       <div>
                         <h3 className="text-sm font-bold text-gray-900">{edu.degree} in {edu.field}</h3>
                         <p className="text-sm text-blue-700 font-medium">{edu.institution}</p>
-                        {edu.honors && <p className="text-xs text-gray-600 italic">{edu.honors}</p>}
+                        {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                          <ul className="text-xs text-gray-600 italic pl-4 list-disc mt-0.5">
+                            {edu.honors.map((honor, idx) => (
+                              <li key={idx}>{honor}</li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                       <div className="text-right text-xs text-gray-600">
                         <p className="font-medium">{edu.graduationDate}</p>
@@ -632,55 +644,49 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                     <div key={exp.id} className="relative pl-8">
                       {/* Timeline for multiple roles */}
                       {experiences.length > 1 && (
-                        <div className="absolute -left-2 top-1">
-                          <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                        <div className="absolute -left-2 top-2">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-md">
                             <span className="text-white text-xs font-bold">{experiences.length - index}</span>
                           </div>
                           {index < experiences.length - 1 && (
-                            <div className="absolute left-1/2 top-full w-0.5 h-6 bg-gradient-to-b from-blue-300 to-cyan-300 transform -translate-x-1/2"></div>
+                            <div className="absolute left-1/2 top-full w-0.5 h-6 bg-blue-300 transform -translate-x-1/2"></div>
                           )}
                         </div>
                       )}
                       
-                      <div className={`${experiences.length > 1 ? '' : ''}`}>
-                        <div className="flex justify-between items-start mb-1">
-                          <div>
-                            <h4 className="text-base font-bold text-gray-900">{exp.position}</h4>
-                            {experiences.length > 1 && (
-                              <div className="flex gap-1 mt-0.5">
-                                {index === 0 && (
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
-                                    Current Position
-                                  </span>
-                                )}
-                                {index > 0 && (
-                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
-                                    Previous Position
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-right text-xs text-gray-600 bg-gradient-to-r from-gray-50 to-blue-50 px-2 py-0.5 rounded-lg font-mono">
-                            <p className="font-semibold">{exp.startDate} → {exp.current ? 'Present' : exp.endDate}</p>
-                          </div>
+                      <div className="flex justify-between items-start mb-1">
+                        <div>
+                          <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
+                          {experiences.length > 1 && index === 0 && (
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                              Current Role
+                            </span>
+                          )}
+                          {experiences.length > 1 && index > 0 && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                              Previous Role
+                            </span>
+                          )}
                         </div>
-                        
-                        {exp.description && (
-                          <p className="text-xs text-gray-700 mb-2 italic bg-gray-50 p-2 rounded-lg">{exp.description}</p>
-                        )}
-                        
-                        {exp.achievements.length > 0 && (
-                          <ul className="space-y-1 text-xs text-gray-700">
-                            {exp.achievements.map((achievement: string, achievementIndex: number) => (
-                              <li key={achievementIndex} className="flex items-start">
-                                <span className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-2 mt-1 flex-shrink-0"></span>
-                                <span>{achievement}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                        <div className="text-right text-sm text-gray-600">
+                          <p className="font-medium">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</p>
+                        </div>
                       </div>
+                      
+                      {exp.description && (
+                        <p className="text-sm text-gray-700 mb-1 italic">{exp.description}</p>
+                      )}
+                      
+                      {exp.achievements.length > 0 && (
+                        <ul className="space-y-0.5 text-sm text-gray-700">
+                          {exp.achievements.map((achievement: string, achievementIndex: number) => (
+                            <li key={achievementIndex} className="flex items-start">
+                              <span className="mr-2 text-blue-500">•</span>
+                              <span>{achievement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -690,87 +696,92 @@ export const MinimalTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
         </div>
       )}
 
-      {/* Education and Projects in two columns */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        {/* Education Section */}
-        {resumeData.education.length > 0 && (
-          <div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
-              <span className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🎓</span>
-              EDUCATION
-            </h2>
-            <div className="space-y-2">
-              {resumeData.education.map((edu) => (
-                <div key={edu.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-green-500">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
-                      <p className="text-xs text-gray-700">{edu.field}</p>
-                      <p className="text-sm text-green-700 font-mono">{edu.institution}</p>
-                      {edu.honors && <p className="text-xs text-gray-600 italic">{edu.honors}</p>}
-                    </div>
-                    <div className="text-right text-xs text-gray-600">
-                      <p className="font-medium">{edu.graduationDate}</p>
-                      {edu.gpa && <p>GPA: {edu.gpa}</p>}
-                    </div>
+      {/* Education Section */}
+      {resumeData.education.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+            <span className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🎓</span>
+            EDUCATION
+          </h2>
+          <div className="space-y-2">
+            {resumeData.education.map((edu) => (
+              <div key={edu.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-green-500">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
+                    <p className="text-xs text-gray-700">{edu.field}</p>
+                    <p className="text-sm text-gray-900 font-medium">{edu.institution}</p>
+                    {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                      <ul className="text-xs text-gray-600 italic pl-4 list-disc mt-0.5">
+                        {edu.honors.map((honor, idx) => (
+                          <li key={idx}>{honor}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <div className="text-right text-xs text-gray-600">
+                    <p className="font-medium">{edu.graduationDate}</p>
+                    {edu.gpa && <p>GPA: {edu.gpa}</p>}
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Projects Section */}
-        {resumeData.projects.length > 0 && (
-          <div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
-              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🚀</span>
-              PROJECTS
-            </h2>
-            <div className="space-y-2">
-              {resumeData.projects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-orange-500">
-                  <h3 className="text-xs font-bold text-gray-900 mb-0.5">{project.name}</h3>
-                  <p className="text-xs text-gray-700 mb-1">{project.description}</p>
-                  {project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-1">
-                      {project.technologies.map((tech, index) => (
-                        <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-full text-xs">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {(project.url || project.github) && (
-                    <div className="text-xs space-x-2">
-                      {project.url && <span className="text-blue-600">🌐 {project.url}</span>}
-                      {project.github && <span className="text-gray-600">📱 {project.github}</span>}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+      {/* Projects Section */}
+      {resumeData.projects.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+            <span className="w-6 h-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🚀</span>
+            PROJECTS
+          </h2>
+          <div className="space-y-1">
+            {resumeData.projects.map((project) => (
+              <div key={project.id}>
+                <h3 className="text-sm font-bold text-gray-900">{project.name}</h3>
+                <p className="text-xs text-gray-700 mb-1 font-light">{project.description}</p>
+                {project.technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-1">
+                    {project.technologies.map((tech, index) => (
+                      <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-md text-xs font-light">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {(project.url || project.github) && (
+                  <div className="text-xs text-gray-600 font-light">
+                    {project.url && <div>Website: {project.url}</div>}
+                    {project.github && <div>Repository: {project.github}</div>}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Additional Information */}
       {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="bg-white rounded-lg p-3 shadow-md">
-          <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
-            <span className="w-5 h-5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs mr-2">✨</span>
-            ADDITIONAL INFO
+        <div className="bg-white rounded-lg p-2 border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
+            <div className="w-5 h-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-2">
+              <div className="w-2.5 h-2.5 bg-white rounded-sm rotate-45"></div>
+            </div>
+            ADDITIONAL INFORMATION
           </h2>
           <div className="grid grid-cols-2 gap-2">
             {resumeData.additionalSections.filter(section => section.items && section.items.length > 0).map(section => (
               <div key={section.id}>
-                <h3 className="text-xs font-bold text-indigo-700 mb-0.5 uppercase tracking-wide">
+                <h3 className="text-sm font-bold text-slate-700 mb-0.5 uppercase tracking-wide">
                   {section.title}
                 </h3>
-                <div className="text-xs text-gray-700 space-y-0.5">
+                <div className="text-xs text-slate-700 space-y-0.5">
                   {section.items.map((item, index) => (
                     <div key={index} className="flex items-start">
-                      <span className="w-1 h-1 bg-indigo-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                      <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2 mt-1 flex-shrink-0"></div>
                       {item}
                     </div>
                   ))}
@@ -878,11 +889,13 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                     <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     <div>
                       <h3 className="text-lg font-bold text-slate-800">{company}</h3>
-                      <p className="text-sm text-slate-600">{experiences[0].location}</p>
+                      <p className="text-sm text-slate-600 mt-0.5">{experiences[0].location}</p>
                       {experiences.length > 1 && (
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
-                          {experiences.length} positions • Career progression
-                        </span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                            {experiences.length} positions • Career progression
+                          </span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -911,12 +924,12 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                             <div className="flex gap-1 mt-0.5">
                               {index === 0 && (
                                 <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
-                                  Current Role
+                                  Current
                                 </span>
                               )}
                               {index > 0 && (
-                                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-medium">
-                                  Previous Role
+                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                                  Previous
                                 </span>
                               )}
                             </div>
@@ -928,7 +941,7 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
                       </div>
                       
                       {exp.description && (
-                        <p className="text-sm text-slate-700 mb-0.5 italic bg-slate-50 p-1 rounded-lg border border-slate-200">{exp.description}</p>
+                        <p className="text-sm text-slate-700 mb-0.5 italic">{exp.description}</p>
                       )}
                       
                       {exp.achievements.length > 0 && (
@@ -950,28 +963,32 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
         </div>
       )}
 
-      {/* Education and Projects in grid */}
-      <div className="grid grid-cols-2 gap-2 mb-2">
-        {/* Education */}
+      {/* Education and Projects in two columns */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {/* Education Section */}
         {resumeData.education.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
-              <div className="w-5 h-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center mr-2">
-                <div className="w-2.5 h-2.5 bg-white rounded-sm"></div>
-              </div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <span className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🎓</span>
               EDUCATION
             </h2>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {resumeData.education.map((edu) => (
-                <div key={edu.id} className="bg-white rounded-lg p-1.5 border border-slate-200 shadow-sm">
+                <div key={edu.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-green-500">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-sm font-bold text-slate-800">{edu.degree}</h3>
-                      <p className="text-xs text-slate-600">{edu.field}</p>
-                      <p className="text-sm text-emerald-700 font-medium">{edu.institution}</p>
-                      {edu.honors && <p className="text-xs text-slate-600 italic">{edu.honors}</p>}
+                      <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
+                      <p className="text-xs text-gray-700">{edu.field}</p>
+                      <p className="text-sm text-gray-900 font-medium">{edu.institution}</p>
+                      {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                        <ul className="text-xs text-gray-600 italic pl-4 list-disc mt-0.5">
+                          {edu.honors.map((honor, idx) => (
+                            <li key={idx}>{honor}</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
-                    <div className="text-right text-xs text-slate-600">
+                    <div className="text-right text-xs text-gray-600">
                       <p className="font-medium">{edu.graduationDate}</p>
                       {edu.gpa && <p>GPA: {edu.gpa}</p>}
                     </div>
@@ -982,24 +999,22 @@ export const TechTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, classN
           </div>
         )}
 
-        {/* Projects */}
+        {/* Projects Section */}
         {resumeData.projects.length > 0 && (
           <div>
-            <h2 className="text-lg font-bold text-slate-800 mb-1 flex items-center">
-              <div className="w-5 h-5 bg-gradient-to-r from-orange-600 to-red-600 rounded-lg flex items-center justify-center mr-2">
-                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
-              </div>
-              KEY PROJECTS
+            <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-xs mr-2">🚀</span>
+              PROJECTS
             </h2>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {resumeData.projects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg p-1.5 border border-slate-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-slate-800 mb-0.5">{project.name}</h3>
-                  <p className="text-xs text-slate-700 mb-0.5">{project.description}</p>
+                <div key={project.id} className="bg-white rounded-lg p-2 shadow-md border-l-4 border-orange-500">
+                  <h3 className="text-xs font-bold text-gray-900 mb-0.5">{project.name}</h3>
+                  <p className="text-xs text-gray-700 mb-0.5">{project.description}</p>
                   {project.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-0.5">
                       {project.technologies.map((tech, index) => (
-                        <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-md text-xs font-medium">
+                        <span key={index} className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-md text-xs font-light">
                           {tech}
                         </span>
                       ))}
@@ -1193,15 +1208,20 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                           
                           <div className="flex justify-between items-start mb-1">
                             <div>
-                              <h4 className="text-sm font-semibold text-gray-900">{exp.position}</h4>
+                              <h4 className="text-base font-semibold text-gray-900">{exp.position}</h4>
                               {experiences.length > 1 && (
-                                <span className={`text-xs px-1.5 py-0.5 rounded-full font-light uppercase tracking-wide ${
-                                  index === 0 
-                                    ? 'bg-green-100 text-green-700' 
-                                    : 'bg-gray-100 text-gray-700'
-                                }`}>
-                                  {index === 0 ? 'Current Role' : 'Previous Role'}
-                                </span>
+                                <div className="flex gap-1 mt-0.5">
+                                  {index === 0 && (
+                                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                                      Current Role
+                                    </span>
+                                  )}
+                                  {index > 0 && (
+                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                                      Previous Role
+                                    </span>
+                                  )}
+                                </div>
                               )}
                             </div>
                             <div className="text-right text-xs text-gray-600">
@@ -1216,8 +1236,8 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                           {exp.achievements.length > 0 && (
                             <ul className="space-y-1 text-xs text-gray-700">
                               {exp.achievements.map((achievement: string, achievementIndex: number) => (
-                                <li key={achievementIndex} className="flex items-start font-light">
-                                  <span className="w-1 h-1 bg-yellow-500 rounded-full mr-2 mt-1 flex-shrink-0"></span>
+                                <li key={achievementIndex} className="flex items-start">
+                                  <span className="w-1 h-1 bg-yellow-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
                                   <span>{achievement}</span>
                                 </li>
                               ))}
@@ -1243,14 +1263,16 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                 <div className="space-y-2">
                   {resumeData.education.map((edu) => (
                     <div key={edu.id}>
-                      <h3 className="text-sm font-semibold text-gray-900">{edu.degree}</h3>
-                      <p className="text-xs text-gray-700 font-light">{edu.field}</p>
-                      <p className="text-xs text-gray-700 italic">{edu.institution}</p>
-                      <div className="flex justify-between items-center text-xs text-gray-600 mt-0.5">
-                        <span className="font-light">{edu.graduationDate}</span>
-                        {edu.gpa && <span className="font-light">GPA: {edu.gpa}</span>}
-                      </div>
-                      {edu.honors && <p className="text-xs text-gray-600 italic mt-0.5">{edu.honors}</p>}
+                      <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
+                      <p className="text-xs text-gray-700">{edu.field}</p>
+                      <p className="text-sm text-gray-900 font-medium">{edu.institution}</p>
+                      {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                        <ul className="text-xs text-gray-600 italic pl-4 list-disc mt-0.5">
+                          {edu.honors.map((honor, idx) => (
+                            <li key={idx}>{honor}</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1266,7 +1288,7 @@ export const ElegantTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, cla
                 <div className="space-y-2">
                   {resumeData.projects.map((project) => (
                     <div key={project.id}>
-                      <h3 className="text-sm font-semibold text-gray-900">{project.name}</h3>
+                      <h3 className="text-sm font-bold text-gray-900">{project.name}</h3>
                       <p className="text-xs text-gray-700 mb-1 font-light">{project.description}</p>
                       {project.technologies.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-1">

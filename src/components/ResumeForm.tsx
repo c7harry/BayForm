@@ -704,7 +704,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       field: '',
       graduationDate: '',
       gpa: '',
-      honors: ''
+      honors: []
     };
     setResumeData(prev => ({
       ...prev,
@@ -2379,11 +2379,13 @@ const ExperienceSection: React.FC<{
                         </motion.button>
                         
                         <motion.div
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          animate={{ 
+                            rotate: isExpanded ? 180 : 0 
+                          }}
                           transition={{ duration: 0.3 }}
-                          className="w-8 h-8 text-gray-400 flex items-center justify-center"
+                          className="w-8 h-8 flex items-center justify-center"
                         >
-                          <ChevronDownIcon className="w-5 h-5" />
+                          <ChevronDownIcon className="w-5 h-5 text-gray-500" />
                         </motion.div>
                       </div>
                     </div>
@@ -2394,136 +2396,84 @@ const ExperienceSection: React.FC<{
                     {isExpanded && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
+                        animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
+                        transition={{ duration: 0.3 }}
+                        className="border-t border-blue-200 bg-white/40"
                       >
-                        <div className="px-4 pb-4 border-t border-blue-200/50">
-                          <div className="pt-4 space-y-4">
-                            {/* Primary Info Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-4">
-                                <div>
-                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Job Title *
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={exp.position}
-                                    onChange={(e) => updateExperience(exp.id, 'position', e.target.value)}
-                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
-                                    placeholder="Software Engineer"
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Company *
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={exp.company}
-                                    onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
-                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
-                                    placeholder="Tech Company Inc."
-                                  />
-                                </div>
+                        <div className="p-4 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                              { field: 'position', label: 'Job Title', placeholder: 'Software Engineer', required: true },
+                              { field: 'company', label: 'Company', placeholder: 'Tech Company Inc.', required: true },
+                              { field: 'location', label: 'Location', placeholder: 'New York, NY', required: false },
+                              { field: 'startDate', label: 'Start Date', placeholder: 'MM/YYYY', required: true },
+                              { field: 'endDate', label: 'End Date', placeholder: 'MM/YYYY', required: false },
+                            ].map((fieldConfig) => (
+                              <div key={fieldConfig.field} className="relative group">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {fieldConfig.label}
+                                  {fieldConfig.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={exp[fieldConfig.field as keyof Experience] as string || ''}
+                                  onChange={e => updateExperience(exp.id, fieldConfig.field as keyof Experience, e.target.value)}
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                                  placeholder={fieldConfig.placeholder}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                               </div>
-                              
-                              <div className="space-y-4">
-                                <div>
-                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Location
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={exp.location}
-                                    onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
-                                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
-                                    placeholder="New York, NY"
-                                  />
-                                </div>
-                                
-                                {/* Date Range */}
-                                <div className="grid grid-cols-2 gap-3">
-                                  <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                      Start Date *
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={exp.startDate}
-                                      onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
-                                      className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base"
-                                      placeholder="MM/YYYY"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                      End Date
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={exp.endDate}
-                                      onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
-                                      className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 disabled:bg-gray-100 text-base"
-                                      placeholder="MM/YYYY"
-                                      disabled={exp.current}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            ))}
+                          </div>
 
-                            {/* Current Position Toggle */}
-                            <div className="flex items-center p-3 bg-white/60 rounded-lg border border-blue-100">
-                              <input
-                                type="checkbox"
-                                id={`current-${exp.id}`}
-                                checked={exp.current}
-                                onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <label htmlFor={`current-${exp.id}`} className="ml-3 text-sm font-medium text-gray-700">
-                                I currently work here
-                              </label>
-                              {exp.current && (
-                                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                                  Current Position
-                                </span>
-                              )}
-                            </div>
+                          {/* Current Position Toggle */}
+                          <div className="flex items-center p-3 bg-white/60 rounded-lg border border-blue-100">
+                            <input
+                              type="checkbox"
+                              id={`current-${exp.id}`}
+                              checked={exp.current}
+                              onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor={`current-${exp.id}`} className="ml-3 text-sm font-medium text-gray-700">
+                              I currently work here
+                            </label>
+                            {exp.current && (
+                              <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                                Current Position
+                              </span>
+                            )}
+                          </div>
 
-                            {/* Description */}
-                            <div>
-                              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Job Description
-                                <span className="text-xs text-gray-500 ml-1">(Optional)</span>
-                              </label>
-                              <textarea
-                                value={exp.description}
-                                onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
-                                rows={3}
-                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base resize-y"
-                                placeholder="Describe your role, responsibilities, and main duties..."
-                              />
-                            </div>
+                          {/* Description */}
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                              Job Description
+                              <span className="text-xs text-gray-500 ml-1">(Optional)</span>
+                            </label>
+                            <textarea
+                              value={exp.description}
+                              onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
+                              rows={3}
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                              placeholder="Describe your role, responsibilities, and main duties..."
+                            />
+                          </div>
 
-                            {/* Achievements */}
-                            <div>
-                              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Key Achievements & Accomplishments
-                                <span className="text-xs text-gray-500 ml-1">(One per line)</span>
-                              </label>
-                              <textarea
-                                value={exp.achievements.join('\n')}
-                                onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
-                                rows={4}
-                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 text-base resize-y"
-                                placeholder="• Increased sales by 25% through strategic initiatives&#10;• Led a cross-functional team of 8 developers&#10;• Implemented new process that reduced costs by $50K annually&#10;• Received Employee of the Year award"
-                              />
-                            </div>
+                          {/* Achievements */}
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                              Key Achievements & Accomplishments
+                              <span className="text-xs text-gray-500 ml-1">(One per line)</span>
+                            </label>
+                            <textarea
+                              value={exp.achievements.join('\n')}
+                              onChange={(e) => updateExperience(exp.id, 'achievements', e.target.value.split('\n').filter(a => a.trim()))}
+                              rows={4}
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                              placeholder="• Increased sales by 25% through strategic initiatives&#10;• Led a cross-functional team of 8 developers&#10;• Implemented new process that reduced costs by $50K annually&#10;• Received Employee of the Year award"
+                            />
                           </div>
                         </div>
                       </motion.div>
@@ -2697,10 +2647,12 @@ const EducationSection: React.FC<{
                                     GPA: {edu.gpa}
                                   </span>
                                 )}
-                                {edu.honors && (
-                                  <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
-                                    {edu.honors}
-                                  </span>
+                                {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
+                                  <ul className="text-xs text-violet-700 pl-4 list-disc">
+                                    {edu.honors.map((honor, idx) => (
+                                      <li key={idx}>{honor}</li>
+                                    ))}
+                                  </ul>
                                 )}
                               </div>
                             )}
@@ -2764,13 +2716,22 @@ const EducationSection: React.FC<{
                                   {fieldConfig.label}
                                   {fieldConfig.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
-                                <input
-                                  type="text"
-                                  value={edu[fieldConfig.field as keyof Education] as string || ''}
-                                  onChange={(e) => updateEducation(edu.id, fieldConfig.field as keyof Education, e.target.value)}
-                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
-                                  placeholder={fieldConfig.placeholder}
-                                />
+                                {fieldConfig.field === 'honors' ? (
+                                  <textarea
+                                    value={Array.isArray(edu.honors) ? edu.honors.join('\n') : (edu.honors || '')}
+                                    onChange={e => updateEducation(edu.id, 'honors', e.target.value.split(/\r?\n/).filter(line => line.trim() !== ''))}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/70 backdrop-blur-sm min-h-[60px]"
+                                    placeholder={fieldConfig.placeholder + ' (one per line)'}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    value={edu[fieldConfig.field as keyof Education] as string || ''}
+                                    onChange={e => updateEducation(edu.id, fieldConfig.field as keyof Education, e.target.value)}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/70 backdrop-blur-sm"
+                                    placeholder={fieldConfig.placeholder}
+                                  />
+                                )}
                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                               </div>
                             ))}
