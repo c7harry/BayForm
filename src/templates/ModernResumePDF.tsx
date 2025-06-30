@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   page: {
     fontFamily: 'Helvetica',
     fontSize: 10,
-    padding: 18,
+    padding: 15,
     backgroundColor: '#ffffff',
   },
   header: {
@@ -53,16 +53,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#000000',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'baseline',
     marginBottom: 4,
   },
   contactItem: {
-    marginHorizontal: 4,
     color: '#000000',
   },
   separator: {
     color: '#000000',
-    marginHorizontal: 2,
+    paddingLeft: 4,
+    paddingRight: 0,
+    alignSelf: 'center',
   },
   sectionTitle: {
     fontSize: 14,
