@@ -1,29 +1,37 @@
-# ResumeForge - Resume Builder
+# BayForm - Resume Builder
 
 A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Features
 
 ✨ **Core Features**
-- 🎨 Multiple professional resume templates (Modern, Classic, Minimal)
+- 🎨 Multiple professional resume templates (Modern, Creative, Elegant, Executive, Tech)
 - 📝 Intuitive form-based resume builder
 - 👁️ Real-time preview with template switching
-- 📄 PDF export functionality
+- 📄 PDF export functionality (high-quality, print-optimized)
 - 💾 Local storage for resume management
-- 🤖 AI-powered resume tailoring (simulated)
+- 📱 Mobile-first responsive design
+- 📦 QR code generation for LinkedIn and Portfolio
+- ⏳ Vertical progress bar for resume completion
+- 📝 Job description parser for tailored content
 
 ✨ **Templates**
 - **Modern**: Clean, colorful design with blue accents
-- **Classic**: Traditional, professional layout
-- **Minimal**: Clean, typography-focused design
+- **Creative**: Bold, visually engaging layout
+- **Elegant**: Minimal, sophisticated style
+- **Executive**: Professional, business-focused design
+- **Tech**: Sleek, tech-oriented layout
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, React 18, TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS, PostCSS
 - **PDF Generation**: jsPDF, html2canvas
-- **Storage**: Browser localStorage (no database required)
+- **QR Code**: qrcode.react
 - **Icons**: React Icons
+- **State Management**: React Context API
+- **Storage**: Browser localStorage (no database required)
+- **Utilities**: Custom hooks, utility functions
 
 ## Getting Started
 
@@ -48,6 +56,7 @@ A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwin
 3. **Start the development server**
    ```bash
    npm run dev
+   ```
 
 4. **Open your browser**
    Navigate to `http://localhost:3000`
@@ -86,7 +95,15 @@ src/
 ├── components/            # React components
 │   ├── ResumeForm.tsx     # Resume editing form
 │   ├── ResumeTemplates.tsx # Resume template components
-│   └── JobDescriptionForm.tsx
+│   ├── JobDescriptionForm.tsx # Job description parser
+│   ├── QRCodeComponent.tsx # QR code generator
+│   └── VerticalProgressBar.tsx # Progress bar UI
+├── templates/             # PDF template components
+│   ├── ModernResumePDF.tsx
+│   ├── CreativeResumePDF.tsx
+│   ├── ElegantResumePDF.tsx
+│   ├── ExecutiveResumePDF.tsx
+│   └── TechResumePDF.tsx
 ├── types/                 # TypeScript type definitions
 │   └── resume.ts          # Resume-related types
 └── utils/                 # Utility functions
@@ -98,7 +115,7 @@ src/
 
 ### Adding New Templates
 
-1. Create a new template component in `src/components/ResumeTemplates.tsx`
+1. Create a new template component in `src/templates/`
 2. Add the template type to `src/types/resume.ts`
 3. Update the template selector in `src/app/page.tsx`
 
@@ -140,16 +157,3 @@ src/
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-
-## Roadmap
-
-🚀 **Future Enhancements**
-- [ ] Database integration (Supabase/Firebase)
-- [ ] User authentication
-- [ ] AI integration (OpenAI GPT-4)
-- [ ] More resume templates
-- [ ] Cover letter generation
-- [ ] Resume analytics
-- [ ] Export to other formats (Word, etc.)
-- [ ] Resume scoring and suggestions
-- [ ] Job board integration
