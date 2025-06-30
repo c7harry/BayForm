@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ResumeData, TemplateType } from '@/types/resume';
 import { getResumes, saveResume, deleteResume } from '@/utils/storage';
-import { generatePDF, generateSimplePDF } from '@/utils/pdfGenerator';
+import { generatePDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
 import { ModernTemplate, ClassicTemplate, MinimalTemplate, TechTemplate, ElegantTemplate } from '@/components/ResumeTemplates';
 
@@ -57,10 +57,9 @@ export default function Home() {
     if (!selectedResume) return;
     setIsGeneratingPDF(true);
     try {
-      await generatePDF(selectedResume, 'resume-preview');
+      await generatePDF(selectedResume, selectedTemplate);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      generateSimplePDF(selectedResume);
     } finally {
       setIsGeneratingPDF(false);
     }
