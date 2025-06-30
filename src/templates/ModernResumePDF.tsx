@@ -22,16 +22,27 @@ const styles = StyleSheet.create({
   profileAndQRContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    marginLeft: -45,
+    marginTop: -10,
   },
   profileImage: {
-    width: 45,
-    height: 45,
+    width: 60,
+    height: 60,
     marginBottom: 0,
     marginRight: 8,
+    borderWidth: 4,
+    borderStyle: 'solid',
+    borderColor: '#222222',
+    borderRadius: 8,
   },
   qrCode: {
-    width: 45,
-    height: 45,
+    width: 60,
+    height: 60,
+    marginRight: 16,
+    borderWidth: 4,
+    borderStyle: 'solid',
+    borderColor: '#222222',
+    borderRadius: 8,
   },
   name: {
     fontSize: 24,
@@ -380,16 +391,16 @@ export const ModernResumePDF: React.FC<{
           </View>
           {(validatedProfilePicture || qrCodeDataURL) && (
             <View style={styles.profileAndQRContainer}>
-              {validatedProfilePicture && (
-                <Image 
-                  style={styles.profileImage} 
-                  src={validatedProfilePicture} 
-                />
-              )}
               {qrCodeDataURL && (
                 <Image 
                   style={styles.qrCode} 
                   src={qrCodeDataURL} 
+                />
+              )}
+              {validatedProfilePicture && (
+                <Image 
+                  style={styles.profileImage} 
+                  src={validatedProfilePicture} 
                 />
               )}
             </View>
