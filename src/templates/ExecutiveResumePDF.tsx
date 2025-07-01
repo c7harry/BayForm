@@ -378,10 +378,10 @@ export const ExecutiveResumePDF: React.FC<{
           {/* Profile picture and QR Code container */}
           <View style={styles.profileAndQRContainer}>
             {resumeData.personalInfo.profilePicture && (
-              <Image style={styles.profileImage} src={resumeData.personalInfo.profilePicture} alt="Profile picture" />
+              <Image style={styles.profileImage} src={resumeData.personalInfo.profilePicture} />
             )}
             {qrCodeDataURL && (
-              <Image style={styles.qrCode} src={qrCodeDataURL} alt="QR Code" />
+              <Image style={styles.qrCode} src={qrCodeDataURL} />
             )}
           </View>
           

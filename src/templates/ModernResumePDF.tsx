@@ -399,14 +399,12 @@ export const ModernResumePDF: React.FC<{
                 <Image 
                   style={styles.qrCode} 
                   src={qrCodeDataURL} 
-                  alt="QR Code"
                 />
               )}
               {validatedProfilePicture && (
                 <Image 
                   style={styles.profileImage} 
                   src={validatedProfilePicture} 
-                  alt="Profile picture"
                 />
               )}
             </View>
