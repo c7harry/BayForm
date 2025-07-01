@@ -206,10 +206,10 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   educationItem: {
-    marginBottom: 6,
-    paddingBottom: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb', // light gray
+    marginBottom: 0,
+    paddingBottom: 2,
+    borderBottomWidth: 0,
+    borderBottomColor: '#e5e7eb',
     borderStyle: 'solid',
   },
   projectItem: {
