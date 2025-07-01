@@ -200,8 +200,17 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   gpa: {
-    fontSize: 10.3, // education contents
+    fontSize: 10.3,
     color: '#000000',
+    fontStyle: 'italic',
+    marginTop: 1,
+  },
+  educationItem: {
+    marginBottom: 6,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb', // light gray
+    borderStyle: 'solid',
   },
   projectItem: {
     marginBottom: 2,
@@ -453,7 +462,7 @@ export const ModernResumePDF: React.FC<{
                 key={company}
                 style={[
                   styles.experienceItem,
-                  companyIdx === companyArr.length - 1 && { borderBottomWidth: 0, paddingBottom: 0, marginBottom: 0 }
+                  ...(companyIdx === companyArr.length - 1 ? [{ borderBottomWidth: 0, paddingBottom: 0, marginBottom: 0 }] : [])
                 ]}
               >
                 {/* Company and Location in bold */}
@@ -465,7 +474,7 @@ export const ModernResumePDF: React.FC<{
                     {/* Position and Type in italic */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
                       <Text style={{ fontStyle: 'italic', fontSize: 13 }}>
-                        {exp.position}{exp.type ? ` - ${exp.type}` : ''}
+                        {exp.position}
                       </Text>
                       <Text style={styles.dateRange}>
                         {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
