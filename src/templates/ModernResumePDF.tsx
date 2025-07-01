@@ -257,6 +257,11 @@ const styles = StyleSheet.create({
     marginBottom: 1.5, // reduced from 2
     paddingBottom: 1.5, // reduced from 2
   },
+  contactItem: {
+    fontSize: 10,
+    color: '#000000',
+    fontWeight: 'normal',
+  },
 });
 
 function formatPhoneNumber(phone: string) {
