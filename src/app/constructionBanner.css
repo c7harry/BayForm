@@ -1,0 +1,78 @@
+/* Modern Construction Banner Animation */
+@keyframes construction-slide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes construction-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes construction-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.4);
+  }
+}
+
+.construction-banner {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  border: 4px solid #f59e0b;
+  border-radius: 0.5rem;
+  animation: construction-glow 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.construction-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: construction-slide 3s linear infinite;
+}
+
+.construction-text {
+  animation: construction-pulse 2s ease-in-out infinite;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.construction-icon {
+  animation: construction-pulse 1.5s ease-in-out infinite alternate;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .construction-banner {
+    border-radius: 0.375rem;
+    animation-duration: 2.5s;
+  }
+  
+  .construction-text {
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+  }
+  
+  .construction-icon {
+    animation-duration: 2s;
+  }
+}

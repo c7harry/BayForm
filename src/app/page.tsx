@@ -9,6 +9,7 @@ import { generatePDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
 import { ModernTemplate, ClassicTemplate, MinimalTemplate, TechTemplate, ElegantTemplate } from '@/components/ResumeTemplates';
 import InlineEditBubble from '@/components/InlineEditBubble';
+import './constructionBanner.css';
 
 export default function Home() {
   // --- State Management ---
@@ -206,9 +207,6 @@ export default function Home() {
                     <option value="tech">Tech</option>
                     <option value="elegant">Elegant</option>
                   </select>
-                  {selectedTemplate !== 'modern' && (
-                    <span className="ml-2 px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 text-xs font-semibold border border-yellow-200 animate-pulse">Work in Progress</span>
-                  )}
                 </div>
 
                 {/* Action Buttons - Compact Row */}
@@ -247,6 +245,32 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Modern Construction Banner - Enhanced design for non-modern templates */}
+          {selectedTemplate !== 'modern' && (
+            <div className="w-full z-40 py-3 px-4 sm:px-6">
+              <div className="max-w-4xl mx-auto">
+                <div className="construction-banner relative px-6 py-3 flex items-center justify-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="construction-icon text-2xl" role="img" aria-label="construction">
+                      🚧
+                    </span>
+                    <div className="construction-text text-amber-900 font-extrabold text-lg tracking-wide">
+                      Template Under Development
+                    </div>
+                    <span className="construction-icon text-2xl" role="img" aria-label="construction">
+                      🚧
+                    </span>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-2 ml-4 text-amber-800 font-semibold text-sm">
+                    <span role="img" aria-label="tools">⚠️</span>
+                    <span>Some features may be limited</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Resume Preview - Mobile Optimized */}
           <div className="w-full px-2 sm:px-4 py-4 sm:py-8 flex justify-center">
             <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit w-fit">
