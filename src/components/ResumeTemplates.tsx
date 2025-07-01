@@ -12,7 +12,7 @@ interface ResumeTemplateProps {
   onEdit?: (field: string, value: any, section?: string, index?: number) => void;
 }
 
-// Editable text component
+// Editable text component with automatic sizing
 const EditableText: React.FC<{
   value: string;
   isEditing: boolean;
@@ -26,29 +26,77 @@ const EditableText: React.FC<{
     return <span className={className}>{value}</span>;
   }
 
-  const getWidthClass = () => {
+  // Calculate dynamic width based on text length
+  const getDynamicWidth = (currentText: string = value) => {
+    const textLength = currentText.length;
+    const placeholderLength = placeholder.length;
+    
+    // Use placeholder length as minimum when text is empty, add generous padding
+    const contentLength = textLength || placeholderLength;
+    const baseWidth = Math.max(contentLength * 1.3 + 10, 25); // More generous: 1.3ch per character + 10ch padding, min 25ch
+    
+    if (width === 'full') return { className: 'w-full', style: {} };
+    
+    // More generous maximum widths, but constrained to prevent overflow
+    let maxWidth = 60; // Default max width in characters
     switch (width) {
-      case 'full':
-        return 'w-full';
       case 'super-wide':
-        return 'w-[48rem]'; // 512px - very wide for long content
+        maxWidth = 85; // Reduced from 120 to prevent overflow on 210mm pages
+        break;
       case 'extra-wide':
-        return 'w-96'; // 384px
+        maxWidth = 75; // Reduced from 90
+        break;
       case 'wide':
-        return 'w-80'; // 320px
+        maxWidth = 65; // Reduced from 75
+        break;
       default:
-        return 'min-w-0';
+        maxWidth = 55;
     }
+    
+    const finalWidth = Math.min(baseWidth, maxWidth);
+    return { 
+      className: 'min-w-0 max-w-full', // Added max-w-full to prevent overflow
+      style: { width: `${finalWidth}ch`, maxWidth: '100%' } // Added maxWidth: '100%' as fallback
+    };
   };
+
+  // Calculate dynamic height for multiline text
+  const getDynamicRows = (currentText: string = value) => {
+    if (!multiline) return 1;
+    
+    const textLength = currentText.length || placeholder.length;
+    // More generous: assume 50 characters per line for better spacing
+    const estimatedCharsPerLine = 50; 
+    const estimatedLines = Math.ceil(textLength / estimatedCharsPerLine);
+    
+    // Also count actual line breaks
+    const lineBreaks = (currentText.match(/\n/g) || []).length;
+    const totalLines = Math.max(estimatedLines, lineBreaks + 1);
+    
+    // More generous minimum and maximum rows
+    const minRows = 3; // Start with 3 rows minimum for better UX
+    const maxRows = width === 'super-wide' ? 10 : width === 'extra-wide' ? 8 : 6;
+    
+    return Math.max(minRows, Math.min(totalLines, maxRows));
+  };
+
+  // Handle input changes with dynamic resizing
+  const handleChange = (newValue: string) => {
+    onEdit(newValue);
+    // The component will re-render with new dimensions automatically
+  };
+
+  const dynamicWidth = getDynamicWidth();
 
   if (multiline) {
     return (
       <textarea
         value={value}
-        onChange={(e) => onEdit(e.target.value)}
-        className={`${className} ${getWidthClass()} border border-blue-300 rounded px-2 py-1 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none hover:border-blue-400 transition-colors`}
+        onChange={(e) => handleChange(e.target.value)}
+        className={`${className} ${dynamicWidth.className} border border-blue-300 rounded px-2 py-1 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none hover:border-blue-400 transition-colors`}
         placeholder={placeholder}
-        rows={width === 'super-wide' ? 5 : width === 'extra-wide' ? 4 : width === 'wide' ? 3 : 2}
+        rows={getDynamicRows()}
+        style={{ ...dynamicWidth.style, minWidth: '15ch' }} // Larger minimum width
       />
     );
   }
@@ -57,9 +105,10 @@ const EditableText: React.FC<{
     <input
       type="text"
       value={value}
-      onChange={(e) => onEdit(e.target.value)}
-      className={`${className} ${getWidthClass()} border border-blue-300 rounded px-2 py-1 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-colors`}
+      onChange={(e) => handleChange(e.target.value)}
+      className={`${className} ${dynamicWidth.className} border border-blue-300 rounded px-2 py-1 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-colors`}
       placeholder={placeholder}
+      style={{ ...dynamicWidth.style, minWidth: '15ch' }} // Larger minimum width
     />
   );
 };
