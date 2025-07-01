@@ -6,7 +6,7 @@ A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwin
 
 ✨ **Core Features**
 - 🎨 Multiple professional resume templates (Modern, Creative, Elegant, Executive, Tech)
-- 📝 Intuitive form-based resume builder
+- 📝 Form-based resume builder
 - 👁️ Real-time preview with template switching
 - 📄 PDF export functionality (high-quality, print-optimized)
 - 💾 Local storage for resume management
@@ -26,7 +26,7 @@ A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwin
 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS, PostCSS
-- **PDF Generation**: jsPDF, html2canvas
+- **PDF Generation**: jsPDF, React-PDF
 - **QR Code**: qrcode.react
 - **Icons**: React Icons
 - **State Management**: React Context API
@@ -45,7 +45,7 @@ A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwin
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd Resume-Builder
+   cd BayForm
    ```
 
 2. **Install dependencies**
@@ -80,7 +80,7 @@ npm start
 
 ### Exporting to PDF
 
-1. Open a resume in preview mode
+1. View a resume
 2. Click "Download PDF"
 3. The system will generate a high-quality PDF of your resume
 
@@ -111,20 +111,6 @@ src/
     └── pdfGenerator.ts    # PDF generation utilities
 ```
 
-## Customization
-
-### Adding New Templates
-
-1. Create a new template component in `src/templates/`
-2. Add the template type to `src/types/resume.ts`
-3. Update the template selector in `src/app/page.tsx`
-
-### Styling Customization
-
-- Edit `tailwind.config.js` for theme customization
-- Modify `src/app/globals.css` for custom styles
-- Update template components for design changes
-
 ## Features in Detail
 
 ### Local Storage
@@ -141,15 +127,6 @@ src/
 - Mobile-first approach
 - Works on desktop, tablet, and mobile devices
 - Touch-friendly interface
-
-## Browser Support
-
-- Chrome 80+
-- Firefox 80+
-- Safari 14+
-- Edge 80+
-
-## Development
 
 ### Available Scripts
 
