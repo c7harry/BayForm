@@ -195,7 +195,7 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
     <div className={`bg-white px-3 py-2 mx-auto print:max-w-none print:mx-0 ${className} ${isEditing ? 'ring-2 ring-blue-300 ring-opacity-50' : ''}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '10px' }}>
       {isEditing && (
         <div className="bg-blue-100 border border-blue-300 rounded px-2 py-1 mb-2 text-xs text-blue-800 no-print">
-          📝 Editing Mode: Click on any text to modify it. Click "Save" when done.
+          📝 Editing Mode: Click on any text to modify it. Click &quot;Save&quot; when done.
         </div>
       )}
       {/* Header */}
