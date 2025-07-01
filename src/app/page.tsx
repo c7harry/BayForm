@@ -16,6 +16,8 @@ export default function Home() {
   const [selectedResume, setSelectedResume] = useState<ResumeData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isEditingInline, setIsEditingInline] = useState(false);
+  const [editedResume, setEditedResume] = useState<ResumeData | null>(null);
 
   // --- Load resumes on mount ---
   useEffect(() => {
@@ -27,8 +29,10 @@ export default function Home() {
     saveResume(resume);
     setResumes(getResumes());
     setSelectedResume(resume);
+    setEditedResume(resume);
     setSelectedTemplate(resume.template);
     setCurrentView('preview');
+    setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -40,8 +44,10 @@ export default function Home() {
 
   const handlePreviewResume = (resume: ResumeData) => {
     setSelectedResume(resume);
+    setEditedResume(resume);
     setSelectedTemplate(resume.template);
     setCurrentView('preview');
+    setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -54,10 +60,11 @@ export default function Home() {
 
   // --- PDF Generation ---
   const handleGeneratePDF = async () => {
-    if (!selectedResume) return;
+    const resumeToUse = editedResume || selectedResume;
+    if (!resumeToUse) return;
     setIsGeneratingPDF(true);
     try {
-      await generatePDF(selectedResume, selectedTemplate);
+      await generatePDF(resumeToUse, selectedTemplate);
     } catch (error) {
       console.error('Error generating PDF:', error);
     } finally {
@@ -65,21 +72,68 @@ export default function Home() {
     }
   };
 
+  // --- Inline Editing Functions ---
+  const handleToggleInlineEdit = () => {
+    if (isEditingInline) {
+      // Save changes when exiting edit mode
+      if (editedResume && selectedResume) {
+        const updatedResume = { ...editedResume, updatedAt: new Date().toISOString() };
+        saveResume(updatedResume);
+        setResumes(getResumes());
+        setSelectedResume(updatedResume);
+      }
+    } else {
+      // Enter edit mode
+      setEditedResume(selectedResume);
+    }
+    setIsEditingInline(!isEditingInline);
+  };
+
+  const handleInlineEdit = (field: string, value: any, section?: string, index?: number) => {
+    if (!editedResume) return;
+
+    const updatedResume = { ...editedResume };
+
+    if (section === 'personalInfo') {
+      updatedResume.personalInfo = { ...updatedResume.personalInfo, [field]: value };
+    } else if (section === 'experience' && typeof index === 'number') {
+      updatedResume.experience[index] = { ...updatedResume.experience[index], [field]: value };
+    } else if (section === 'education' && typeof index === 'number') {
+      updatedResume.education[index] = { ...updatedResume.education[index], [field]: value };
+    } else if (section === 'projects' && typeof index === 'number') {
+      updatedResume.projects[index] = { ...updatedResume.projects[index], [field]: value };
+    } else if (section === 'skills' && typeof index === 'number') {
+      updatedResume.skills[index] = { ...updatedResume.skills[index], [field]: value };
+    } else if (section === 'additionalSections' && typeof index === 'number') {
+      if (!updatedResume.additionalSections) updatedResume.additionalSections = [];
+      updatedResume.additionalSections[index] = { ...updatedResume.additionalSections[index], [field]: value };
+    }
+
+    setEditedResume(updatedResume);
+  };
+
   // --- Template Renderer ---
   const renderTemplate = (resume: ResumeData, template: TemplateType) => {
+    const resumeToRender = editedResume || resume;
+    const templateProps = {
+      resumeData: resumeToRender,
+      isEditing: isEditingInline,
+      onEdit: handleInlineEdit
+    };
+
     switch (template) {
       case 'modern':
-        return <ModernTemplate resumeData={resume} />;
+        return <ModernTemplate {...templateProps} />;
       case 'executive':
-        return <ClassicTemplate resumeData={resume} />;
+        return <ClassicTemplate {...templateProps} />;
       case 'creative':
-        return <MinimalTemplate resumeData={resume} />;
+        return <MinimalTemplate {...templateProps} />;
       case 'tech':
-        return <TechTemplate resumeData={resume} />;
+        return <TechTemplate {...templateProps} />;
       case 'elegant':
-        return <ElegantTemplate resumeData={resume} />;
+        return <ElegantTemplate {...templateProps} />;
       default:
-        return <ModernTemplate resumeData={resume} />;
+        return <ModernTemplate {...templateProps} />;
     }
   };
 
@@ -132,9 +186,10 @@ export default function Home() {
                 {/* Resume Info - Compact */}
                 <div className="flex-1 min-w-0 mx-2 sm:mx-4">
                   <h1 className="text-sm sm:text-lg lg:text-xl font-bold text-slate-900 truncate leading-tight">
-                    {selectedResume.name}
+                    {(editedResume || selectedResume).name}
+                    {isEditingInline && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Editing</span>}
                   </h1>
-                  <p className="text-xs sm:text-sm text-slate-600 truncate leading-tight">{selectedResume.personalInfo.fullName}</p>
+                  <p className="text-xs sm:text-sm text-slate-600 truncate leading-tight">{(editedResume || selectedResume).personalInfo.fullName}</p>
                 </div>
 
                 {/* Template Selector - Compact */}
@@ -176,14 +231,33 @@ export default function Home() {
                     )}
                   </button>
                   <button
+                    onClick={handleToggleInlineEdit}
+                    className={`px-2 sm:px-4 py-1 sm:py-2 rounded-lg focus:outline-none focus:ring-2 font-semibold transition-all duration-300 flex items-center space-x-1 touch-manipulation text-xs sm:text-sm ${
+                      isEditingInline 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-600 hover:to-yellow-700 focus:ring-yellow-500/50' 
+                        : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 focus:ring-blue-500/50'
+                    }`}
+                  >
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {isEditingInline ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      )}
+                    </svg>
+                    <span className="hidden sm:inline">{isEditingInline ? 'Save' : 'Customize'}</span>
+                    <span className="sm:hidden">{isEditingInline ? 'Save' : 'Edit'}</span>
+                  </button>
+                  <button
                     onClick={() => handleEditResume(selectedResume)}
                     className="bg-[#0F2D52] text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-[#0a1f3d] focus:outline-none focus:ring-2 focus:ring-[#0F2D52]/50 font-semibold transition-all duration-300 flex items-center space-x-1 touch-manipulation text-xs sm:text-sm"
                   >
                     <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span className="hidden sm:inline">Edit</span>
-                    <span className="sm:hidden">Edit</span>
+                    <span className="hidden sm:inline">Settings</span>
+                    <span className="sm:hidden">Settings</span>
                   </button>
                 </div>
               </div>
