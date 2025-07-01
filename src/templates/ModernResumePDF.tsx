@@ -254,8 +254,8 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   experienceItem: {
-    marginBottom: 2,
-    paddingBottom: 2, 
+    marginBottom: 1.5, // reduced from 2
+    paddingBottom: 1.5, // reduced from 2
   },
 });
 
@@ -456,9 +456,9 @@ export const ModernResumePDF: React.FC<{
                   {company} - {experiences[0].location}
                 </Text>
                 {experiences.map((exp) => (
-                  <View key={exp.id} style={{ marginBottom: 6 }}>
+                  <View key={exp.id} style={{ marginBottom: 4 }}>
                     {/* Position and Type in italic */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
                       <Text style={{ fontStyle: 'italic', fontSize: 13 }}>
                         {exp.position}{exp.type ? ` - ${exp.type}` : ''}
                       </Text>
@@ -467,10 +467,10 @@ export const ModernResumePDF: React.FC<{
                       </Text>
                     </View>
                     {exp.description && (
-                      <Text style={{ ...styles.description, marginBottom: 4 }}>{exp.description}</Text>
+                      <Text style={{ ...styles.description, marginBottom: 2 }}>{exp.description}</Text>
                     )}
                     {exp.achievements.length > 0 && (
-                      <View style={{ ...styles.achievementsList, marginBottom: 4 }}>
+                      <View style={{ ...styles.achievementsList, marginBottom: 2 }}>
                         {exp.achievements.map((achievement: string, index: number) => (
                           <View key={index} style={styles.achievement}>
                             <Text style={styles.bullet}>•</Text>
