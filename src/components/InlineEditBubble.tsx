@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { FaWandMagicSparkles } from "react-icons/fa6";
 
 interface InlineEditBubbleProps {
   isEditingInline: boolean;
@@ -96,23 +97,7 @@ const InlineEditBubble: React.FC<InlineEditBubbleProps> = ({
             }}
             className="relative z-10"
           >
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              {isEditingInline ? (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2.5} 
-                  d="M5 13l4 4L19 7" 
-                />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              )}
-            </svg>
+            <FaWandMagicSparkles className={`text-white text-xl`} />
           </motion.div>
 
           {/* Pulse effect when editing */}
