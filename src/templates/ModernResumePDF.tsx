@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   page: {
     fontFamily: 'Helvetica',
     fontSize: 10,
-    padding: 15,
+    padding: 10,
     backgroundColor: '#ffffff',
   },
   header: {
@@ -26,18 +26,18 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   profileImage: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginBottom: 0,
     marginRight: 8,
     borderWidth: 4,
     borderStyle: 'solid',
-    borderColor: '#222222',
+    borderColor: '#000000FF',
     borderRadius: 8,
   },
   qrCode: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 16,
     borderWidth: 4,
     borderStyle: 'solid',
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     marginBottom: 2,
     textAlign: 'left',
+    textTransform: 'uppercase',
   },
   title: {
     fontSize: 16, // position title
@@ -57,11 +58,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontWeight: 'bold',
     textAlign: 'left',
+    textTransform: 'uppercase',
   },
   contactInfo: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    fontSize: 11.11, // user info
+    fontSize: 10, // user info
     color: '#000000',
     justifyContent: 'center',
     alignItems: 'baseline',
@@ -80,28 +82,35 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#000000',
     paddingTop: 1,
-    marginTop: 6,
-    marginBottom: 2,
+    marginTop: 3,
+    marginBottom: 1,
     textAlign: 'center',
   },
   sectionTitleContainer: {
-    marginBottom: 2,
+    marginBottom: 1,
+  },
+  skillsContainer: {
+    alignItems: 'center',
+    width: '100%',
   },
   skillCategory: {
     flexDirection: 'row',
-    marginBottom: 2,
+    marginBottom: 1,
+    justifyContent: 'center',
+    width: '100%',
   },
   skillCategoryLabel: {
     fontSize: 10.3, // skills content
     fontWeight: 'bold',
     color: '#000000',
     textTransform: 'capitalize',
-    marginRight: 5,
+    marginRight: 0,
+    textAlign: 'center',
   },
   skillsList: {
     fontSize: 10.3, // skills content
     color: '#000000',
-    flex: 1,
+    textAlign: 'center',
   },
   companyHeader: {
     borderLeftWidth: 4,
@@ -163,6 +172,7 @@ const styles = StyleSheet.create({
   educationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 1,
   },
   educationLeft: {
     flex: 1,
@@ -174,7 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 10.3, // education contents
     fontWeight: 'bold',
     color: '#000000',
-    marginBottom: 1,
+    marginBottom: 0,
   },
   institution: {
     fontSize: 10.3, // education contents
@@ -194,23 +204,23 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   projectItem: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
   projectName: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#000000',
-    marginBottom: 1,
+    marginBottom: 0,
   },
   projectDescription: {
     fontSize: 9,
     color: '#000000',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   technologiesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   technologyTag: {
     backgroundColor: '#F3F4F6',
@@ -404,7 +414,9 @@ export const ModernResumePDF: React.FC<{
         <View style={styles.contactInfo}>
           {contactItems.map((item, index) => (
             <React.Fragment key={index}>
-              {index > 0 && <Text style={styles.separator}> | </Text>}
+              {index > 0 && (
+                <Text style={{ color: '#000000', marginHorizontal: 4, fontSize: 12, fontWeight: 'bold' }}>|</Text>
+              )}
               <Text style={styles.contactItem}>{item}</Text>
             </React.Fragment>
           ))}
@@ -486,9 +498,9 @@ export const ModernResumePDF: React.FC<{
                     <Text style={styles.degree}>{edu.degree} in {edu.field}</Text>
                     <Text style={styles.institution}>{edu.institution}</Text>
                     {Array.isArray(edu.honors) && edu.honors.length > 0 && (
-                      <View style={{ marginTop: 2 }}>
+                      <View style={{ marginTop: 1 }}>
                         {edu.honors.map((honor, idx) => (
-                          <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 1 }}>
+                          <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 0 }}>
                             <Text style={{ color: '#000000', marginRight: 4, fontSize: 10.3 }}>•</Text>
                             <Text style={styles.honors}>{honor}</Text>
                           </View>

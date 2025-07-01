@@ -54,8 +54,8 @@ export const QRCodeComponent: React.FC<QRCodeComponentProps> = ({
         return {
           fgColor: '#1f2937', // Gray-800
           bgColor: '#ffffff',
-          border: 'border-2 border-gray-300 rounded-lg shadow-sm',
-          container: 'bg-white p-1 rounded-lg shadow-sm'
+          border: 'rounded-lg',
+          container: 'bg-white rounded-lg'
         };
       case 'classic':
         return {
