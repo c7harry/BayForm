@@ -1,6 +1,6 @@
 # BayForm - Resume Builder
 
-A modern, responsive resume builder. Built with Next.js, TypeScript, and Tailwind CSS.
+Resume builder built with Next.js, TypeScript, and Tailwind CSS.
 
 Hosted at: https://bayclock.netlify.app/
 
