@@ -345,12 +345,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         sectionOrder: newOrder,
         updatedAt: new Date().toISOString()
       }));
-      
-      // Show success toast
-      toast.success(`Moved ${draggedItem} section`, {
-        icon: '📋',
-        duration: 2000,
-      });
     }
 
     setDraggedItem(null);
@@ -440,12 +434,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       education: shouldCollapse,
       projects: shouldCollapse,
       additional: shouldCollapse
-    });
-    
-    const action = shouldCollapse ? 'Collapsed' : 'Expanded';
-    toast.success(`${action} all sections`, {
-      icon: shouldCollapse ? '📁' : '📂',
-      duration: 2000,
     });
   };
 
@@ -714,7 +702,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
         
         setShowCropModal(false);
         setImageToCrop(null);
-        toast.success('Profile picture updated!', { icon: '📸', duration: 2000 });
       }
     };
 
@@ -1032,65 +1019,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     <>
       {/* Image Crop Modal */}
       {showCropModal && <ImageCropModal />}
-      
-      <Toaster 
-        position="top-right"
-        containerStyle={{
-          top: 90, // Account for enhanced header
-        }}
-        toastOptions={{
-          duration: 3500,
-          style: {
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(226, 232, 240, 0.8)',
-            color: '#1e293b',
-            borderRadius: '16px',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            fontSize: '14px',
-            fontWeight: '500',
-            padding: '12px 16px',
-            maxWidth: '350px',
-            minHeight: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          },
-          success: {
-            style: {
-              background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(220, 252, 231, 0.95) 100%)',
-              border: '1px solid rgba(34, 197, 94, 0.3)',
-              color: '#15803d',
-            },
-            iconTheme: {
-              primary: '#22c55e',
-              secondary: '#dcfce7',
-            },
-          },
-          error: {
-            style: {
-              background: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(252, 231, 243, 0.95) 100%)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              color: '#dc2626',
-            },
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fef2f2',
-            },
-          },
-          loading: {
-            style: {
-              background: 'linear-gradient(135deg, rgba(241, 245, 249, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%)',
-              border: '1px solid rgba(148, 163, 184, 0.3)',
-              color: '#475569',
-            },
-            iconTheme: {
-              primary: '#64748b',
-              secondary: '#f1f5f9',
-            },
-          },
-        }}
-      />
       
       {/* Vertical Progress Bar */}
       <VerticalProgressBar
@@ -1422,10 +1350,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       type="button"
                       onClick={() => {
                         toggleSection(section.key as any);
-                        toast.success(`${collapsedSections[section.key as keyof typeof collapsedSections] ? 'Expanded' : 'Collapsed'} ${section.label}`, {
-                          icon: collapsedSections[section.key as keyof typeof collapsedSections] ? '👁️' : '👀',
-                          duration: 1500,
-                        });
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
@@ -1572,10 +1496,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addProject();
-                                    toast.success('Project added', { 
-                                      icon: '🚀',
-                                      duration: 2000,
-                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -1606,10 +1526,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeProject(proj.id);
-                                            toast.success('Project removed', { 
-                                              icon: '🗑️',
-                                              duration: 1500,
-                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1698,10 +1614,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                   type="button"
                                   onClick={() => {
                                     addAdditionalSection();
-                                    toast.success('Section added', { 
-                                      icon: '📝',
-                                      duration: 2000,
-                                    });
                                   }}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -1737,10 +1649,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                           type="button"
                                           onClick={() => {
                                             removeAdditionalSection(additionalSection.id);
-                                            toast.success('Section removed', { 
-                                              icon: '🗑️',
-                                              duration: 1500,
-                                            });
                                           }}
                                           whileHover={{ scale: 1.1, rotate: 90 }}
                                           whileTap={{ scale: 0.9 }}
@@ -1775,10 +1683,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                                 type="button"
                                                 onClick={() => {
                                                   removeAdditionalSectionItem(additionalSection.id, itemIndex);
-                                                  toast.success('Item removed', { 
-                                                    icon: '❌',
-                                                    duration: 1200,
-                                                  });
                                                 }}
                                                 whileHover={{ scale: 1.1, rotate: 90 }}
                                                 whileTap={{ scale: 0.9 }}
@@ -1795,10 +1699,6 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                                         type="button"
                                         onClick={() => {
                                           addAdditionalSectionItem(additionalSection.id);
-                                          toast.success('Item added', { 
-                                            icon: '➕',
-                                            duration: 1500,
-                                          });
                                         }}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
@@ -2563,10 +2463,6 @@ const ExperienceSection: React.FC<{
           type="button"
           onClick={() => {
             addExperience();
-            toast.success('New experience added', { 
-              icon: '💼',
-              duration: 2000,
-            });
           }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -2642,10 +2538,6 @@ const ExperienceSection: React.FC<{
                           onClick={(e) => {
                             e.stopPropagation();
                             removeExperience(exp.id);
-                            toast.success('Experience removed', { 
-                              icon: '🗑️',
-                              duration: 1500,
-                            });
                           }}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -2789,10 +2681,6 @@ const ExperienceSection: React.FC<{
             type="button"
             onClick={() => {
               addExperience();
-              toast.success('First experience added! 🎉', { 
-                icon: '💼',
-                duration: 2000,
-              });
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -2854,10 +2742,6 @@ const EducationSection: React.FC<{
           type="button"
           onClick={() => {
             addEducation();
-            toast.success('New education added', { 
-              icon: '🎓',
-              duration: 2000,
-            });
           }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -2942,10 +2826,6 @@ const EducationSection: React.FC<{
                           onClick={(e) => {
                             e.stopPropagation();
                             removeEducation(edu.id);
-                            toast.success('Education removed', { 
-                              icon: '🗑️',
-                              duration: 1500,
-                            });
                           }}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
