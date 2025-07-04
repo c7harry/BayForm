@@ -127,9 +127,15 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       additionalSections: [
         { id: generateResumeId(), title: 'Languages', items: [] },
         { id: generateResumeId(), title: 'Certifications', items: [] }
-      ]
+      ],
+      sectionOrder: ['skills', 'experience', 'education', 'projects', 'additional'] // Default order excluding 'personal'
     }
   );
+
+  // --- Drag and Drop State ---
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<string | null>(null);
+  const [dropPosition, setDropPosition] = useState<'before' | 'after' | null>(null);
 
   // --- Section Refs for Navigation ---
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -241,6 +247,122 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
       });
       setCurrentProgressStep(stepId);
     }
+  };
+
+  // --- Drag and Drop Handlers ---
+  const handleDragStart = (e: React.DragEvent, sectionKey: string) => {
+    if (sectionKey === 'personal') return; // Personal section cannot be moved
+    setDraggedItem(sectionKey);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', sectionKey);
+    
+    // Add a subtle drag image effect
+    const dragImage = document.createElement('div');
+    dragImage.textContent = `Moving ${sectionKey} section...`;
+    dragImage.style.cssText = `
+      position: absolute;
+      top: -1000px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+    
+    // Clean up drag image after a delay
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
+  };
+
+  const handleDragOver = (e: React.DragEvent, sectionKey: string) => {
+    if (sectionKey === 'personal' || !draggedItem || draggedItem === sectionKey) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    // Calculate if we're in the top or bottom half of the element
+    const rect = e.currentTarget.getBoundingClientRect();
+    const midpoint = rect.top + rect.height / 2;
+    const position = e.clientY < midpoint ? 'before' : 'after';
+    
+    setDragOverItem(sectionKey);
+    setDropPosition(position);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    // Only clear if we're actually leaving the element, not just moving to a child
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    ) {
+      setDragOverItem(null);
+      setDropPosition(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetSectionKey: string) => {
+    e.preventDefault();
+    if (targetSectionKey === 'personal' || !draggedItem || draggedItem === targetSectionKey) {
+      setDraggedItem(null);
+      setDragOverItem(null);
+      setDropPosition(null);
+      return;
+    }
+
+    // Update section order based on drop position
+    const currentOrder = resumeData.sectionOrder || ['skills', 'experience', 'education', 'projects', 'additional'];
+    const newOrder = [...currentOrder];
+    
+    const draggedIndex = newOrder.indexOf(draggedItem);
+    const targetIndex = newOrder.indexOf(targetSectionKey);
+    
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      // Remove dragged item from its current position
+      newOrder.splice(draggedIndex, 1);
+      
+      // Calculate new insertion index based on drop position
+      let insertIndex = targetIndex;
+      if (draggedIndex < targetIndex) {
+        // If moving forward, adjust for the removed item
+        insertIndex--;
+      }
+      if (dropPosition === 'after') {
+        insertIndex++;
+      }
+      
+      // Insert at the new position
+      newOrder.splice(insertIndex, 0, draggedItem);
+      
+      setResumeData(prev => ({
+        ...prev,
+        sectionOrder: newOrder,
+        updatedAt: new Date().toISOString()
+      }));
+      
+      // Show success toast
+      toast.success(`Moved ${draggedItem} section`, {
+        icon: '📋',
+        duration: 2000,
+      });
+    }
+
+    setDraggedItem(null);
+    setDragOverItem(null);
+    setDropPosition(null);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Clean up drag state
+    setDraggedItem(null);
+    setDragOverItem(null);
+    setDropPosition(null);
   };
 
   // --- Intersection Observer for Progress Tracking ---
@@ -876,8 +998,29 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
     }
   }, [additionalSectionsInitialized, resumeData.additionalSections]);
 
-  // --- Sections ---
-  const sections = DEFAULT_SECTIONS;
+  // --- Sections Ordered by User Preference ---
+  const getOrderedSections = () => {
+    const sectionOrder = resumeData.sectionOrder || ['skills', 'experience', 'education', 'projects', 'additional'];
+    const orderedSections = [];
+    
+    // Always put personal section first
+    const personalSection = DEFAULT_SECTIONS.find(section => section.key === 'personal');
+    if (personalSection) {
+      orderedSections.push(personalSection);
+    }
+    
+    // Add sections in user-defined order
+    sectionOrder.forEach(sectionKey => {
+      const section = DEFAULT_SECTIONS.find(s => s.key === sectionKey);
+      if (section) {
+        orderedSections.push(section);
+      }
+    });
+    
+    return orderedSections;
+  };
+
+  const sections = getOrderedSections();
 
   // --- Form Submission ---
   const handleSubmit = (e: React.FormEvent) => {
@@ -1139,8 +1282,22 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex justify-end mb-4 sm:mb-6"
+            className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6"
           >
+            {/* Drag and Drop Helper Text */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex items-center gap-2 text-sm text-gray-600 bg-blue-50/50 backdrop-blur-sm px-4 py-2 rounded-xl border border-blue-200/50"
+            >
+              <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+              </svg>
+              <span className="font-medium">Tip:</span>
+              <span>Drag sections to reorder them in your resume</span>
+            </motion.div>
+
             <motion.button
               type="button"
               onClick={toggleAllSections}
@@ -1166,25 +1323,96 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
             </motion.button>
           </motion.div>
 
+          {/* Active Drag Indicator */}
+          {draggedItem && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center justify-center space-x-2 text-sm bg-blue-100 text-blue-700 p-3 rounded-lg mb-4 border border-blue-200"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                🔄
+              </motion.div>
+              <span>Moving <strong>{draggedItem}</strong> section - drop it where you want it to go!</span>
+            </motion.div>
+          )}
+
           <form id="resume-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-8">
             <AnimatePresence>
               {sections.map((section, idx) => (
-                <motion.div
-                  key={section.key}
-                  ref={(el) => { sectionRefs.current[section.key] = el; }}
-                  data-section={section.key}
-                  layout
-                  initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -50, scale: 0.95 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: idx * 0.1,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden relative group hover:shadow-2xl transition-all duration-500"
-                >
+                <React.Fragment key={section.key}>
+                  {/* Drop indicator BEFORE section */}
+                  {dragOverItem === section.key && dropPosition === 'before' && draggedItem && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0, scaleY: 0 }}
+                      animate={{ height: 16, opacity: 1, scaleY: 1 }}
+                      exit={{ height: 0, opacity: 0, scaleY: 0 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      className="flex items-center justify-center py-2"
+                    >
+                      <motion.div 
+                        className="w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full shadow-lg relative overflow-hidden"
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                      >
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"
+                          animate={{ 
+                            x: ["-100%", "100%"],
+                            opacity: [0.5, 1, 0.5]
+                          }}
+                          transition={{ 
+                            duration: 1.5, 
+                            repeat: Infinity, 
+                            ease: "easeInOut" 
+                          }}
+                        />
+                      </motion.div>
+                    </motion.div>
+                  )}
+                  
+                  <motion.div
+                    layout
+                    initial={{ opacity: 1, scale: 1, y: 0 }}
+                    animate={{
+                      opacity: draggedItem === section.key ? 0.3 : (draggedItem && draggedItem !== section.key ? 0.8 : 1),
+                      scale: draggedItem === section.key ? 1.05 : (dragOverItem === section.key ? 1.02 : 1),
+                      y: draggedItem === section.key ? -4 : 0,
+                      rotateZ: draggedItem === section.key ? 2 : 0,
+                    }}
+                    transition={{ 
+                      duration: 0.25, 
+                      ease: "easeInOut",
+                      layout: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }
+                    }}
+                  >
+                    <div
+                      key={section.key}
+                      ref={(el) => { sectionRefs.current[section.key] = el; }}
+                      data-section={section.key}
+                      draggable={section.key !== 'personal'}
+                      onDragStart={(e: React.DragEvent) => handleDragStart(e, section.key)}
+                      onDragOver={(e: React.DragEvent) => handleDragOver(e, section.key)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e: React.DragEvent) => handleDrop(e, section.key)}
+                      onDragEnd={handleDragEnd}
+                      className={`bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl border overflow-hidden relative group hover:shadow-2xl transition-all duration-300 ${
+                        section.key !== 'personal' ? 'cursor-move' : ''
+                      } ${
+                        dragOverItem === section.key ? 'border-blue-400 border-2 bg-blue-50/30 shadow-blue-200/50' : 'border-white/20'
+                      } ${
+                        draggedItem && draggedItem !== section.key ? 'transform-gpu' : ''
+                      } ${
+                        draggedItem && draggedItem !== section.key ? 'hover:scale-[1.01]' : ''
+                      }`}
+                      style={{
+                        animation: idx * 0.1 + 's ease-out 0s 1 slideInUp'
+                      }}
+                    >
                   {/* Animated border */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${section.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-2xl`} />
                   
@@ -1253,15 +1481,30 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                         </div>
                       </div>
                       
-                      <motion.div
-                        animate={{ 
-                          rotate: collapsedSections[section.key as keyof typeof collapsedSections] ? 0 : 180 
-                        }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="relative z-10 flex-shrink-0 ml-2"
-                      >
-                        <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover/button:text-white transition-colors" />
-                      </motion.div>
+                      <div className="flex items-center gap-2 relative z-10 flex-shrink-0">
+                        {/* Drag Handle - Only for non-personal sections */}
+                        {section.key !== 'personal' && (
+                          <motion.div
+                            className="cursor-move text-gray-400 hover:text-gray-600 transition-colors p-1 rounded opacity-60 group-hover/button:opacity-100"
+                            whileHover={{ scale: 1.1 }}
+                            title="Drag to reorder section"
+                          >
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                            </svg>
+                          </motion.div>
+                        )}
+                        
+                        <motion.div
+                          animate={{ 
+                            rotate: collapsedSections[section.key as keyof typeof collapsedSections] ? 0 : 180 
+                          }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="ml-2"
+                        >
+                          <ChevronDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover/button:text-white transition-colors" />
+                        </motion.div>
+                      </div>
                     </motion.button>
                   </div>
                   
@@ -1598,7 +1841,40 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Drop indicator AFTER section */}
+                  {dragOverItem === section.key && dropPosition === 'after' && draggedItem && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0, scaleY: 0 }}
+                      animate={{ height: 16, opacity: 1, scaleY: 1 }}
+                      exit={{ height: 0, opacity: 0, scaleY: 0 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      className="flex items-center justify-center py-2"
+                    >
+                      <motion.div 
+                        className="w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full shadow-lg relative overflow-hidden"
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                      >
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"
+                          animate={{ 
+                            x: ["-100%", "100%"],
+                            opacity: [0.5, 1, 0.5]
+                          }}
+                          transition={{ 
+                            duration: 1.5, 
+                            repeat: Infinity, 
+                            ease: "easeInOut" 
+                          }}
+                        />
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </React.Fragment>
               ))}
             </AnimatePresence>
 
@@ -1842,7 +2118,7 @@ const PersonalInfoSection: React.FC<{
                     <button
                       type="button"
                       onClick={removeProfilePicture}
-                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 hover:scale-110 transition-all duration-200 touch-manipulation flex items-center justify-center shadow-lg ring-2 ring-white"
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 hover:scale-110 transition-all duration-200 touch-manipulation flex items-center justify-center"
                     >
                       ×
                     </button>
@@ -2158,14 +2434,14 @@ const SkillsSection: React.FC<{
                               <button
                                 type="button"
                                 onClick={() => handleSkillSave(skill.id)}
-                                className="w-6 h-6 bg-emerald-500 text-white rounded-full text-xs hover:bg-emerald-600 transition-colors flex items-center justify-center"
+                                className="w-6 h-6 bg-emerald-500 text-white rounded-full text-xs hover:bg-emerald-600 hover:scale-110 transition-all duration-200 touch-manipulation flex items-center justify-center"
                               >
                                 ✓
                               </button>
                               <button
                                 type="button"
                                 onClick={handleSkillCancel}
-                                className="w-6 h-6 bg-gray-400 text-white rounded-full text-xs hover:bg-gray-500 transition-colors flex items-center justify-center"
+                                className="w-6 h-6 bg-gray-400 text-white rounded-full text-xs hover:bg-gray-500 hover:scale-110 transition-all duration-200 touch-manipulation flex items-center justify-center"
                               >
                                 ✕
                               </button>

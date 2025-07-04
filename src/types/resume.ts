@@ -80,6 +80,7 @@ export interface ResumeData {
   createdAt: string;
   updatedAt: string;
   additionalSections?: AdditionalSection[]; // Optional: languages, certifications, user-defined
+  sectionOrder?: string[]; // Order of sections for display (excludes 'personal' which is always first)
 }
 
 // --- Template Types ---

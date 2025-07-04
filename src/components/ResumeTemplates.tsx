@@ -191,6 +191,300 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
     if (onEdit) onEdit(field, value, section, index);
   };
 
+  // Function to render sections in user-defined order
+  const renderOrderedSections = () => {
+    const sectionOrder = resumeData.sectionOrder || ['skills', 'experience', 'education', 'projects', 'additional'];
+    
+    return sectionOrder.map(sectionKey => {
+      switch (sectionKey) {
+        case 'skills':
+          return Object.keys(skillsByCategory).length > 0 ? (
+            <div className="mb-1" key="skills">
+              <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">SKILLS</h2>
+              <div className="text-center space-y-0.5">
+                {Object.entries(skillsByCategory).map(([category, skills]) => (
+                  <div key={category} className="flex justify-center items-baseline">
+                    <span className="text-xs font-bold text-black capitalize">
+                      {category}:
+                    </span>
+                    <span className="text-xs text-black ml-0">{skills.join(', ')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null;
+
+        case 'experience':
+          return resumeData.experience.length > 0 ? (
+            <div className="mb-1" key="experience">
+              <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">EXPERIENCE</h2>
+              <div className="space-y-1 mt-0.5">
+                {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
+                  <div key={company} className="mb-0.5">
+                    {/* Company Header */}
+                    <h3 className="text-sm font-bold text-black mb-0">
+                      <EditableText
+                        value={company}
+                        isEditing={isEditing}
+                        onEdit={(value) => {
+                          // Update all experiences for this company
+                          experiences.forEach((exp, index) => {
+                            const expIndex = resumeData.experience.findIndex(e => e.id === exp.id);
+                            if (expIndex !== -1) {
+                              handleEdit('company', value, 'experience', expIndex);
+                            }
+                          });
+                        }}
+                        className="text-sm font-bold text-black"
+                        placeholder="Company Name"
+                      />
+                      {' - '}
+                      <EditableText
+                        value={experiences[0].location}
+                        isEditing={isEditing}
+                        onEdit={(value) => {
+                          const expIndex = resumeData.experience.findIndex(e => e.id === experiences[0].id);
+                          if (expIndex !== -1) {
+                            handleEdit('location', value, 'experience', expIndex);
+                          }
+                        }}
+                        className="text-sm font-bold text-black"
+                        placeholder="Location"
+                      />
+                    </h3>
+                    
+                    {/* Positions within the company */}
+                    {experiences.map((exp) => {
+                      const expIndex = resumeData.experience.findIndex(e => e.id === exp.id);
+                      return (
+                        <div key={exp.id} className="mb-1.5">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="text-xs italic text-black">
+                              <EditableText
+                                value={exp.position}
+                                isEditing={isEditing}
+                                onEdit={(value) => handleEdit('position', value, 'experience', expIndex)}
+                                className="text-xs italic text-black"
+                                placeholder="Position Title"
+                              />
+                            </h4>
+                            <span className="text-xs font-bold text-black">
+                              <EditableText
+                                value={exp.startDate}
+                                isEditing={isEditing}
+                                onEdit={(value) => handleEdit('startDate', value, 'experience', expIndex)}
+                                className="text-xs font-bold text-black"
+                                placeholder="Start Date"
+                              />
+                              {' - '}
+                              <EditableText
+                                value={exp.current ? 'Present' : exp.endDate}
+                                isEditing={isEditing && !exp.current}
+                                onEdit={(value) => handleEdit('endDate', value, 'experience', expIndex)}
+                                className="text-xs font-bold text-black"
+                                placeholder="End Date"
+                              />
+                            </span>
+                          </div>
+                          
+                          {exp.description && (
+                            <p className="text-xs text-black mb-1 italic">
+                              <EditableText
+                                value={exp.description}
+                                isEditing={isEditing}
+                                onEdit={(value) => handleEdit('description', value, 'experience', expIndex)}
+                                className="text-xs text-black italic"
+                                multiline={true}
+                                placeholder="Job description"
+                                width="super-wide"
+                              />
+                            </p>
+                          )}
+                          
+                          {/* Achievements */}
+                          {exp.achievements && exp.achievements.length > 0 && (
+                            <ul className="text-xs text-black space-y-0.5 ml-2">
+                              {exp.achievements.map((achievement, achIndex) => (
+                                <li key={achIndex} className="relative pl-2">
+                                  <span className="absolute left-0 top-0">•</span>
+                                  <EditableText
+                                    value={achievement}
+                                    isEditing={isEditing}
+                                    onEdit={(value) => {
+                                      const updatedAchievements = [...exp.achievements];
+                                      updatedAchievements[achIndex] = value;
+                                      handleEdit('achievements', updatedAchievements, 'experience', expIndex);
+                                    }}
+                                    className="text-xs text-black"
+                                    multiline={true}
+                                    placeholder="Achievement description"
+                                    width="super-wide"
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null;
+
+        case 'education':
+          return resumeData.education.length > 0 ? (
+            <div className="mb-1" key="education">
+              <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">EDUCATION</h2>
+              <div className="space-y-1 mt-0.5">
+                {resumeData.education.map((edu, index) => (
+                  <div key={edu.id} className="mb-1">
+                    <div className="flex justify-between items-start mb-0.5">
+                      <div className="flex-1">
+                        <h3 className="text-sm font-bold text-black">
+                          <EditableText
+                            value={edu.institution}
+                            isEditing={isEditing}
+                            onEdit={(value) => handleEdit('institution', value, 'education', index)}
+                            className="text-sm font-bold text-black"
+                            placeholder="Institution Name"
+                          />
+                        </h3>
+                        <h4 className="text-xs italic text-black">
+                          <EditableText
+                            value={edu.degree}
+                            isEditing={isEditing}
+                            onEdit={(value) => handleEdit('degree', value, 'education', index)}
+                            className="text-xs italic text-black"
+                            placeholder="Degree"
+                          />
+                          {edu.field && (
+                            <>
+                              {' in '}
+                              <EditableText
+                                value={edu.field}
+                                isEditing={isEditing}
+                                onEdit={(value) => handleEdit('field', value, 'education', index)}
+                                className="text-xs italic text-black"
+                                placeholder="Field of Study"
+                              />
+                            </>
+                          )}
+                        </h4>
+                      </div>
+                      <span className="text-xs font-bold text-black">
+                        <EditableText
+                          value={edu.graduationDate}
+                          isEditing={isEditing}
+                          onEdit={(value) => handleEdit('graduationDate', value, 'education', index)}
+                          className="text-xs font-bold text-black"
+                          placeholder="Graduation Date"
+                        />
+                      </span>
+                    </div>
+                    
+                    {edu.gpa && (
+                      <p className="text-xs text-black">
+                        GPA: <EditableText
+                          value={edu.gpa}
+                          isEditing={isEditing}
+                          onEdit={(value) => handleEdit('gpa', value, 'education', index)}
+                          className="text-xs text-black"
+                          placeholder="GPA"
+                        />
+                      </p>
+                    )}
+                    
+                    {edu.honors && edu.honors.length > 0 && (
+                      <div className="text-xs text-black">
+                        <strong>Honors:</strong> {edu.honors.join(', ')}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null;
+
+        case 'projects':
+          return resumeData.projects.length > 0 ? (
+            <div className="mb-1" key="projects">
+              <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">PROJECTS</h2>
+              <div className="space-y-1 mt-0.5">
+                {resumeData.projects.map((project, index) => (
+                  <div key={project.id} className="mb-1">
+                    <h3 className="text-sm font-bold text-black">
+                      <EditableText
+                        value={project.name}
+                        isEditing={isEditing}
+                        onEdit={(value) => handleEdit('name', value, 'projects', index)}
+                        className="text-sm font-bold text-black"
+                        placeholder="Project Name"
+                      />
+                      {project.url && (
+                        <span className="text-xs text-black ml-2">
+                          • <EditableText
+                            value={project.url}
+                            isEditing={isEditing}
+                            onEdit={(value) => handleEdit('url', value, 'projects', index)}
+                            className="text-xs text-black"
+                            placeholder="Project URL"
+                          />
+                        </span>
+                      )}
+                    </h3>
+                    
+                    {project.technologies.length > 0 && (
+                      <p className="text-xs italic text-black mb-0.5">
+                        <strong>Technologies:</strong> {project.technologies.join(', ')}
+                      </p>
+                    )}
+                    
+                    {project.description && (
+                      <p className="text-xs text-black">
+                        <EditableText
+                          value={project.description}
+                          isEditing={isEditing}
+                          onEdit={(value) => handleEdit('description', value, 'projects', index)}
+                          className="text-xs text-black"
+                          multiline={true}
+                          placeholder="Project description"
+                          width="super-wide"
+                        />
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null;
+
+        case 'additional':
+          return resumeData.additionalSections && resumeData.additionalSections.length > 0 ? (
+            resumeData.additionalSections.map((section, sectionIndex) => {
+              if (section.items.length === 0) return null;
+              return (
+                <div className="mb-1" key={`additional-${section.id}`}>
+                  <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">
+                    {section.title.toUpperCase()}
+                  </h2>
+                  <div className="text-center">
+                    <span className="text-xs text-black">
+                      {section.items.filter(item => item.trim()).join(' • ')}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          ) : null;
+
+        default:
+          return null;
+      }
+    }).filter(Boolean);
+  };
+
   return (
     <div className={`bg-white px-3 py-2 mx-auto print:max-w-none print:mx-0 ${className} ${isEditing ? 'ring-2 ring-blue-300 ring-opacity-50' : ''}`} id="resume-preview" style={{ minWidth: '210mm', maxWidth: '210mm', fontSize: '10px' }}>
       {isEditing && (
@@ -249,344 +543,8 @@ export const ModernTemplate: React.FC<ResumeTemplateProps> = ({ resumeData, clas
         ))}
       </div>
 
-      {/* Skills Section */}
-      {Object.keys(skillsByCategory).length > 0 && (
-        <div className="mb-1">
-          <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">SKILLS</h2>
-          <div className="text-center space-y-0.5">
-            {Object.entries(skillsByCategory).map(([category, skills]) => (
-              <div key={category} className="flex justify-center items-baseline">
-                <span className="text-xs font-bold text-black capitalize">
-                  {category}:
-                </span>
-                <span className="text-xs text-black ml-0">{skills.join(', ')}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}      {/* Experience Section */}
-      {resumeData.experience.length > 0 && (
-        <div className="mb-1">
-          <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">EXPERIENCE</h2>
-          <div className="space-y-1 mt-0.5">
-            {Object.entries(groupExperiencesByCompany(resumeData.experience)).map(([company, experiences]) => (
-              <div key={company} className="mb-0.5">
-                {/* Company Header */}
-                <h3 className="text-sm font-bold text-black mb-0">
-                  <EditableText
-                    value={company}
-                    isEditing={isEditing}
-                    onEdit={(value) => {
-                      // Update all experiences for this company
-                      experiences.forEach((exp, index) => {
-                        const expIndex = resumeData.experience.findIndex(e => e.id === exp.id);
-                        if (expIndex !== -1) {
-                          handleEdit('company', value, 'experience', expIndex);
-                        }
-                      });
-                    }}
-                    className="text-sm font-bold text-black"
-                    placeholder="Company Name"
-                  />
-                  {' - '}
-                  <EditableText
-                    value={experiences[0].location}
-                    isEditing={isEditing}
-                    onEdit={(value) => {
-                      const expIndex = resumeData.experience.findIndex(e => e.id === experiences[0].id);
-                      if (expIndex !== -1) {
-                        handleEdit('location', value, 'experience', expIndex);
-                      }
-                    }}
-                    className="text-sm font-bold text-black"
-                    placeholder="Location"
-                  />
-                </h3>
-                
-                {/* Positions within the company */}
-                {experiences.map((exp) => {
-                  const expIndex = resumeData.experience.findIndex(e => e.id === exp.id);
-                  return (
-                    <div key={exp.id} className="mb-1.5">
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="text-xs italic text-black">
-                          <EditableText
-                            value={exp.position}
-                            isEditing={isEditing}
-                            onEdit={(value) => handleEdit('position', value, 'experience', expIndex)}
-                            className="text-xs italic text-black"
-                            placeholder="Position Title"
-                          />
-                        </h4>
-                        <span className="text-xs font-bold text-black">
-                          <EditableText
-                            value={exp.startDate}
-                            isEditing={isEditing}
-                            onEdit={(value) => handleEdit('startDate', value, 'experience', expIndex)}
-                            className="text-xs font-bold text-black"
-                            placeholder="Start Date"
-                          />
-                          {' - '}
-                          <EditableText
-                            value={exp.current ? 'Present' : exp.endDate}
-                            isEditing={isEditing && !exp.current}
-                            onEdit={(value) => handleEdit('endDate', value, 'experience', expIndex)}
-                            className="text-xs font-bold text-black"
-                            placeholder="End Date"
-                          />
-                        </span>
-                      </div>
-                      
-                      {exp.description && (
-                        <p className="text-xs text-black mb-1 italic">
-                          <EditableText
-                            value={exp.description}
-                            isEditing={isEditing}
-                            onEdit={(value) => handleEdit('description', value, 'experience', expIndex)}
-                            className="text-xs text-black italic"
-                            multiline={true}
-                            placeholder="Job description"
-                            width="super-wide"
-                          />
-                        </p>
-                      )}
-                    
-                    {exp.achievements.length > 0 && (
-                      <ul className="space-y-0.5 text-xs text-black">
-                        {exp.achievements.map((achievement: string, achievementIndex: number) => (
-                          <li key={achievementIndex} className="flex items-start">
-                            <span className="mr-1.5 text-black">•</span>
-                            <EditableText
-                              value={achievement}
-                              isEditing={isEditing}
-                              onEdit={(value) => {
-                                const updatedAchievements = [...exp.achievements];
-                                updatedAchievements[achievementIndex] = value;
-                                handleEdit('achievements', updatedAchievements, 'experience', expIndex);
-                              }}
-                              className="text-xs text-black"
-                              multiline={true}
-                              placeholder="Achievement or accomplishment"
-                              width="super-wide"
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}      {/* Education Section */}
-      {resumeData.education.length > 0 && (
-        <div className="mb-1">
-          <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">EDUCATION</h2>
-          <div className="space-y-0.5 mt-0.5">
-            {resumeData.education.map((edu, eduIndex) => (
-              <div key={edu.id}>
-                <div className="flex justify-between items-start mb-0.5">
-                  <div>
-                    <h3 className="text-xs font-bold text-black">
-                      <EditableText
-                        value={edu.degree}
-                        isEditing={isEditing}
-                        onEdit={(value) => handleEdit('degree', value, 'education', eduIndex)}
-                        className="text-xs font-bold text-black"
-                        placeholder="Degree"
-                      />
-                      {' in '}
-                      <EditableText
-                        value={edu.field}
-                        isEditing={isEditing}
-                        onEdit={(value) => handleEdit('field', value, 'education', eduIndex)}
-                        className="text-xs font-bold text-black"
-                        placeholder="Field of study"
-                        width="wide"
-                      />
-                    </h3>
-                    <p className="text-xs text-black italic">
-                      <EditableText
-                        value={edu.institution}
-                        isEditing={isEditing}
-                        onEdit={(value) => handleEdit('institution', value, 'education', eduIndex)}
-                        className="text-xs text-black italic"
-                        placeholder="Institution name"
-                        width="wide"
-                      />
-                    </p>
-                    {edu.honors && Array.isArray(edu.honors) && edu.honors.length > 0 && (
-                      <ul className="text-xs text-black mt-0.5">
-                        {edu.honors.map((honor, honorIndex) => (
-                          <li key={honorIndex} className="flex items-start">
-                            <span className="mr-1 text-black">•</span>
-                            <EditableText
-                              value={honor}
-                              isEditing={isEditing}
-                              onEdit={(value) => {
-                                const updatedHonors = [...(edu.honors || [])];
-                                updatedHonors[honorIndex] = value;
-                                handleEdit('honors', updatedHonors, 'education', eduIndex);
-                              }}
-                              className="text-xs text-black"
-                              placeholder="Honor or achievement"
-                              width="wide"
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  <div className="text-right text-xs text-black">
-                    <p>
-                      <EditableText
-                        value={edu.graduationDate}
-                        isEditing={isEditing}
-                        onEdit={(value) => handleEdit('graduationDate', value, 'education', eduIndex)}
-                        className="text-xs text-black"
-                        placeholder="Graduation date"
-                      />
-                    </p>
-                    {edu.gpa && (
-                      <p>
-                        GPA: <EditableText
-                          value={edu.gpa}
-                          isEditing={isEditing}
-                          onEdit={(value) => handleEdit('gpa', value, 'education', eduIndex)}
-                          className="text-xs text-black"
-                          placeholder="GPA"
-                        />
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}      {/* Projects Section */}
-      {resumeData.projects.length > 0 && (
-        <div className="mb-1">
-          <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">PROJECTS</h2>
-          <div className="space-y-0.5 mt-0.5">
-            {resumeData.projects.map((project, projectIndex) => (
-              <div key={project.id}>
-                <h3 className="text-xs font-bold text-black">
-                  <EditableText
-                    value={project.name}
-                    isEditing={isEditing}
-                    onEdit={(value) => handleEdit('name', value, 'projects', projectIndex)}
-                    className="text-xs font-bold text-black"
-                    placeholder="Project name"
-                  />
-                </h3>
-                <p className="text-xs text-black mb-0.5">
-                  <EditableText
-                    value={project.description}
-                    isEditing={isEditing}
-                    onEdit={(value) => handleEdit('description', value, 'projects', projectIndex)}
-                    className="text-xs text-black"
-                    multiline={true}
-                    placeholder="Project description"
-                    width="super-wide"
-                  />
-                </p>
-                {project.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-0.5">
-                    {project.technologies.map((tech, techIndex) => (
-                      <span key={techIndex} className="bg-gray-100 text-black px-1.5 py-0.5 rounded text-xs">
-                        <EditableText
-                          value={tech}
-                          isEditing={isEditing}
-                          onEdit={(value) => {
-                            const updatedTechnologies = [...project.technologies];
-                            updatedTechnologies[techIndex] = value;
-                            handleEdit('technologies', updatedTechnologies, 'projects', projectIndex);
-                          }}
-                          className="text-xs text-black"
-                          placeholder="Technology"
-                        />
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {(project.url || project.github) && (
-                  <div className="text-xs text-black">
-                    {project.url && (
-                      <span className="mr-2">
-                        Live: <EditableText
-                          value={project.url}
-                          isEditing={isEditing}
-                          onEdit={(value) => handleEdit('url', value, 'projects', projectIndex)}
-                          className="text-xs text-black"
-                          placeholder="Project URL"
-                        />
-                      </span>
-                    )}
-                    {project.github && (
-                      <span>
-                        GitHub: <EditableText
-                          value={project.github}
-                          isEditing={isEditing}
-                          onEdit={(value) => handleEdit('github', value, 'projects', projectIndex)}
-                          className="text-xs text-black"
-                          placeholder="GitHub URL"
-                        />
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Additional Information Section */}
-      {resumeData.additionalSections && resumeData.additionalSections.length > 0 && (
-        <div className="mb-1">
-          <h2 className="text-xs font-bold text-black border-t border-black pt-0.5 mt-1 mb-0.5 text-center">ADDITIONAL INFORMATION</h2>
-          <div className="text-xs text-black mt-0.5">
-            {resumeData.additionalSections?.filter(section => section.items && section.items.length > 0).map((section, sectionIndex) => (
-              <div key={section.id} className="mb-0">
-                <span className="font-bold text-black capitalize">
-                  <EditableText
-                    value={section.title}
-                    isEditing={isEditing}
-                    onEdit={(value) => {
-                      const allSectionIndex = resumeData.additionalSections?.findIndex(s => s.id === section.id);
-                      if (allSectionIndex !== undefined && allSectionIndex !== -1) {
-                        handleEdit('title', value, 'additionalSections', allSectionIndex);
-                      }
-                    }}
-                    className="font-bold text-black capitalize"
-                    placeholder="Section title"
-                  />
-                </span>
-                :{' '}
-                <span className="text-black">
-                  <EditableText
-                    value={section.items.join(', ')}
-                    isEditing={isEditing}
-                    onEdit={(value) => {
-                      const allSectionIndex = resumeData.additionalSections?.findIndex(s => s.id === section.id);
-                      if (allSectionIndex !== undefined && allSectionIndex !== -1) {
-                        const newItems = value.split(',').map(item => item.trim()).filter(item => item);
-                        handleEdit('items', newItems, 'additionalSections', allSectionIndex);
-                      }
-                    }}
-                    className="text-black"
-                    placeholder="Items separated by commas"
-                    width="extra-wide"
-                  />
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Sections in User-Defined Order */}
+      {renderOrderedSections()}
     </div>
   );
 };
