@@ -1,10 +1,6 @@
 import { pdf } from '@react-pdf/renderer';
 import { ResumeData } from '../types/resume';
 import { ModernResumePDF, getQRCodeURL } from '../templates/ModernResumePDF';
-import { ExecutiveResumePDF } from '../templates/ExecutiveResumePDF';
-import { CreativeResumePDF } from '../templates/CreativeResumePDF';
-import { TechResumePDF } from '../templates/TechResumePDF';
-import { ElegantResumePDF } from '../templates/ElegantResumePDF';
 import React from 'react';
 
 // Template name mapping (for display purposes)
@@ -19,10 +15,6 @@ const templateNames = {
 // Template component mapping
 const templateComponents = {
   modern: ModernResumePDF,
-  executive: ExecutiveResumePDF,
-  creative: CreativeResumePDF,
-  tech: TechResumePDF,
-  elegant: ElegantResumePDF,
 };
 
 // Main PDF generation function

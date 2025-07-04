@@ -6,7 +6,7 @@ import { ResumeData, TemplateType } from '@/types/resume';
 import { getResumes, saveResume, deleteResume } from '@/utils/storage';
 import { generatePDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
-import { ModernTemplate, ClassicTemplate, MinimalTemplate, TechTemplate, ElegantTemplate } from '@/components/ResumeTemplates';
+import { ModernTemplate } from '@/components/ResumeTemplates';
 import InlineEditBubble from '@/components/InlineEditBubble';
 import LandingPage from '@/components/LandingPage';
 import './constructionBanner.css';
@@ -32,7 +32,8 @@ export default function Home() {
     setResumes(getResumes());
     setSelectedResume(resume);
     setEditedResume(resume);
-    setSelectedTemplate(resume.template);
+    // Always set template to 'modern' since only modern is available
+    setSelectedTemplate('modern');
     setCurrentView('preview');
     setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -47,7 +48,8 @@ export default function Home() {
   const handlePreviewResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setEditedResume(resume);
-    setSelectedTemplate(resume.template);
+    // Always set template to 'modern' since only modern is available
+    setSelectedTemplate('modern');
     setCurrentView('preview');
     setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -66,7 +68,7 @@ export default function Home() {
     if (!resumeToUse) return;
     setIsGeneratingPDF(true);
     try {
-      await generatePDF(resumeToUse, selectedTemplate);
+      await generatePDF(resumeToUse, 'modern'); // Only 'modern' is valid
     } catch (error) {
       console.error('Error generating PDF:', error);
     } finally {
@@ -123,20 +125,8 @@ export default function Home() {
       onEdit: handleInlineEdit
     };
 
-    switch (template) {
-      case 'modern':
-        return <ModernTemplate {...templateProps} />;
-      case 'executive':
-        return <ClassicTemplate {...templateProps} />;
-      case 'creative':
-        return <MinimalTemplate {...templateProps} />;
-      case 'tech':
-        return <TechTemplate {...templateProps} />;
-      case 'elegant':
-        return <ElegantTemplate {...templateProps} />;
-      default:
-        return <ModernTemplate {...templateProps} />;
-    }
+    // Only ModernTemplate remains
+    return <ModernTemplate {...templateProps} />;
   };
 
   // --- Main Content Renderer ---
@@ -193,22 +183,6 @@ export default function Home() {
                   <p className="text-xs sm:text-sm text-slate-600 truncate leading-tight">{(editedResume || selectedResume).personalInfo.fullName}</p>
                 </div>
 
-                {/* Template Selector - Compact */}
-                <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                  <label className="text-xs font-medium text-slate-700 hidden sm:block">Template:</label>
-                  <select
-                    value={selectedTemplate}
-                    onChange={(e) => setSelectedTemplate(e.target.value as TemplateType)}
-                    className="px-2 sm:px-3 py-1 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 bg-white text-slate-900 font-medium text-xs sm:text-sm touch-manipulation"
-                  >
-                    <option value="modern">Modern</option>
-                    <option value="executive">Executive</option>
-                    <option value="creative">Creative</option>
-                    <option value="tech">Tech</option>
-                    <option value="elegant">Elegant</option>
-                  </select>
-                </div>
-
                 {/* Action Buttons - Compact Row */}
                 <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                   <button
@@ -246,31 +220,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Modern Construction Banner - Enhanced design for non-modern templates */}
-          {selectedTemplate !== 'modern' && (
-            <div className="w-full z-40 py-3 px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <div className="construction-banner relative px-6 py-3 flex items-center justify-center gap-3">
-                  <div className="flex items-center gap-3">
-                    <span className="construction-icon text-2xl" role="img" aria-label="construction">
-                      🚧
-                    </span>
-                    <div className="construction-text text-amber-900 font-extrabold text-lg tracking-wide">
-                      Template Under Development
-                    </div>
-                    <span className="construction-icon text-2xl" role="img" aria-label="construction">
-                      🚧
-                    </span>
-                  </div>
-                  <div className="hidden sm:flex items-center gap-2 ml-4 text-amber-800 font-semibold text-sm">
-                    <span role="img" aria-label="tools">⚠️</span>
-                    <span>Some features may be limited</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Resume Preview - Mobile Optimized */}
           <div className="w-full px-2 sm:px-4 py-4 sm:py-8 flex justify-center">
             <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit w-fit">
@@ -297,7 +246,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
           {/* Floating Inline Edit Bubble */}
           <InlineEditBubble
             isEditingInline={isEditingInline}
