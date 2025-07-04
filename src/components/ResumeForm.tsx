@@ -4,28 +4,8 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VerticalProgressBar } from './VerticalProgressBar';
 
-import { 
-  ChevronDownIcon, 
-  ChevronUpIcon,
-  PlusIcon, 
-  XMarkIcon,
-  UserIcon,
-  BriefcaseIcon,
-  AcademicCapIcon,
-  CodeBracketIcon,
-  CubeIcon,
-  InformationCircleIcon,
-  HeartIcon
-} from '@heroicons/react/24/outline';
-import { 
-  UserIcon as UserIconSolid,
-  BriefcaseIcon as BriefcaseIconSolid,
-  AcademicCapIcon as AcademicCapIconSolid,
-  CodeBracketIcon as CodeBracketIconSolid,
-  CubeIcon as CubeIconSolid,
-  InformationCircleIcon as InformationCircleIconSolid
-} from '@heroicons/react/24/solid';
-import toast, { Toaster } from 'react-hot-toast';
+import { ChevronDownIcon, ChevronUpIcon,PlusIcon, XMarkIcon,UserIcon,BriefcaseIcon,AcademicCapIcon,CodeBracketIcon,CubeIcon,InformationCircleIcon,HeartIcon} from '@heroicons/react/24/outline';
+import { UserIcon as UserIconSolid,BriefcaseIcon as BriefcaseIconSolid,AcademicCapIcon as AcademicCapIconSolid,CodeBracketIcon as CodeBracketIconSolid,CubeIcon as CubeIconSolid,InformationCircleIcon as InformationCircleIconSolid} from '@heroicons/react/24/solid';
 import { ResumeData, PersonalInfo, Experience, Education, Skill, Project, AdditionalSection } from '@/types/resume';
 import { generateResumeId } from '@/utils/storage';
 
@@ -2941,13 +2921,6 @@ const EducationSection: React.FC<{
           <p className="text-gray-600 mb-4">Start building your educational background</p>
           <motion.button
             type="button"
-            onClick={() => {
-              addEducation();
-              toast.success('First education added! 🎉', { 
-                icon: '🎓',
-                duration: 2000,
-              });
-            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
