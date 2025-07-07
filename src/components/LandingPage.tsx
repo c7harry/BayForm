@@ -35,9 +35,9 @@ export default function LandingPage({
             <Image 
               src="/images/header.png" 
               alt="BayForm" 
-              width={128} 
-              height={128} 
-              className="h-32 sm:h-32 lg:h-32 w-auto mb-0" 
+              width={80} 
+              height={80} 
+              className="h-20 sm:h-20 lg:h-20 w-auto mb-0" 
               style={{ marginBottom: '-4rem' }}
             />
           </div>
