@@ -2,11 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ResumeData, TemplateType } from '@/types/resume';
+import { ResumeData } from '@/types/resume';
 import { getResumes, saveResume, deleteResume } from '@/utils/storage';
-import { generatePDF } from '@/utils/pdfGenerator';
+import { exportLatex, LatexTemplateType } from '@/utils/latexGenerator';
+import { exportPDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
-import { ModernTemplate } from '@/components/ResumeTemplates';
+import { LatexView } from '@/components/LatexExport';
 import InlineEditBubble from '@/components/InlineEditBubble';
 import LandingPage from '@/components/LandingPage';
 import './constructionBanner.css';
@@ -16,10 +17,12 @@ export default function Home() {
   const [resumes, setResumes] = useState<ResumeData[]>([]);
   const [currentView, setCurrentView] = useState<'list' | 'create' | 'edit' | 'preview'>('list');
   const [selectedResume, setSelectedResume] = useState<ResumeData | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern');
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<LatexTemplateType>('modern');
+  const [isGeneratingLatex, setIsGeneratingLatex] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isEditingInline, setIsEditingInline] = useState(false);
   const [editedResume, setEditedResume] = useState<ResumeData | null>(null);
+  const [showLatexView, setShowLatexView] = useState(false);
 
   // --- Load resumes on mount ---
   useEffect(() => {
@@ -32,8 +35,6 @@ export default function Home() {
     setResumes(getResumes());
     setSelectedResume(resume);
     setEditedResume(resume);
-    // Always set template to 'modern' since only modern is available
-    setSelectedTemplate('modern');
     setCurrentView('preview');
     setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -48,8 +49,6 @@ export default function Home() {
   const handlePreviewResume = (resume: ResumeData) => {
     setSelectedResume(resume);
     setEditedResume(resume);
-    // Always set template to 'modern' since only modern is available
-    setSelectedTemplate('modern');
     setCurrentView('preview');
     setIsEditingInline(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -62,17 +61,32 @@ export default function Home() {
     }
   };
 
-  // --- PDF Generation ---
-  const handleGeneratePDF = async () => {
+  // --- LaTeX Generation ---
+  const handleGenerateLatex = async () => {
     const resumeToUse = editedResume || selectedResume;
     if (!resumeToUse) return;
-    setIsGeneratingPDF(true);
+    setIsGeneratingLatex(true);
     try {
-      await generatePDF(resumeToUse, 'modern'); // Only 'modern' is valid
+      exportLatex(resumeToUse, selectedTemplate);
+    } catch (error) {
+      console.error('Error generating LaTeX:', error);
+    } finally {
+      setIsGeneratingLatex(false);
+    }
+  };
+
+  // --- PDF Generation ---
+  const handleGeneratePdf = async () => {
+    const resumeToUse = editedResume || selectedResume;
+    if (!resumeToUse) return;
+    setIsGeneratingPdf(true);
+    try {
+      await exportPDF(resumeToUse, selectedTemplate);
     } catch (error) {
       console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
     } finally {
-      setIsGeneratingPDF(false);
+      setIsGeneratingPdf(false);
     }
   };
 
@@ -117,16 +131,13 @@ export default function Home() {
   };
 
   // --- Template Renderer ---
-  const renderTemplate = (resume: ResumeData, template: TemplateType) => {
+  const renderTemplate = (resume: ResumeData, template: LatexTemplateType) => {
     const resumeToRender = editedResume || resume;
-    const templateProps = {
-      resumeData: resumeToRender,
-      isEditing: isEditingInline,
-      onEdit: handleInlineEdit
-    };
-
-    // Only ModernTemplate remains
-    return <ModernTemplate {...templateProps} />;
+    if (showLatexView) {
+      return <LatexView resumeData={resumeToRender} selectedTemplate={template} />;
+    }
+    // Use LatexView for visual preview
+    return <LatexView resumeData={resumeToRender} selectedTemplate={template} showVisualPreview />;
   };
 
   // --- Main Content Renderer ---
@@ -183,14 +194,31 @@ export default function Home() {
                   <p className="text-xs sm:text-sm text-slate-600 truncate leading-tight">{(editedResume || selectedResume).personalInfo.fullName}</p>
                 </div>
 
+                {/* Template Selection */}
+                <div className="flex-shrink-0">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs sm:text-sm font-medium text-slate-700 hidden sm:inline">Template:</span>
+                    <select
+                      value={selectedTemplate}
+                      onChange={(e) => setSelectedTemplate(e.target.value as LatexTemplateType)}
+                      className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs sm:text-sm font-medium text-slate-700 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200"
+                    >
+                      <option value="modern">Modern</option>
+                      <option value="classic">Classic</option>
+                      <option value="minimal">Minimal</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* Action Buttons - Compact Row */}
                 <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                  {/* PDF Export Button */}
                   <button
-                    onClick={handleGeneratePDF}
-                    disabled={isGeneratingPDF}
-                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 flex items-center space-x-1 touch-manipulation text-xs sm:text-sm"
+                    onClick={handleGeneratePdf}
+                    disabled={isGeneratingPdf}
+                    className="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 flex items-center space-x-1 touch-manipulation text-xs sm:text-sm"
                   >
-                    {isGeneratingPDF ? (
+                    {isGeneratingPdf ? (
                       <>
                         <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                         <span className="hidden sm:inline">Generating...</span>
@@ -205,6 +233,7 @@ export default function Home() {
                       </>
                     )}
                   </button>
+                  {/* Edit Resume Button */}
                   <button
                     onClick={() => handleEditResume(selectedResume)}
                     className="bg-[#0F2D52] text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-[#0a1f3d] focus:outline-none focus:ring-2 focus:ring-[#0F2D52]/50 font-semibold transition-all duration-300 flex items-center space-x-1 touch-manipulation text-xs sm:text-sm"
@@ -220,31 +249,56 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Resume Preview - Mobile Optimized */}
-          <div className="w-full px-2 sm:px-4 py-4 sm:py-8 flex justify-center">
-            <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-2xl border border-slate-200 overflow-hidden h-fit w-fit">
-              {/* Browser-like header - Hidden on small mobile */}
-              <div className="hidden sm:block p-2 bg-gradient-to-r from-[#0F2D52]/10 to-[#0F2D52]/5 border-b border-slate-200">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                  <div className="flex-1 text-center">
-                    <span className="text-sm text-slate-600 font-medium">Resume Preview</span>
+          {/* View Toggle Controls */}
+          <div className="w-full px-2 sm:px-4 py-2 flex justify-center">
+            <div className="bg-white rounded-lg shadow-lg border border-slate-200 p-3">
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm font-medium text-gray-700">View Mode:</span>
+                  <div className="flex bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setShowLatexView(false)}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
+                        !showLatexView 
+                          ? 'bg-white text-blue-600 shadow-sm' 
+                          : 'text-gray-600 hover:text-gray-800'
+                      }`}
+                    >
+                      Preview
+                    </button>
+                    <button
+                      onClick={() => setShowLatexView(true)}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
+                        showLatexView 
+                          ? 'bg-white text-blue-600 shadow-sm' 
+                          : 'text-gray-600 hover:text-gray-800'
+                      }`}
+                    >
+                      LaTeX Export
+                    </button>
                   </div>
                 </div>
-              </div>
-              {/* Resume Content - Mobile responsive with proper fit */}
-              <div className="bg-white relative h-fit overflow-hidden flex justify-center" id="resume-preview">
-                <div className="overflow-hidden h-fit">
-                  <div className="origin-top-left scale-[0.55] sm:scale-100 w-[calc(210mm*0.55)] sm:w-[210mm] h-fit leading-none">
-                    <div className="h-fit leading-none">
-                      {renderTemplate(selectedResume, selectedTemplate)}
-                    </div>
-                  </div>
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <span>Using</span>
+                  <span className="font-semibold text-gray-800 capitalize">{selectedTemplate}</span>
+                  <span>template</span>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Resume Preview - Mobile Optimized */}
+          <div className="w-full px-0 sm:px-0 py-4 sm:py-8 flex justify-center">
+            {showLatexView ? (
+              <div className="w-full">
+                {renderTemplate(selectedResume, selectedTemplate)}
+              </div>
+            ) : (
+              // Remove the extra container and show only the rendered template
+              <div className="w-full">
+                {renderTemplate(selectedResume, selectedTemplate)}
+              </div>
+            )}
           </div>
           {/* Floating Inline Edit Bubble */}
           <InlineEditBubble
