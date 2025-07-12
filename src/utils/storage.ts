@@ -133,3 +133,62 @@ const prioritizeSkills = (skills: any[], keywords: string[]) => {
     return 0;
   });
 };
+
+// --- Export/Import Functions ---
+/**
+ * Export a resume as a JSON file download
+ */
+export const exportResumeAsJSON = (resume: ResumeData): void => {
+  const dataStr = JSON.stringify(resume, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${resume.personalInfo.fullName.replace(/\s+/g, '_')}_Resume_${resume.name.replace(/\s+/g, '_')}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+/**
+ * Import a resume from a JSON file
+ */
+export const importResumeFromJSON = (file: File): Promise<ResumeData> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+      try {
+        const jsonStr = event.target?.result as string;
+        const resumeData = JSON.parse(jsonStr) as ResumeData;
+        
+        // Validate required fields
+        if (!resumeData.personalInfo || !resumeData.personalInfo.fullName) {
+          throw new Error('Invalid resume file: Missing personal information');
+        }
+        
+        // Generate new ID and update timestamps
+        const importedResume: ResumeData = {
+          ...resumeData,
+          id: generateResumeId(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          name: `${resumeData.name} (Imported)`,
+          template: migrateTemplate(resumeData.template)
+        };
+        
+        resolve(importedResume);
+      } catch (error) {
+        reject(new Error(`Failed to parse resume file: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      }
+    };
+    
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'));
+    };
+    
+    reader.readAsText(file);
+  });
+};

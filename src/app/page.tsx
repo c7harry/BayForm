@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { ResumeData, TemplateType } from '@/types/resume';
-import { getResumes, saveResume, deleteResume } from '@/utils/storage';
+import { getResumes, saveResume, deleteResume, exportResumeAsJSON, importResumeFromJSON } from '@/utils/storage';
 import { generatePDF } from '@/utils/pdfGenerator';
 import { ResumeForm } from '@/components/ResumeForm';
 import { ModernTemplate } from '@/components/ResumeTemplates';
@@ -60,6 +60,37 @@ export default function Home() {
       deleteResume(id);
       setResumes(getResumes());
     }
+  };
+
+  // --- Export/Import Functions ---
+  const handleExportResume = (resume: ResumeData) => {
+    try {
+      exportResumeAsJSON(resume);
+    } catch (error) {
+      console.error('Error exporting resume:', error);
+      alert('Failed to export resume. Please try again.');
+    }
+  };
+
+  const handleImportResume = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const importedResume = await importResumeFromJSON(file);
+        saveResume(importedResume);
+        setResumes(getResumes());
+        alert('Resume imported successfully!');
+      } catch (error) {
+        console.error('Error importing resume:', error);
+        alert(`Failed to import resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    };
+    input.click();
   };
 
   // --- PDF Generation ---
@@ -263,6 +294,8 @@ export default function Home() {
         onEditResume={handleEditResume}
         onPreviewResume={handlePreviewResume}
         onDeleteResume={handleDeleteResume}
+        onExportResume={handleExportResume}
+        onImportResume={handleImportResume}
       />
     );
   };
