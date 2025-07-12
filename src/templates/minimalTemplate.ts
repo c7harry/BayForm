@@ -115,7 +115,7 @@ ${[
   personalInfo.phone,
   personalInfo.website,
   personalInfo.linkedIn
-].filter(Boolean).map(escapeLatex).join(' | ')}
+].filter((item): item is string => Boolean(item)).map(escapeLatex).join(' | ')}
 \\end{center}
 
 \\vspace{6pt}

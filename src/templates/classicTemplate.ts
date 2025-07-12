@@ -128,7 +128,7 @@ ${[
   personalInfo.phone,
   personalInfo.website,
   personalInfo.linkedIn
-].filter(Boolean).map(escapeLatex).join(' $\\bullet$ ')}
+].filter((item): item is string => Boolean(item)).map(escapeLatex).join(' $\\bullet$ ')}
 \\end{center}
 
 \\vspace{8pt}
