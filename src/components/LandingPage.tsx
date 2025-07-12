@@ -290,23 +290,32 @@ export default function LandingPage({
                             </button>
                             <button
                               onClick={() => onDeleteResume(resume.id)}
-                              className="bg-red-50 text-red-600 px-4 py-3 rounded-xl hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-300/50 font-semibold transition-all duration-300 group"
+                              className="bg-red-50 text-red-600 px-4 py-3 rounded-xl hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-300/50 font-semibold transition-all duration-300 group flex items-center justify-center space-x-2"
                               title="Delete Resume"
                             >
                               <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                               </svg>
+                              <span>Delete</span>
                             </button>
                           </div>
                           <button
                             onClick={() => onExportResume(resume)}
-                            className="w-full bg-blue-50 text-blue-600 px-4 py-3 rounded-xl hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300/50 font-semibold transition-all duration-300 flex items-center justify-center space-x-2 mt-3"
+                            className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 text-emerald-700 px-4 py-4 rounded-2xl hover:from-emerald-100 hover:to-teal-100 hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-300/50 font-semibold transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-3 group shadow-sm hover:shadow-md"
                             title="Export Resume as JSON"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Export JSON</span>
+                            <div className="relative">
+                              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
+                            </div>
+                            <span className="text-base">Export as JSON</span>
+                            <div className="flex items-center space-x-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animation-delay-200"></div>
+                              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animation-delay-400"></div>
+                            </div>
                           </button>
                         </div>
                       </div>
