@@ -10,13 +10,12 @@ Hosted at: https://bayclock.netlify.app/
 - 🎨 Multiple professional resume templates (Modern, Creative, Elegant, Executive, Tech)
 - 📝 Form-based resume builder
 - 👁️ Real-time preview with template switching
-- 📄 LaTeX and PDF export functionality (professional, print-optimized)
+- 📄 PDF export functionality (high-quality, print-optimized)
 - 💾 Local storage for resume management
 - 📱 Mobile-first responsive design
 - 📦 QR code generation for LinkedIn and Portfolio
 - ⏳ Vertical progress bar for resume completion
 - 📝 Job description parser for tailored content
-- 📋 Copy LaTeX code to clipboard functionality
 
 ✨ **Templates**
 - **Modern**: Clean, colorful design with blue accents
@@ -29,7 +28,7 @@ Hosted at: https://bayclock.netlify.app/
 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS, PostCSS
-- **LaTeX Generation**: Custom LaTeX generator utility
+- **PDF Generation**: jsPDF, React-PDF
 - **QR Code**: qrcode.react
 - **Icons**: React Icons
 - **State Management**: React Context API
@@ -121,27 +120,15 @@ src/
 - No server or database required
 - Data persists across browser sessions
 
-### LaTeX and PDF Export
-- Professional LaTeX code generation
-- Download `.tex` files for use with LaTeX compilers
-- Copy LaTeX code directly to clipboard
-- Compatible with online editors like Overleaf
-- Perfect formatting for academic and professional resumes
+### PDF Generation
+- High-quality PDF export using html2canvas and jsPDF
+- Fallback to simple text-based PDF generation
+- Print-optimized styling
 
 ### Responsive Design
 - Mobile-first approach
 - Works on desktop, tablet, and mobile devices
 - Touch-friendly interface
-
-## How to Use LaTeX Export
-
-1. **Create your resume** using the form builder
-2. **Switch to LaTeX Export view** using the toggle button
-3. **Download the .tex file** or copy the LaTeX code
-4. **Use with LaTeX editor**:
-   - Upload to [Overleaf](https://overleaf.com) (recommended)
-   - Use local LaTeX installation (TeX Live, MiKTeX)
-   - Compile to generate professional PDF
 
 ### Available Scripts
 
