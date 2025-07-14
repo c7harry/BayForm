@@ -119,26 +119,6 @@ export default function LandingPage({
                 <span>Import Resume JSON</span>
               </button>
             </div>
-
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-center justify-center opacity-70">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800 mb-1">{resumes.length}+</div>
-                <div className="text-sm text-slate-600">Resumes Created</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800 mb-1">5</div>
-                <div className="text-sm text-slate-600">Pro Templates</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600 mb-1">100%</div>
-                <div className="text-sm text-slate-600">Private & Secure</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-1">Local</div>
-                <div className="text-sm text-slate-600">Storage Only</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
