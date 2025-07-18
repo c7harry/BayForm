@@ -381,13 +381,14 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ initialData, onSave, onC
   }, [currentProgressStep]);
 
   // --- Section Collapse State ---
+  // All sections collapsed by default on mount
   const [collapsedSections, setCollapsedSections] = useState({
-    personal: false,
-    skills: false,
-    experience: false,
-    education: false,
-    projects: false,
-    additional: false
+    personal: true,
+    skills: true,
+    experience: true,
+    education: true,
+    projects: true,
+    additional: true
   });
   const toggleSection = (section: keyof typeof collapsedSections) => {
     setCollapsedSections(prev => ({
