@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   achievementsList: {
-    marginTop: 1,
+    marginTop: 1.15, // increased by 15% from 1
   },
   achievement: {
     flexDirection: 'row',
-    marginBottom: 1,
+    marginBottom: 1.15, // increased by 15% from 1
   },
   bullet: {
     color: '#000000',
@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   experienceItem: {
-    marginBottom: 1.5, // reduced from 2
-    paddingBottom: 1.5, // reduced from 2
+    marginBottom: 1.7, // increased by 15% from 1.5
+    paddingBottom: 1.7, // increased by 15% from 1.5
   },
   contactItem: {
     fontSize: 10,
@@ -470,9 +470,9 @@ export const ModernResumePDF: React.FC<{
                   {company} - {experiences[0].location}
                 </Text>
                 {experiences.map((exp) => (
-                  <View key={exp.id} style={{ marginBottom: 4 }}>
+                  <View key={exp.id} style={{ marginBottom: 4.6 }}>
                     {/* Position and Type in italic */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2.3 }}>
                       <Text style={{ fontStyle: 'italic', fontSize: 13 }}>
                         {exp.position}
                       </Text>
@@ -481,10 +481,10 @@ export const ModernResumePDF: React.FC<{
                       </Text>
                     </View>
                     {exp.description && (
-                      <Text style={{ ...styles.description, marginBottom: 2 }}>{exp.description}</Text>
+                      <Text style={{ ...styles.description, marginBottom: 2.3 }}>{exp.description}</Text>
                     )}
                     {exp.achievements.length > 0 && (
-                      <View style={{ ...styles.achievementsList, marginBottom: 2 }}>
+                      <View style={{ ...styles.achievementsList, marginBottom: 2.3 }}>
                         {exp.achievements.map((achievement: string, index: number) => (
                           <View key={index} style={styles.achievement}>
                             <Text style={styles.bullet}>•</Text>
